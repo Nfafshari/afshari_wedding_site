@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum RsvpStatus {
+  DECLINED
+  SOLO
+  PLUS_ONE
+  FAMILY
+}
+
+enum Attendance {
+  ADULT
+  CHILD
+}
+
+enum BudgetCategory {
+  VENUE
+  CATERING
+  DESSERT
+  PHOTOGRAPHERS
+  DECOR
+  MUSIC
+  RENTALS
+}
+
+enum BudgetStatus {
+  LOOKING
+  CHOICE
+  PURCHASED
+}
+
+model Rsvp {
+  id              Int       @id @default(autoincrement())
+  name            String
+  rsvpType        RsvpStatus
+  createdAt       DateTime  @default(now())
+
+  guest           Guest[]
+}
+
+model Guest {
+  id              Int      @id @default(autoincrement())
+  name            String
+  attendanceType  Attendance
+  mealChoice      String?
+  dietaryNotes    String?
+  createdAt       DateTime    @default(now())
+  rsvpId          Int
+
+  rsvp            Rsvp  @relation(fields: [rsvpId], references: [id])
+}
+
+model RegistryItem {
+  id              Int    @id @default(autoincrement())
+  name            String
+  link            String
+  quantityWanted  Int
+  image           String?   @default("/window.svg")
+
+  claimed         RegistryClaim[]
+}
+
+model RegistryClaim {
+  id             Int     @id @default(autoincrement())
+  claimedBy      String
+  quantity       Int
+  createdAt      DateTime  @default(now())
+  itemId         Int
+
+  item           RegistryItem @relation(fields: [itemId], references: [id])
+}
+
+model BudgetItem {
+  id            Int      @id @default(autoincrement())
+  category      BudgetCategory
+  softBudget    Decimal
+  hardBudget    Decimal
+  
+  option        BudgetOption[]
+}
+
+model BudgetOption {
+  id            Int    @id @default(autoincrement())
+  vendor        String
+  estimatedCost Decimal
+  actualCost    Decimal? @default(0.00)
+  rank          Int
+  status        BudgetStatus
+  notes         String?
+  itemId        Int
+
+  item          BudgetItem  @relation(fields: [itemId], references: [id])
+}
