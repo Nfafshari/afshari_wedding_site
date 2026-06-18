@@ -4,6 +4,7 @@ import { Geist, Geist_Mono, Pinyon_Script } from "next/font/google";
 import Header from "../../../components/ui/header";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { NavSidebar } from "@/components/ui/nav-sidebar";
+import Footer from "@/components/ui/footer";
 
 import "./globals.css";
 
@@ -44,6 +45,7 @@ export default function RootLayout({
           <main>
             <Header />
             {children}
+            <Footer />
           </main>
         </SidebarProvider>
       </body>
