@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pinyon_Script } from "next/font/google";
 
 import Header from "../../../components/ui/header";
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { NavSidebar } from "@/components/ui/nav-sidebar";
 
 import "./globals.css";
 
@@ -37,8 +39,13 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} ${pinyon.variable} h-full antialiased`}
     >
       <body className="h-full flex flex-col">
-        <Header/>
-          {children}
+        <SidebarProvider>
+          <NavSidebar />
+          <main>
+            <Header />
+            {children}
+          </main>
+        </SidebarProvider>
       </body>
     </html>
   );
