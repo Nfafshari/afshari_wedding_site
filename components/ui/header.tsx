@@ -13,11 +13,11 @@ export default function Header () {
   const [isActive, setIsActive] = useState('/');
 
   return(
-    <header className="z-9999 w-screen h-26 flex items-center bg-(--burg) md:h-45 md:pb-10 md:justify-center">
+    <header className="z-9999 w-screen h-26 flex items-center bg-(--burg) md:h-32 md:justify-center">
       {/* Mobile menu */}
       <nav className='pl-5 flex flex-row items-center md:hidden'>
         <Menu 
-          className='w-12 h-12 text-5xl text-white hover:bg-[#2004044b] p-2 rounded-full'
+          className='w-12 h-12 text-5xl text-(--gold) hover:bg-[#2004044b] p-2 rounded-full'
           onClick={toggleSidebar}
         />
         <h1 className='text-5xl text-white font-pinyon pl-2 pt-2'>Piper & Nathen</h1>
@@ -25,7 +25,7 @@ export default function Header () {
 
       {/* Desktop menu */}
       <nav className='hidden px-7 w-full flex-row items-center md:flex'>
-        <div className='flex w-full gap-3 pr-10 items-center justify-start'>
+        <div className='flex w-full gap-3 items-center justify-center lg:pr-10 lg:justify-start'>
           <NavButton 
             href={'/'}
             onClick={() => setIsActive('/')}
@@ -48,7 +48,12 @@ export default function Header () {
             RSVP
           </NavButton>
         </div>
-        <div className='flex w-full gap-3 pl-10 items-center justify-end'>
+
+        <div className='hidden font-pinyon text-4xl text-center justify-center items-center pr-4 text-(--gold) lg:text-7xl lg:w-full md:flex'>
+          Piper & Nathen
+        </div>
+
+        <div className='flex w-full gap-3 items-center justify-center lg:pl-10 lg:justify-end'>
         <NavButton 
             href={'/'}
             onClick={() => setIsActive('registry')}
