@@ -1,7 +1,7 @@
 "use client";
 
 import { Menu } from 'lucide-react';
-import NavButton from '@/components/ui/nav-button';
+import NavButton from '@/components/nav-button';
 import { useSidebar } from "@/components/ui/sidebar"
 import { useState } from 'react';
 
