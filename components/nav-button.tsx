@@ -13,7 +13,7 @@ export default function NavButton ({
 
   return (
     <Link 
-      className={`px-3 py-4 text-xl border border-transparent text-center hover:border hover:border-(--burg) hover:border-b-(--gold) hover:text-(--gold) xl:text-3xl ${isActive ? 'text-(--gold) border-b border-b-(--gold)' : 'text-white'}` }
+      className={`px-3 py-2.5 text-xl border border-transparent text-center hover:border hover:border-(--burg) hover:border-b-(--gold) hover:text-(--gold) xl:text-3xl ${isActive ? 'text-(--gold) border-b border-b-(--gold)' : 'text-white'}` }
       {...props}
     >
       {children}

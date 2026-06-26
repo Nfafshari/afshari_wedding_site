@@ -5,7 +5,7 @@ export default function Footer () {
     <div className="h-20 w-full bg-[#240404] md:h-40">
       <div className="flex flex-col w-full h-full text-(--gold)/50 justify-center items-center">
         <p>© {new Date().getFullYear()} Nathen &amp; Piper. All rights reserved.</p>
-        <Link href={'/'} className="underline">
+        <Link href={'/dashboard'} className="underline">
           Dashboard
         </Link>
         <Link href={'/'} className="underline">

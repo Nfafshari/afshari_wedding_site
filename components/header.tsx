@@ -1,7 +1,7 @@
 "use client";
 
 import { Menu } from 'lucide-react';
-import NavButton from '@/components/ui/nav-button';
+import NavButton from '@/components/nav-button';
 import { useSidebar } from "@/components/ui/sidebar"
 import { useState } from 'react';
 
@@ -13,14 +13,14 @@ export default function Header () {
   const [isActive, setIsActive] = useState('/');
 
   return(
-    <header className="z-9999 w-screen h-26 flex items-center bg-(--burg) md:h-32 md:justify-center">
+    <header className="z-9999 w-screen h-20 flex items-center bg-(--burg) md:h-25 md:justify-center">
       {/* Mobile menu */}
       <nav className='pl-5 flex flex-row items-center md:hidden'>
         <Menu 
-          className='w-12 h-12 text-5xl text-(--gold) hover:bg-[#2004044b] p-2 rounded-full'
+          className='w-12 h-12 text-5xl text-white hover:bg-[#2004044b] p-2 rounded-full'
           onClick={toggleSidebar}
         />
-        <h1 className='text-5xl text-white font-pinyon pl-2 pt-2'>Piper & Nathen</h1>
+        <h1 className='script-title text-white text-5xl pl-2 pt-2'>Piper & Nathen</h1>
       </nav>
 
       {/* Desktop menu */}
@@ -49,7 +49,7 @@ export default function Header () {
           </NavButton>
         </div>
 
-        <div className='hidden font-pinyon text-4xl text-center justify-center items-center pr-4 text-(--gold) lg:text-7xl lg:w-full md:flex'>
+        <div className='script-title hidden justify-center items-center pr-4 md:flex lg:w-full'>
           Piper & Nathen
         </div>
 
