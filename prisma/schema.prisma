@@ -27,12 +27,19 @@ enum BudgetCategory {
   DECOR
   MUSIC
   RENTALS
+  OTHER
 }
 
 enum BudgetStatus {
   LOOKING
   CHOICE
   PURCHASED
+}
+
+enum TaskStatus {
+  AWAITING
+  IN_PROGRESS
+  COMPLETE
 }
 
 model Rsvp {
@@ -96,4 +103,13 @@ model BudgetOption {
   itemId        Int
 
   item          BudgetItem  @relation(fields: [itemId], references: [id])
+}
+
+model Task {
+  id          Int        @id @default(autoincrement())
+  name        String
+  createdAt   DateTime   @default(now())
+  goalDate    DateTime
+  icon        String?    @default("Astroid")
+  status      TaskStatus @default(AWAITING)
 }
