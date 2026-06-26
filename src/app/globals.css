@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ece7d3;
+  --background: #fcf7e2;
   --gold: #c5a253;
   --olivine: #9aab73;
   --burg: #44161f;
@@ -165,4 +165,45 @@
   html {
     @apply font-sans;
   }
+}
+
+/* ---------------------------------------------------------------
+   Reusable typography
+   Each is a real Tailwind utility (via @utility), so you can use it
+   on its own  ->  className="page-title"
+   or add inline utilities to override per use:
+                  className="page-title text-5xl text-(--olivine)"
+   The inline utility wins, because @utility classes sort in the
+   cascade alongside every other Tailwind utility.
+   --------------------------------------------------------------- */
+
+/* The couple's names, Pinyon script in gold. Scales up on wider screens. */
+@utility script-title {
+  @apply font-pinyon text-(--gold) text-center text-4xl lg:text-5xl xl:text-6xl;
+}
+
+/* Main heading of a page/section (e.g. the wedding date). */
+@utility page-title {
+  @apply font-serif text-(--burg) text-center text-4xl;
+}
+
+/* Supporting line beneath a page-title (e.g. "440 Days to I Do"). */
+@utility page-subtitle {
+  @apply font-serif text-(--burg)/50 text-center text-2xl;
+}
+
+/* Smaller section heading / label (e.g. "Checklist Progress"). */
+@utility section-title {
+  @apply font-serif font-bold text-(--burg)/70 text-lg;
+}
+
+/* Large emphasized number (e.g. RSVP counts). Override color per use.
+   One size smaller on mobile, full size from md up. */
+@utility stat-number {
+  @apply font-bold text-(--burg) text-5xl md:text-6xl;
+}
+
+/* Muted caption under a stat or field (e.g. "Invited", "Responded"). */
+@utility muted-caption {
+  @apply text-(--burg)/60 text-lg;
 }
