@@ -38,7 +38,6 @@ enum BudgetStatus {
 
 enum TaskStatus {
   AWAITING
-  IN_PROGRESS
   COMPLETE
 }
 
@@ -105,6 +104,14 @@ model BudgetOption {
   item          BudgetItem  @relation(fields: [itemId], references: [id])
 }
 
+model TaskCategory {
+  id          Int         @id @default(autoincrement())
+  name        String      @unique
+  order       Int         @default(0)
+  icon        String
+  tasks       Task[]
+}
+
 model Task {
   id          Int        @id @default(autoincrement())
   name        String
@@ -112,4 +119,7 @@ model Task {
   goalDate    DateTime
   icon        String?    @default("Astroid")
   status      TaskStatus @default(AWAITING)
+  categoryId  Int
+
+  category    TaskCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
 }

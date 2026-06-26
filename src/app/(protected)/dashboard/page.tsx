@@ -61,7 +61,7 @@ export default function Dashboard() {
                 return (
                   <Link 
                     className="grid grid-rows-3 w-full h-full justify-center items-center border border-gray-700/10 bg-(--olivine)/15 rounded-md text-(--burg)/65 cursor-pointer hover:shadow active:bg-(--olivine)/20"
-                    href={'/dashboard'}
+                    href={'/dashboard/checklist'}
                     key={idx}  
                   >
                     <p className="text-center">{taskName}</p>
@@ -84,7 +84,7 @@ export default function Dashboard() {
             <div className="w-1/2 h-full pt-2 m-1 grid grid-cols-3 gap-3 mt-1">
               <Link 
                 className="grid grid-rows-2 col-span-3 w-full h-full justify-center items-center border border-gray-700/10 bg-(--olivine)/15 rounded-md text-(--burg)/65 cursor-pointer hover:shadow active:bg-(--olivine)/20"
-                href={'/dashboard'}
+                href={'/dashboard/checklist'}
                 key={`${exampleUpNextTask[0].taskName}`}  
               >
                 <h1 className="page-subtitle row-span-2 text-(--burg) text-center">{exampleUpNextTask[0].taskName}</h1>
