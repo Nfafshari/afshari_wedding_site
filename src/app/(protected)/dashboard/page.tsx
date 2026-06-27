@@ -38,7 +38,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="flex flex-col w-full h-full items-center font-serif">
+    <div className="flex flex-col w-full items-center font-serif">
       <h1 className="page-title p-2 pb-0"> Sept. 11th 2027 </h1>
       <h2 className="page-subtitle p-2 pt-0"> {daysTilWedding} Days to "I Do" </h2>
       <div className="flex-col w-full h-auto">
