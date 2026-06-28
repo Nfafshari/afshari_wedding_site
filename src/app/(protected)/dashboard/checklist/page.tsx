@@ -9,7 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { CirclePlus } from "lucide-react";
+import { Circle, CirclePlus } from "lucide-react";
 
 /**
  * Calculates the number of days between the current day and the target date
@@ -51,65 +51,58 @@ export default function Checklist() {
         <hr className="flex w-full border border-(--gold) mt-3" />
       </div>
 
-      <div className="flex flex-col w-full h-auto mt-2 p-5 border border-blue-600">
-        <div className="flex flex-wrap w-full justify-center px-10 py-5 gap-2 border border-red-500">
+      <div className="flex flex-col w-full h-auto mt-2 py-2">
+        <div className="flex flex-wrap w-full justify-center px-5 py-2 gap-2 md:px-10">
           {exampleCategories.map((category, idx) => (
             <Button 
               variant={'outline'}
               key={idx}
-              className="border-(--olivine) text-(--olivine) hover:bg-(--olivine)/50 rounded-full hover:text-(--olivine) md:text-xl md:px-5 md:py-4"
+              className="border-(--olivine) rounded-full text-(--olivine) hover:bg-(--olivine) hover:text-background md:text-xl md:px-5 md:py-4"
             >
               {category}
             </Button>
           ))}
-
           <Button 
             variant={'outline'}
             key={'add-category'}
-            className="border-(--olivine) text-(--olivine) hover:bg-(--olivine)/50 hover:text-(--olivine) md:text-xl md:px-5 md:py-4"
+            className="border-(--olivine) rounded-full text-(--olivine) hover:bg-(--olivine) hover:text-background md:text-xl md:px-5 md:py-4"
           >
-            Add Category
-            <CirclePlus/>
+            All
           </Button>
         </div>
-        <div className="grid gap-3 w-full h-full border border-red-600 p-4">
+        <div className="grid gap-3 w-full h-full pt-5 md:grid-cols-2 lg:grid-cols-3">
           {exampleCategories.map((cat, idx) => {
             return (
-              <Card className="mx-auto w-full max-w-sm">
-                <CardHeader>
-                  <CardTitle>Terms of Service</CardTitle>
-                  <CardDescription>
-                    Review the terms before accepting the agreement.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent className="-mb-(--card-spacing)">
-                  <div className="-mx-(--card-spacing) max-h-48 space-y-4 overflow-y-scroll border-t bg-muted/50 px-(--card-spacing) py-4 text-sm leading-relaxed">
-                    <p>
-                      These terms govern your use of the workspace, including access to
-                      shared documents, project files, and collaboration tools.
-                    </p>
-                    <p>
-                      You are responsible for the content you upload and for ensuring that
-                      your team has the appropriate permissions to view or edit it.
-                    </p>
-                    <p>
-                      We may update features or limits as the service evolves. When those
-                      changes materially affect your workflow, we will notify your
-                      workspace administrators.
-                    </p>
-                    <p>
-                      By continuing, you agree to keep your account credentials secure and
-                      to follow your organization&apos;s acceptable use policies.
-                    </p>
+              <div className="grid grid-rows-3 mx-5 border border-(--olivine)/20 rounded-sm p-2">
+                <div className="p-2 flex items-center border-b border-b-(--gold)/50">
+                  <h1 className="page-title text-2xl">{cat}</h1>
+                  <h2 className="ml-auto page-subtitle">5/10</h2>
+                </div>
+                <div className="p-2 flex-col">
+                  <div className="flex py-2 w-full border-b border-b-(--gold)/50 text-(--burg)/70 items-center">
+                    <Circle className="mx-3 cursor-pointer w-5 h-5"/>
+                    <p>Task 1</p>
+                    <p className="text-(--burg)/30 ml-auto">Jan 1st, 2027</p>
                   </div>
-                </CardContent>
-                <CardFooter className="justify-end gap-2">
-                  <Button variant="outline">Decline</Button>
-                  <Button>Accept</Button>
-                </CardFooter>
-              </Card>
+                </div>
+                <div className="ml-5 px-1 flex items-center items-center">
+                  <Button
+                    variant={'ghost'}
+                    className="text-(--burg)/40 hover:bg-(--burg) hover:text-background"
+                  >
+                    Add Task
+                    <CirclePlus/>
+                  </Button>
+                </div>
+              </div>
             )
           })}
+          <div className="flex justify-center items-center mx-5 border border-(--olivine)/20 rounded-sm p-2 bg-(--olivine)/5 cursor-pointer hover:shadow-sm">
+            <div className="p-2 flex flex-col items-center justify-center text-center">
+              <CirclePlus className="w-10 h-10 text-(--burg)/50" />
+              <h2 className="page-subtitle">Add Category</h2>
+            </div>
+          </div>
         </div>
       </div>
     </div>
