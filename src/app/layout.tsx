@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pinyon_Script } from "next/font/google";
 
-import Header from "../../components/header";
+import Header from "@/components/header";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { NavSidebar } from "@/components/nav-sidebar";
 import Footer from "@/components/footer";

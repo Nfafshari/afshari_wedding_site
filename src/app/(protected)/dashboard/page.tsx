@@ -3,22 +3,7 @@ import Link from "next/link";
 
 import { Progress } from "@/components/ui/progress";
 import { Field, FieldLabel } from "@/components/ui/field"
-
-/**
- * Calculates the number of days between the current day and the target date
- * @param endDate - target date as a string in format "YYYY-MM-DD"
- * @returns difference of days
- */
-function getDaysRemaining (endDate: string) {
-  const today = new Date();
-  const ourDay = new Date(endDate);
-
-  // Get difference between times which is in ms
-  const timeInMs = ourDay.getTime() - today.getTime();
-
-  // Convert to days and return
-  return Math.ceil(timeInMs / (1000 * 60 * 60 * 24));
-}
+import { getDaysRemaining } from "@/lib/utils";
 
 export default function Dashboard() {
   // days until our wedding date
@@ -38,7 +23,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="flex flex-col w-full h-full items-center font-serif">
+    <div className="flex flex-col w-full items-center font-serif">
       <h1 className="page-title p-2 pb-0"> Sept. 11th 2027 </h1>
       <h2 className="page-subtitle p-2 pt-0"> {daysTilWedding} Days to "I Do" </h2>
       <div className="flex-col w-full h-auto">
@@ -61,7 +46,7 @@ export default function Dashboard() {
                 return (
                   <Link 
                     className="grid grid-rows-3 w-full h-full justify-center items-center border border-gray-700/10 bg-(--olivine)/15 rounded-md text-(--burg)/65 cursor-pointer hover:shadow active:bg-(--olivine)/20"
-                    href={'/dashboard'}
+                    href={'/dashboard/checklist'}
                     key={idx}  
                   >
                     <p className="text-center">{taskName}</p>
@@ -84,7 +69,7 @@ export default function Dashboard() {
             <div className="w-1/2 h-full pt-2 m-1 grid grid-cols-3 gap-3 mt-1">
               <Link 
                 className="grid grid-rows-2 col-span-3 w-full h-full justify-center items-center border border-gray-700/10 bg-(--olivine)/15 rounded-md text-(--burg)/65 cursor-pointer hover:shadow active:bg-(--olivine)/20"
-                href={'/dashboard'}
+                href={'/dashboard/checklist'}
                 key={`${exampleUpNextTask[0].taskName}`}  
               >
                 <h1 className="page-subtitle row-span-2 text-(--burg) text-center">{exampleUpNextTask[0].taskName}</h1>
