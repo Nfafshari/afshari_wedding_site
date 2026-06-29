@@ -36,11 +36,6 @@ enum BudgetStatus {
   PURCHASED
 }
 
-enum TaskStatus {
-  AWAITING
-  COMPLETE
-}
-
 model Rsvp {
   id              Int       @id @default(autoincrement())
   name            String
@@ -118,7 +113,7 @@ model Task {
   createdAt   DateTime   @default(now())
   goalDate    DateTime
   icon        String?    @default("Astroid")
-  status      TaskStatus @default(AWAITING)
+  status      Boolean    @default(false)
   categoryId  Int
 
   category    TaskCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)

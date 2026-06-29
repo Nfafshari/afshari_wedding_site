@@ -66,13 +66,15 @@ export default function Checklist() {
                 key={`${cat}-${idx}`}
                 className="flex flex-col mx-5 border border-(--olivine)/20 rounded-sm p-2"
               >
-                <div className="p-2 flex items-center border-b border-b-(--gold)/50">
+                <div className="p-2 flex items-center border-b border-b-(--burg)/50">
                   <h2 className="page-title text-2xl">{cat}</h2>
                   <h3 className="ml-auto page-subtitle">5/10</h3>
                 </div>
                 <div className="p-2 flex-col">
-                  <div className="flex py-2 w-full border-b border-b-(--gold)/50 text-(--burg)/70 items-center">
-                    <Circle className="mx-3 cursor-pointer w-5 h-5"/>
+                  <div className="flex py-2 w-full border-b border-b-(--burg)/50 text-(--burg)/70 items-center">
+                    <button>
+                      <Circle className="mx-3 cursor-pointer w-5 h-5"/>
+                    </button>
                     <p>Task 1</p>
                     <p className="text-(--burg)/30 ml-auto">Jan 1st, 2027</p>
                   </div>
@@ -90,10 +92,10 @@ export default function Checklist() {
             )
           })}
           <div className="flex justify-center items-center mx-5 border border-(--olivine)/20 rounded-sm p-2 bg-(--olivine)/5 cursor-pointer hover:shadow-sm">
-            <div className="p-2 flex flex-col items-center justify-center text-center">
+            <button className="p-2 flex flex-col items-center justify-center text-center">
               <CirclePlus className="w-10 h-10 text-(--burg)/50" />
               <h2 className="page-subtitle">Add Category</h2>
-            </div>
+            </button>
           </div>
         </div>
       </div>
