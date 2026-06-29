@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client"
-  output   = "../src/generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
@@ -103,7 +103,7 @@ model TaskCategory {
   id          Int         @id @default(autoincrement())
   name        String      @unique
   order       Int         @default(0)
-  icon        String
+  icon        String?    @default("Astroid")
   tasks       Task[]
 }
 
@@ -112,7 +112,6 @@ model Task {
   name        String
   createdAt   DateTime   @default(now())
   goalDate    DateTime
-  icon        String?    @default("Astroid")
   status      Boolean    @default(false)
   categoryId  Int
 

@@ -71,3 +71,13 @@ export type BudgetItem = Prisma.BudgetItemModel
  * 
  */
 export type BudgetOption = Prisma.BudgetOptionModel
+/**
+ * Model TaskCategory
+ * 
+ */
+export type TaskCategory = Prisma.TaskCategoryModel
+/**
+ * Model Task
+ * 
+ */
+export type Task = Prisma.TaskModel

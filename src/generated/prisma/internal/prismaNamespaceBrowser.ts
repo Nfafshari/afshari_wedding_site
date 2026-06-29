@@ -56,7 +56,9 @@ export const ModelName = {
   RegistryItem: 'RegistryItem',
   RegistryClaim: 'RegistryClaim',
   BudgetItem: 'BudgetItem',
-  BudgetOption: 'BudgetOption'
+  BudgetOption: 'BudgetOption',
+  TaskCategory: 'TaskCategory',
+  Task: 'Task'
 } as const
 
 export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -142,6 +144,28 @@ export const BudgetOptionScalarFieldEnum = {
 } as const
 
 export type BudgetOptionScalarFieldEnum = (typeof BudgetOptionScalarFieldEnum)[keyof typeof BudgetOptionScalarFieldEnum]
+
+
+export const TaskCategoryScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  order: 'order',
+  icon: 'icon'
+} as const
+
+export type TaskCategoryScalarFieldEnum = (typeof TaskCategoryScalarFieldEnum)[keyof typeof TaskCategoryScalarFieldEnum]
+
+
+export const TaskScalarFieldEnum = {
+  id: 'id',
+  name: 'name',
+  createdAt: 'createdAt',
+  goalDate: 'goalDate',
+  status: 'status',
+  categoryId: 'categoryId'
+} as const
+
+export type TaskScalarFieldEnum = (typeof TaskScalarFieldEnum)[keyof typeof TaskScalarFieldEnum]
 
 
 export const SortOrder = {

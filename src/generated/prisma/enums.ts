@@ -34,7 +34,8 @@ export const BudgetCategory = {
   PHOTOGRAPHERS: 'PHOTOGRAPHERS',
   DECOR: 'DECOR',
   MUSIC: 'MUSIC',
-  RENTALS: 'RENTALS'
+  RENTALS: 'RENTALS',
+  OTHER: 'OTHER'
 } as const
 
 export type BudgetCategory = (typeof BudgetCategory)[keyof typeof BudgetCategory]
