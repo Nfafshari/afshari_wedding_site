@@ -1,7 +1,8 @@
 import { prisma } from '@/lib/prisma';
+
 import Checklist from "./client";
 
-async function getCategories () {
+export async function getCategories () {
   const categories = prisma.taskCategory.findMany({
     include: { tasks: true },
     orderBy: { order: "asc" },
