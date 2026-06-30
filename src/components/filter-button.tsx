@@ -7,11 +7,7 @@ interface NavButtonProps extends React.ComponentProps<typeof Button> {
   isActive: boolean;
 }
 
-export default function FilterButton ({
-  children,
-  isActive,
-  ...props
-}: NavButtonProps) {
+export default function FilterButton ({ children, isActive, ...props}: NavButtonProps) {
   return (
     <Button 
       variant={'outline'}
