@@ -115,5 +115,5 @@ model Task {
   status      Boolean    @default(false)
   categoryId  Int
 
-  category    TaskCategory @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  category    TaskCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
