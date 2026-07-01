@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { CirclePlus, LucideIcon, SquarePen } from "lucide-react";
 import * as Lucide from "lucide-react"
 
@@ -34,10 +35,24 @@ export default function Checklist({
   categories
 }: ChecklistProps) {
   /** States */
-  const [activeTab, setActiveTab] = useState('All');
   const [activeDialog, setActiveDialog] = useState<DialogType>(DialogType.None);
   const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);
   const [activeTaskId, setActiveTaskId] = useState<number | null>(null);
+
+  // tab filtering using url parameters
+  const searchParams = useSearchParams();
+  const activeTab = searchParams.get('category') ?? 'All';
+  const pathname = usePathname();
+  const router = useRouter();
+
+  // Build a URL for the current path with the query string mutated by `update`.
+  // Starts from the current params so any other query values are preserved.
+  function buildHref (update: (params: URLSearchParams) => void) {
+    const params = new URLSearchParams(searchParams);
+    update(params);
+    const query = params.toString();
+    return query ? `${pathname}?${query}` : pathname;
+  }
 
   const WEDDING_DATE = '2027-09-11';
   const daysToWedding = getDaysRemaining(WEDDING_DATE);
@@ -112,7 +127,7 @@ export default function Checklist({
                 isActive={category.name === activeTab}
                 key={`${category.name}-${idx}`}
                 onClick={() => {
-                  setActiveTab(category.name)
+                  router.replace(buildHref((params) => params.set('category', category.name)));
                 }}
               >
                 {category.name}
@@ -122,7 +137,7 @@ export default function Checklist({
               isActive={activeTab === 'All'}
               key={'all'}
               onClick={() => {
-                setActiveTab('All')
+                router.replace(buildHref((params) => params.delete('category')));
               }}
             >
               All
