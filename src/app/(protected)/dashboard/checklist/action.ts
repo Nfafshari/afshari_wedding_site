@@ -204,3 +204,33 @@ export async function createTask (taskName: string, date: Date | undefined, cate
   revalidatePath('/dashboard/checklist');
   return { ok: true };
 }
+
+/**
+ * Marks a task as done and saves it to the DB
+ * @param taskId - name of task
+ * @returns an error response whether the action completed or not see: {@link ActionResult}
+ */
+export async function toggleTaskStatus (taskId: number | undefined, status: boolean): Promise<ActionResult> {
+  // Validate on the server
+  if (taskId === undefined) {
+    return { ok: false, error: 'Task not selected.', field: 'name' };
+  }
+
+  // Try to update
+  try {
+    await prisma.task.update({
+      where: { id: taskId },
+      data: {
+        status: status,
+      }
+    });
+  } catch (error) {
+    // Any unexpected results, log it and show a generic message to the user.
+    console.error(`*ERROR - error marking task as done, see below:\n${error}`);
+    return { ok: false, error: 'Something went wrong. Please try again.' };
+  }
+
+  // refresh the page data after a successful write
+  revalidatePath('/dashboard/checklist');
+  return { ok: true };
+}
