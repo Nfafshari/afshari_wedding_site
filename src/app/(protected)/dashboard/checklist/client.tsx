@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Circle, CirclePlus, LucideIcon, SquarePen, Trash2 } from "lucide-react";
+import { CirclePlus, LucideIcon, SquarePen } from "lucide-react";
 import * as Lucide from "lucide-react"
 
 import { Field, FieldLabel } from "@/components/ui/field";
@@ -11,11 +11,12 @@ import FilterButton from "@/components/filter-button";
 import { AlertDialog } from "@/components/ui/alert-dialog"
 import AddCategoryDialog from "@/components/checklist-dialogs/add-category-dialog";
 import AddTaskDialog from "@/components/checklist-dialogs/add-task-dialog";
+import EditCategoryDialog from "@/components/checklist-dialogs/edit-category-dialog";
+import RemoveTaskDialog from "@/components/checklist-dialogs/remove-task-dialog";
 
 import { getDaysRemaining } from "@/lib/utils";
 import { CategoryWithTasks } from "./page";
-import EditCategoryDialog from "@/components/checklist-dialogs/edit-category-dialog";
-import RemoveTaskDialog from "@/components/checklist-dialogs/remove-task-dialog";
+import Task from "@/components/task";
 
 interface ChecklistProps {
   categories: CategoryWithTasks[]
@@ -40,20 +41,38 @@ export default function Checklist({
 
   const WEDDING_DATE = '2027-09-11';
   const daysToWedding = getDaysRemaining(WEDDING_DATE);
-  const dateOptions = {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  } as const;
 
   // filter array or set to all
-  const filteredCategories = activeTab === 'All' ? categories : categories.filter((cat) => cat.name === activeTab);
+  const filteredCategories = activeTab === 'All' ? categories : categories.filter((category) => category.name === activeTab);
+
+  // get total number of tasks across all categories
+  let totalTasks = 0;
+  for (let i = 0; i < categories.length; i++) {
+    totalTasks += categories[i].tasks.length;
+  }
+
+  // get total number of tasks done across all categories
+  let totalTasksDone = 0;
+  for (let i = 0; i < categories.length; i++) {
+    for(let j = 0; j < categories[i].tasks.length; j++) {
+      if (categories[i].tasks[j].status) {
+        totalTasksDone += 1;
+      }
+    }
+  }
+
+  const progress = totalTasks === 0 ? 0 : ((totalTasksDone / totalTasks) * 100).toFixed(1);
 
   // Close any open dialog. Each dialog owns its own form state, so unmounting it resets that state.
   function closeDialog () {
     setActiveDialog(DialogType.None);
     setActiveCategoryId(null);
     setActiveTaskId(null);
+  }
+
+  function onTaskDelete (taskId: number) {
+    setActiveDialog(DialogType.Delete);
+    setActiveTaskId(taskId);
   }
 
   return (
@@ -71,15 +90,15 @@ export default function Checklist({
         <div className="w-full">
           <div className="flex w-full">
             <h1 className="page-title font-bold text-start">Checklist</h1>
-            <h2 className="page-subtitle ml-auto">5 of 10 done</h2>
+            <h2 className="page-subtitle ml-auto">{totalTasksDone} of {totalTasks} done</h2>
           </div>
           <Field className="w-full">
             <FieldLabel htmlFor="task-progress" className="text-(--burg)/70 font-bold">
-              <span className="ml-auto">50% | {daysToWedding} Days Remaining</span>
+              <span className="ml-auto">{progress}% | {daysToWedding} Days Remaining</span>
             </FieldLabel>
             <Progress
               id="task-progress"
-              value={50}
+              value={Number(progress)}
             />
           </Field>
           <hr className="flex w-full border border-(--gold) mt-3" />
@@ -114,6 +133,14 @@ export default function Checklist({
           <div className="grid gap-3 w-full h-full pt-5 md:grid-cols-2 lg:grid-cols-3">
             {filteredCategories.map((category, idx) => {
               const CategoryIcon = (Lucide[category.icon as keyof typeof Lucide] ?? Lucide.Astroid) as LucideIcon;
+              
+              // calculate the number of tasks that are done in this category
+              let numOfTasksDone = 0;
+              for (let i = 0; i < category.tasks.length; i++) {
+                if (category.tasks[i].status) {
+                  numOfTasksDone += 1;
+                }
+              }
 
               return (
                 <div
@@ -123,32 +150,19 @@ export default function Checklist({
                   <div className="p-2 flex items-center border-b border-b-(--burg)/50">
                     <CategoryIcon className="mr-2" />
                     <h2 className="page-title text-2xl">{category.name}</h2>
-                    <h3 className="ml-auto page-subtitle">5/10</h3>
+                    <h3 className="ml-auto page-subtitle">{numOfTasksDone}/{category.tasks.length}</h3>
                   </div>
 
                   {/** Tasks */}
                   <div className="p-2 flex-col">
                     {category.tasks.map((task, idx) => (
-                      <div
-                        className="flex py-2 w-full border-b border-b-(--burg)/50 text-(--burg)/70 items-center"
-                        key={`${task.name}-${idx}`}
-                      >
-                        <button>
-                          <Circle className="mx-3 cursor-pointer w-5 h-5"/>
-                        </button>
-                        <p>{task.name}</p>
-                        <p className="text-(--burg)/30 ml-auto">{task.goalDate.toLocaleDateString('en-US', dateOptions)}</p>
-                        <Button
-                          variant={'ghost'}
-                          className="text-(--gold)/40  ml-1 p-1 hover:bg-red-500 hover:text-background"
-                          onClick={() => {
-                            setActiveDialog(DialogType.Delete);
-                            setActiveTaskId(task.id);
-                          }}
-                        >
-                          <Trash2 />
-                        </Button>
-                      </div>
+                      <Task
+                        key={task.id}
+                        task={task}
+                        onDelete={() => {
+                          onTaskDelete(task.id)
+                        }}
+                      />
                     ))}
                   </div>
                   <div className="ml-1 px-1 flex items-center">
@@ -210,14 +224,14 @@ export default function Checklist({
       {activeDialog === DialogType.Edit && (
         <EditCategoryDialog 
           categories={categories}
-          categoryToUpdate={categories.find((cat) => cat.id === activeCategoryId)}
+          categoryToUpdate={categories.find((category) => category.id === activeCategoryId)}
           onSuccess={closeDialog}
         />
       )}
 
       {activeDialog === DialogType.Delete && (
         <RemoveTaskDialog
-          taskToRemove={categories.flatMap((cat) => cat.tasks).find((task) => task.id === activeTaskId)}
+          taskToRemove={categories.flatMap((category) => category.tasks).find((task) => task.id === activeTaskId)}
           onSuccess={closeDialog}
         />
       )}

@@ -4,8 +4,12 @@ import Checklist from "./client";
 
 export async function getCategories () {
   const categories = prisma.taskCategory.findMany({
-    include: { tasks: true },
-    orderBy: { order: "asc" },
+    include: { 
+      tasks: {
+        orderBy: { goalDate: "asc" }
+      },
+     },
+    orderBy: { order: "asc" }
   });
 
   return categories;
