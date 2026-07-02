@@ -11,7 +11,7 @@ export default function FilterButton ({ children, isActive, ...props}: NavButton
   return (
     <Button 
       variant={'outline'}
-      className={`border-(--olivine) rounded-full text-(--olivine) hover:bg-(--olivine) hover:text-background md:text-xl md:px-5 md:py-4 ${isActive ? 'bg-(--burg) border-(--burg) text-background' : 'bg-background'}`}
+      className={`border-olivine rounded-full text-olivine hover:bg-olivine hover:text-background md:text-xl md:px-5 md:py-4 ${isActive ? 'bg-burg border-burg text-background' : 'bg-background'}`}
       {...props}
     >
       {children}
