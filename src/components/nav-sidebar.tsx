@@ -33,7 +33,7 @@ export function NavSidebar() {
 
   return (
     <Sidebar side="left" variant="sidebar" collapsible="offcanvas">
-      <SidebarHeader className="text-5xl border-b-3 border-(--burg) bg-background">
+      <SidebarHeader className="text-5xl border-b-3 border-burg">
         Menu
       </SidebarHeader>
       <SidebarContent>
@@ -44,7 +44,7 @@ export function NavSidebar() {
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton
                     asChild
-                    className="text-3xl border-b-3 border-(--burg) py-5"
+                    className="text-3xl border-b-3 border-burg py-5"
                   >
                     <Link 
                       href={item.href} 

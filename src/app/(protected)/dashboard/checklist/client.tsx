@@ -108,7 +108,7 @@ export default function Checklist({
             <h2 className="page-subtitle ml-auto">{totalTasksDone} of {totalTasks} done</h2>
           </div>
           <Field className="w-full">
-            <FieldLabel htmlFor="task-progress" className="text-(--burg)/70 font-bold">
+            <FieldLabel htmlFor="task-progress" className="text-burg/70 font-bold">
               <span className="ml-auto">{progress}% | {daysToWedding} Days Remaining</span>
             </FieldLabel>
             <Progress
@@ -116,7 +116,7 @@ export default function Checklist({
               value={Number(progress)}
             />
           </Field>
-          <hr className="flex w-full border border-(--gold) mt-3" />
+          <hr className="flex w-full border border-gold mt-3" />
         </div>
 
         {/** Filter buttons */}
@@ -160,9 +160,9 @@ export default function Checklist({
               return (
                 <div
                   key={`${category.name}-${idx}`}
-                  className="flex flex-col mx-5 p-2 rounded-sm border border-(--olivine)/20 "
+                  className="flex flex-col mx-5 p-2 rounded-sm border border-olivine/20 "
                 >
-                  <div className="p-2 flex items-center border-b border-b-(--burg)/50">
+                  <div className="p-2 flex items-center border-b border-b-burg/50">
                     <CategoryIcon className="mr-2" />
                     <h2 className="page-title text-2xl">{category.name}</h2>
                     <h3 className="ml-auto page-subtitle">{numOfTasksDone}/{category.tasks.length}</h3>
@@ -183,7 +183,7 @@ export default function Checklist({
                   <div className="ml-1 px-1 flex items-center">
                     <Button
                       variant={'ghost'}
-                      className="text-(--burg)/40 hover:bg-(--burg) hover:text-background"
+                      className="text-burg/40 hover:bg-burg hover:text-background"
                       onClick={() => {
                         setActiveDialog(DialogType.Task);
                         setActiveCategoryId(category.id);
@@ -195,7 +195,7 @@ export default function Checklist({
                   </div>
                   <Button
                     variant={'ghost'}
-                    className=" ml-auto mt-auto text-(--gold)/40 hover:bg-(--olivine) hover:text-background"
+                    className=" ml-auto mt-auto text-gold/40 hover:bg-olivine hover:text-background"
                     onClick={() => {
                       setActiveDialog(DialogType.Edit);
                       setActiveCategoryId(category.id);
@@ -207,7 +207,7 @@ export default function Checklist({
               )
             })}
             <button
-              className="flex justify-center items-center mx-5 border border-(--olivine)/20 rounded-sm p-2 bg-(--olivine)/5 cursor-pointer text-(--burg)/50 hover:text-(--burg) hover:shadow-sm"
+              className="flex justify-center items-center mx-5 border border-olivine/20 rounded-sm p-2 bg-olivine/5 cursor-pointer text-burg/50 hover:text-burg hover:shadow-sm"
               onClick={() => {
                 setActiveDialog(DialogType.Category)
               }}

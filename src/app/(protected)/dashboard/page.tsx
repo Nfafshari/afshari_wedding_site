@@ -29,7 +29,7 @@ export default function Dashboard() {
       <div className="flex-col w-full h-auto">
         <div className="flex flex-col items-center w-full h-full pt-2 font-serif">
           <Field className="w-2/3">
-            <FieldLabel htmlFor="task-progress" className="text-(--burg)/70 font-bold">
+            <FieldLabel htmlFor="task-progress" className="text-burg/70 font-bold">
               <span className="section-title">Checklist Progress</span>
               <span className="ml-auto">50%</span>
             </FieldLabel>
@@ -45,14 +45,14 @@ export default function Dashboard() {
                 const Icon = icon;
                 return (
                   <Link 
-                    className="grid grid-rows-3 w-full h-full justify-center items-center border border-gray-700/10 bg-(--olivine)/15 rounded-md text-(--burg)/65 cursor-pointer hover:shadow active:bg-(--olivine)/20"
+                    className="grid grid-rows-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/65 cursor-pointer hover:shadow active:bg-olivine/20"
                     href={'/dashboard/checklist'}
                     key={idx}  
                   >
                     <p className="text-center">{taskName}</p>
                     <div className="flex w-full h-auto justify-center items-center">
                       <Icon
-                        className="w-10 h-10 text-(--gold)"
+                        className="w-10 h-10 text-gold"
                         strokeWidth={1}
                       />
                     </div>
@@ -62,48 +62,48 @@ export default function Dashboard() {
               })}
             </div>
             <div className="flex items-center">
-              <CircleArrowRight className="text-gray-700/30 cursor-pointer hover:text-gray-700/50"/>
+              <CircleArrowRight className="text-burg/30 cursor-pointer hover:text-burg/50"/>
             </div>
           </div>
           <div className="flex w-full h-full justify-center items-center md:hidden">
             <div className="w-1/2 h-full pt-2 m-1 grid grid-cols-3 gap-3 mt-1">
               <Link 
-                className="grid grid-rows-2 col-span-3 w-full h-full justify-center items-center border border-gray-700/10 bg-(--olivine)/15 rounded-md text-(--burg)/65 cursor-pointer hover:shadow active:bg-(--olivine)/20"
+                className="grid grid-rows-2 col-span-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/65 cursor-pointer hover:shadow active:bg-olivine/20"
                 href={'/dashboard/checklist'}
                 key={`${exampleUpNextTask[0].taskName}`}  
               >
-                <h1 className="page-subtitle row-span-2 text-(--burg) text-center">{exampleUpNextTask[0].taskName}</h1>
+                <h1 className="page-subtitle row-span-2 text-burg text-center">{exampleUpNextTask[0].taskName}</h1>
                 <p className="text-center pb-2">{exampleUpNextTask[0].goalDate.toLocaleDateString()}</p>
               </Link>
             </div>
             <div className="flex items-center">
-              <CircleArrowRight className="text-gray-700/30 cursor-pointer hover:text-gray-700/50"/>
+              <CircleArrowRight className="text-burg/30 cursor-pointer hover:text-burg/50"/>
             </div>
           </div>
         </div>
       </div>
 
-      <div className="flex flex-col w-full h-1/4 justify-center px-10 py-5 text-(--burg) md:px-20">
+      <div className="flex flex-col w-full h-1/4 justify-center px-10 py-5 text-burg md:px-20">
         RSVPs
         <Link 
           href={'/dashboard'}
-          className="w-full h-full border-2 border-s-0 border-e-0 border-(--gold)/50 hover:shadow cursor-pointer"
+          className="w-full h-full border-2 border-s-0 border-e-0 border-gold/50 hover:shadow cursor-pointer"
         >
           <div className="grid grid-cols-2 h-full md:grid-cols-4">
-            <div className="hidden flex-col w-full h-auto border-e-2 border-e-(--gold)/50 justify-center pl-5 md:flex">
+            <div className="hidden flex-col w-full h-auto border-e-2 border-e-gold/50 justify-center pl-5 md:flex">
               <p className="stat-number">150</p>
               <p className="muted-caption pt-2">Invited</p>
             </div>
-            <div className="hidden flex-col w-full h-auto justify-center pl-5 md:border-e-2 md:border-e-(--gold)/50 md:flex">
+            <div className="hidden flex-col w-full h-auto justify-center pl-5 md:border-e-2 md:border-e-gold/50 md:flex">
               <p className="stat-number">90</p>
               <p className="muted-caption pt-2">Responded</p>
             </div>
             <div className="flex flex-col w-full h-auto justify-center pl-5">
-              <p className="stat-number text-(--olivine)">72</p>
+              <p className="stat-number text-olivine">72</p>
               <p className="muted-caption pt-2">Accepted</p>
             </div>
-            <div className="flex flex-col w-full h-auto border-s-2 border-s-(--gold)/50 justify-center pl-5">
-              <p className="stat-number text-red-800/90">18</p>
+            <div className="flex flex-col w-full h-auto border-s-2 border-s-gold/50 justify-center pl-5">
+              <p className="stat-number text-destructive">18</p>
               <p className="muted-caption pt-2">Rejected</p>
             </div>
           </div>
@@ -116,17 +116,17 @@ export default function Dashboard() {
             const Icon = icon;
             return (
               <Link 
-                className="grid grid-rows-4 w-full h-full border border-gray-600/8 rounded-lg bg-(--olivine)/10 cursor-pointer hover:shadow active:bg-(--olivine)/15"
+                className="grid grid-rows-4 w-full h-full border border-burg/8 rounded-lg bg-olivine/10 cursor-pointer hover:shadow active:bg-olivine/15"
                 href={link}
                 key={`tab-${idx}`}
               >
                 <div className="row-span-2 flex justify-center items-end">
                   <Icon 
-                    className="w-1/2 h-1/2 text-(--gold)" 
+                    className="w-1/2 h-1/2 text-gold" 
                     strokeWidth={1}
                   />
                 </div>
-                <div className="flex w-full h-full justify-center items-center text-center text-(--burg) text-lg xl:text-2xl">
+                <div className="flex w-full h-full justify-center items-center text-center text-burg text-lg xl:text-2xl">
                   {tabName}
                 </div>
               </Link>

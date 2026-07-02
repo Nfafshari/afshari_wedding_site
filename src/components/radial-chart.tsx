@@ -24,7 +24,7 @@ const chartConfig = {
   },
   safari: {
     label: "Safari",
-    color: "#000000",
+    color: "var(--foreground)",
   },
 } satisfies ChartConfig
 
@@ -45,7 +45,7 @@ export default function RadialChart() {
           gridType="circle"
           radialLines={false}
           stroke="none"
-          className="first:fill-gray-600/10 last:fill-background"
+          className="first:fill-olivine/15 last:fill-background"
           polarRadius={[55, 45]}
         />
         <RadialBar dataKey="visitors" background cornerRadius={2} />
@@ -63,14 +63,14 @@ export default function RadialChart() {
                     <tspan
                       x={viewBox.cx}
                       y={viewBox.cy - 5}
-                      className="fill-(--burg) text-xl font-bold"
+                      className="fill-burg text-xl font-bold"
                     >
                       {chartData[0].visitors.toLocaleString()} of 10
                     </tspan>
                     <tspan
                       x={viewBox.cx}
                       y={(viewBox.cy || 0) + 15}
-                      className="fill-(--burg)/70"
+                      className="fill-burg/70"
                     >
                       Tasks Done
                     </tspan>

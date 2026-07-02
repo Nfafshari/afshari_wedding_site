@@ -25,7 +25,7 @@ export default function Task ({ task, onDelete }: TaskProps) {
   }
 
   return(
-    <div className={`flex py-2 w-full border-b border-b-(--burg)/50 items-center ${task?.status ? 'text-(--burg)/40' : 'text-(--burg)/70'}`}>
+    <div className={`flex py-2 w-full border-b border-b-burg/50 items-center ${task?.status ? 'text-burg/40' : 'text-burg/70'}`}>
       <button
         onClick={() => {
           toggleTaskDone(!task?.status);
@@ -34,10 +34,10 @@ export default function Task ({ task, onDelete }: TaskProps) {
         {task?.status ? <CircleCheck className="mx-3 cursor-pointer w-5 h-5"/> : <Circle className="mx-3 cursor-pointer w-5 h-5"/>}
       </button>
       <p className={`${task?.status ? 'line-through' : ''}`}>{task?.name}</p>
-      <p className={`text-(--burg)/30 ml-auto ${task?.status ? 'line-through' : ''}`}>{task?.goalDate.toLocaleDateString('en-US', dateOptions)}</p>
+      <p className={`text-burg/30 ml-auto ${task?.status ? 'line-through' : ''}`}>{task?.goalDate.toLocaleDateString('en-US', dateOptions)}</p>
       <Button
         variant={'ghost'}
-        className="text-(--gold)/40  ml-1 p-1 hover:bg-red-500 hover:text-background"
+        className="text-gold/40  ml-1 p-1 hover:bg-destructive hover:text-background"
         onClick={() => {
           onDelete()
         }}

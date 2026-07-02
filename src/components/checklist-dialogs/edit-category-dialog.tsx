@@ -97,16 +97,16 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
 
   if (!isDeleteCategoryActive) {
     return (
-      <AlertDialogContent id="add-category-dialog" className="bg-white rounded-sm">
+      <AlertDialogContent id="add-category-dialog" className="bg-popover rounded-sm">
         <AlertDialogHeader>
-          <AlertDialogTitle className="page-title border-b border-b-(--burg) w-full">Edit <span className="font-bold">{categoryToUpdate?.name}</span>?</AlertDialogTitle>
-          <Field className="flex w-full text-(--burg)">
+          <AlertDialogTitle className="page-title border-b border-b-burg w-full">Edit <span className="font-bold">{categoryToUpdate?.name}</span>?</AlertDialogTitle>
+          <Field className="flex w-full text-burg">
             <FieldLabel htmlFor="category-name">New Category Name</FieldLabel>
             <Input
               id="category-name"
               type="text"
               placeholder={categoryToUpdate?.name}
-              className={`bg-white text-(--burg) rounded-sm placeholder:text-gray-500 ${(isEmptyInput || !isUniqueCategory || serverErrorField === 'name') ? 'border-red-600' : 'border-gray-200'}`}
+              className={`bg-popover text-burg rounded-sm placeholder:text-muted-foreground ${(isEmptyInput || !isUniqueCategory || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
               onChange={(e) => {
                 setNewCategoryName(e.target.value);
                 // Typing clears any previous error so the user gets a fresh start.
@@ -118,11 +118,11 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
                 setServerErrorField(null);
               }}
             />
-            {isEmptyInput && <p className="text-red-600/50 text-xs">Category name cannot be empty</p>}
-            {!isUniqueCategory && <p className="text-red-600/50 text-xs">Category already exists!</p>}
-            {serverError && <p className="text-red-600/50 text-xs">{serverError}</p>}
+            {isEmptyInput && <p className="text-destructive/80 text-xs">Category name cannot be empty</p>}
+            {!isUniqueCategory && <p className="text-destructive/80 text-xs">Category already exists!</p>}
+            {serverError && <p className="text-destructive/80 text-xs">{serverError}</p>}
           </Field>
-          <div className="flex flex-col w-full items-start overflow-y overflow-y-scroll mt-2 text-(--burg)">
+          <div className="flex flex-col w-full items-start overflow-y overflow-y-scroll mt-2 text-burg">
             Icon:
             <div className="grid grid-cols-3 grid-rows-3 gap-1 w-full">
               {ICON_LIBRARY.map((icon, idx) => {
@@ -130,7 +130,7 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
                 return (
                   <Button
                     variant={'outline'}
-                    className={`bg-white border-(--olivine) text-(--olivine) hover:bg-(--olivine) hover:text-background ${newIcon === icon.displayName ? 'bg-(--olivine) text-background' : 'bg-white'}`}
+                    className={`bg-popover border-olivine text-olivine hover:bg-olivine hover:text-background ${newIcon === icon.displayName ? 'bg-olivine text-background' : 'bg-popover'}`}
                     key={idx}
                     onClick={() => {
                       setNewIcon(icon.displayName ?? '')
@@ -144,7 +144,7 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
           </div>
           <Button
             variant={'destructive'}
-            className={`w-full mt-4 border border-red-600 hover:bg-red-600 hover:text-white`}
+            className={`w-full mt-4 border border-destructive hover:bg-destructive hover:text-white`}
             onClick={() => {
               setIsDeleteCategoryActive(true)
             }}
@@ -152,12 +152,12 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
             Delete {categoryToUpdate?.name}?
           </Button>
         </AlertDialogHeader>
-        <AlertDialogFooter className="bg-gray-50 rounded-sm rounded-t-none">
-          <AlertDialogCancel className="bg-gray-50 border-yellow-600/50 text-(--gold) hover:bg-yellow-600/50 hover:text-black">
+        <AlertDialogFooter className="bg-background rounded-sm rounded-t-none">
+          <AlertDialogCancel variant={'secondary'} className="hover:bg-gold/90">
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            className={isLoading ? 'bg-red-950/30' : 'bg-red-950/95 text-white hover:bg-red-900'}
+            className={isLoading ? 'bg-primary/30' : 'bg-primary text-primary-foreground hover:bg-primary/90'}
             onClick={editCategory}
           >
             {isLoading ? <Spinner /> : 'Confirm'}
@@ -167,17 +167,18 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
     );
   } else {
     return (
-      <AlertDialogContent id="add-category-dialog" className="bg-white rounded-sm">
+      <AlertDialogContent id="add-category-dialog" className="bg-popover rounded-sm">
         <AlertDialogHeader>
-          <AlertDialogTitle className="page-title border-b border-b-(--burg) w-full text-red-600">Delete <span className="font-bold">{categoryToUpdate?.name}</span>?</AlertDialogTitle>
-          <AlertDialogDescription className="text-red-600">
+          <AlertDialogTitle className="page-title border-b border-b-burg w-full text-destructive">Delete <span className="font-bold">{categoryToUpdate?.name}</span>?</AlertDialogTitle>
+          <AlertDialogDescription className="text-destructive">
             You are about to delete {categoryToUpdate?.name}, this will delete the category as well as all tasks within the category. Do you wish to continue?
           </AlertDialogDescription>
-          {serverError && <p className="text-red-600/50 text-xs">{serverError}</p>}
+          {serverError && <p className="text-destructive/80 text-xs">{serverError}</p>}
         </AlertDialogHeader>
-        <AlertDialogFooter className="bg-gray-50 rounded-sm rounded-t-none">
+        <AlertDialogFooter className="bg-background rounded-sm rounded-t-none">
           <AlertDialogCancel
-            className="bg-gray-50 border-yellow-600/50 text-(--gold) hover:bg-yellow-600/50 hover:text-black"
+            variant={'secondary'} 
+            className="hover:bg-gold/90"
             onClick={(e) => {
               setIsDeleteCategoryActive(false)
               e.preventDefault();
@@ -186,7 +187,7 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            className={isLoading ? 'bg-red-950/30' : 'bg-red-950/95 text-white hover:bg-red-900'}
+            className={isLoading ? 'bg-destructive/30!' : 'bg-destructive! text-white hover:bg-destructive/80!'}
             onClick={removeCategory}
           >
             {isLoading ? <Spinner /> : 'Confirm'}

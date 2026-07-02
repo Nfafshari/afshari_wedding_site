@@ -46,22 +46,22 @@ export default function RemoveTaskDialog({ taskToRemove, onSuccess }: RemoveTask
   }
 
   return (
-    <AlertDialogContent id="remove-task-dialog" className="bg-white rounded-sm">
+    <AlertDialogContent id="remove-task-dialog" className="bg-popover rounded-sm">
       <AlertDialogHeader>
-        <AlertDialogTitle className="page-title border-b border-b-(--burg) w-full text-red-600">
+        <AlertDialogTitle className="page-title border-b border-b-burg w-full text-destructive">
           Delete <span className="font-bold">{taskToRemove?.name}</span>?
         </AlertDialogTitle>
-        <AlertDialogDescription className="text-red-600">
+        <AlertDialogDescription className="text-destructive">
           You are about to delete {taskToRemove?.name}. This cannot be undone. Do you wish to continue?
         </AlertDialogDescription>
-        {serverError && <p className="text-red-600/50 text-xs">{serverError}</p>}
+        {serverError && <p className="text-destructive/80 text-xs">{serverError}</p>}
       </AlertDialogHeader>
-      <AlertDialogFooter className="bg-gray-50 rounded-sm rounded-t-none">
-        <AlertDialogCancel className="bg-gray-50 border-yellow-600/50 text-(--gold) hover:bg-yellow-600/50 hover:text-black">
+      <AlertDialogFooter className="bg-background rounded-sm rounded-t-none">
+        <AlertDialogCancel variant={'secondary'} className="hover:bg-gold/90">
           Cancel
         </AlertDialogCancel>
         <AlertDialogAction
-          className={isLoading ? 'bg-red-950/30' : 'bg-red-950/95 text-white hover:bg-red-900'}
+          className={isLoading ? 'bg-destructive/30!' : 'bg-destructive! text-white hover:bg-destructive/90!'}
           onClick={removeTask}
         >
           {isLoading ? <Spinner /> : 'Confirm'}

@@ -5,47 +5,47 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #fffbeb;
-  --gold: #c5a253;
-  --olivine: #9aab73;
-  --burg: #44161f;
-  --chart-bg: #4a55656b;
+  --gold: oklch(0.7278 0.1063 85.69);
+  --olivine: oklch(0.7139 0.0792 122.14);
 
-  --foreground: oklch(0.145 0 0);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --background: oklch(0.9869 0.0214 95.28);
+  --foreground: oklch(0.276 0.0713 11.1);
+  --card: oklch(0.684 0.0467 122.14 / 20%);
+  --card-foreground: oklch(0.276 0.073 11.1);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
-  --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.556 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --popover-foreground: oklch(0.276 0.059 11.1);
+  --primary: oklch(0.276 0.059 11.1);
+  --primary-foreground: oklch(0.9869 0.0214 95.28);
+  --secondary: oklch(0.7278 0.1063 85.69);
+  --secondary-foreground: oklch(18.686% 0.03479 8.24);
+  --muted: oklch(81.29% 0.02652 94.812);
+  --muted-foreground: oklch(30.251% 0.07073 7.321 / 0.705);
+  --accent: oklch(62.97% 0.10207 85.421 / 0.493);
+  --accent-foreground: oklch(30.251% 0.07073 7.321 / 0.705);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
+  --border: oklch(0.684 0.0467 122.14 / 25%);
+  --input: oklch(0.684 0.0467 122.14 / 25%);
+  --ring: oklch(68.49% 0.04704 123.111 / 0.603);
   --chart-1: oklch(0.87 0 0);
   --chart-2: oklch(0.556 0 0);
   --chart-3: oklch(0.439 0 0);
   --chart-4: oklch(0.371 0 0);
   --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
+  --radius: 0.425rem;
 
-  --sidebar: #ece7d3;
-  --sidebar-foreground: #44161f;
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --sidebar: oklch(90.27% 0.01634 95.273);
+  --sidebar-foreground: oklch(0.276 0.0713 11.1);
+  --sidebar-accent: oklch(0.7278 0.1063 85.69);
+  --sidebar-accent-foreground: oklch(0.276 0.0713 11.1);
+  --sidebar-border: oklch(0.8442 0.0489 122.14);
+  --sidebar-ring: oklch(0.7278 0.1063 85.69 / 75%);
 }
 
 @theme inline {
+  --color-gold: var(--gold);
+  --color-olivine: var(--olivine);
+  --color-burg: var(--foreground);
+  --color-cream: var(--background);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-sans);
@@ -90,45 +90,6 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-.dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-
-  --ring: oklch(0.556 0 0);
-
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-}
-
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -146,38 +107,38 @@
    Each is a real Tailwind utility (via @utility), so you can use it
    on its own  ->  className="page-title"
    or add inline utilities to override per use:
-                  className="page-title text-5xl text-(--olivine)"
+                  className="page-title text-5xl text-olivine"
    The inline utility wins, because @utility classes sort in the
    cascade alongside every other Tailwind utility.
    --------------------------------------------------------------- */
 
 /* The couple's names, Pinyon script in gold. Scales up on wider screens. */
 @utility script-title {
-  @apply font-pinyon text-(--gold) text-center text-4xl lg:text-5xl xl:text-6xl;
+  @apply font-pinyon text-gold text-center text-4xl lg:text-5xl xl:text-6xl;
 }
 
 /* Main heading of a page/section (e.g. the wedding date). */
 @utility page-title {
-  @apply font-serif text-(--burg) text-center text-4xl;
+  @apply font-serif text-burg text-center text-4xl;
 }
 
 /* Supporting line beneath a page-title (e.g. "440 Days to I Do"). */
 @utility page-subtitle {
-  @apply font-serif text-(--burg)/50 text-center text-2xl;
+  @apply font-serif text-burg/50 text-center text-2xl;
 }
 
 /* Smaller section heading / label (e.g. "Checklist Progress"). */
 @utility section-title {
-  @apply font-serif font-bold text-(--burg)/70 text-lg;
+  @apply font-serif font-bold text-burg/70 text-lg;
 }
 
 /* Large emphasized number (e.g. RSVP counts). Override color per use.
    One size smaller on mobile, full size from md up. */
 @utility stat-number {
-  @apply font-bold text-(--burg) text-5xl md:text-6xl;
+  @apply font-bold text-burg text-5xl md:text-6xl;
 }
 
 /* Muted caption under a stat or field (e.g. "Invited", "Responded"). */
 @utility muted-caption {
-  @apply text-(--burg)/60 text-lg;
+  @apply text-burg/60 text-lg;
 }
