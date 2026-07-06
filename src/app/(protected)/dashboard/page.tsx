@@ -16,7 +16,7 @@ export default function Dashboard() {
   ];
 
   const tabs: { tabName: string, link: string, icon: LucideIcon }[] = [
-    { tabName: 'Budget Breakdown', link: '/dashboard', icon: ChartPie },
+    { tabName: 'Budget Breakdown', link: '/dashboard/budget', icon: ChartPie },
     { tabName: 'Choice Knockout', link: '/dashboard', icon: Podium },
     { tabName: 'Registry Purchases', link: '/dashboard', icon: Gift },
     { tabName: 'Timeline', link: '/dashboard', icon: CalendarClock }
@@ -84,7 +84,7 @@ export default function Dashboard() {
       </div>
 
       <div className="flex flex-col w-full h-1/4 justify-center px-10 py-5 text-burg md:px-20">
-        RSVPs
+        <p className="uppercase tracking-[0.16em]">RSVPs</p>
         <Link 
           href={'/dashboard'}
           className="w-full h-full border-2 border-s-0 border-e-0 border-gold/50 hover:shadow cursor-pointer"

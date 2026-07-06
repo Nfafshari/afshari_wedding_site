@@ -109,7 +109,7 @@ export default function Checklist({
           </div>
           <Field className="w-full">
             <FieldLabel htmlFor="task-progress" className="text-burg/70 font-bold">
-              <span className="ml-auto">{progress}% | {daysToWedding} Days Remaining</span>
+              <span className="ml-auto uppercase tracking-widest">{progress}% | {daysToWedding} Days Remaining</span>
             </FieldLabel>
             <Progress
               id="task-progress"

@@ -13,7 +13,7 @@ export default function Header () {
   const [isActive, setIsActive] = useState('/');
 
   return(
-    <header className="z-9999 w-screen h-20 flex items-center bg-foreground md:h-25 md:justify-center">
+    <header className="z-9999 w-screen h-20 flex tracking-wide items-center bg-foreground md:h-25 md:justify-center">
       {/* Mobile menu */}
       <nav className='pl-5 flex flex-row items-center md:hidden'>
         <Menu 

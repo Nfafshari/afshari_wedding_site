@@ -129,7 +129,7 @@
 
 /* Smaller section heading / label (e.g. "Checklist Progress"). */
 @utility section-title {
-  @apply font-serif font-bold text-burg/70 text-lg;
+  @apply font-serif font-bold text-burg/70 text-lg tracking-wide;
 }
 
 /* Large emphasized number (e.g. RSVP counts). Override color per use.
@@ -140,5 +140,5 @@
 
 /* Muted caption under a stat or field (e.g. "Invited", "Responded"). */
 @utility muted-caption {
-  @apply text-burg/60 text-lg;
+  @apply text-burg/60 text-lg uppercase tracking-widest;
 }
