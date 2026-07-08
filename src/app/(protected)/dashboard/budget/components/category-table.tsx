@@ -19,6 +19,8 @@ import { ChevronDown } from "lucide-react";
 import { toCurrency } from "@/lib/utils";
 import CategoryColumns from "./category-columns";
 
+export type PayStatus = 'due' | 'deposit' | 'paid'
+
 export interface Category {
   categoryName: string;
   items: {
@@ -33,6 +35,7 @@ interface CategoryTableProps {
 }
 
 export default function CategoryTable ({ data }: CategoryTableProps) {
+
 
   return (
     <>
