@@ -10,10 +10,10 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button"
 import FilterButton from "@/components/filter-button";
 import { AlertDialog } from "@/components/ui/alert-dialog"
-import AddCategoryDialog from "@/components/checklist-dialogs/add-category-dialog";
-import AddTaskDialog from "@/components/checklist-dialogs/add-task-dialog";
-import EditCategoryDialog from "@/components/checklist-dialogs/edit-category-dialog";
-import RemoveTaskDialog from "@/components/checklist-dialogs/remove-task-dialog";
+import AddCategoryDialog from "@/app/(protected)/dashboard/checklist/checklist-dialogs/add-category-dialog";
+import AddTaskDialog from "@/app/(protected)/dashboard/checklist/checklist-dialogs/add-task-dialog";
+import EditCategoryDialog from "@/app/(protected)/dashboard/checklist/checklist-dialogs/edit-category-dialog";
+import RemoveTaskDialog from "@/app/(protected)/dashboard/checklist/checklist-dialogs/remove-task-dialog";
 
 import { getDaysRemaining } from "@/lib/utils";
 import { CategoryWithTasks } from "./page";
