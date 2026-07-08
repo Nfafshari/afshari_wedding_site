@@ -31,9 +31,7 @@ enum DialogType {
   Delete =   'delete'
 }
 
-export default function Checklist({
-  categories
-}: ChecklistProps) {
+export default function Checklist({ categories }: ChecklistProps) {
   /** States */
   const [activeDialog, setActiveDialog] = useState<DialogType>(DialogType.None);
   const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);

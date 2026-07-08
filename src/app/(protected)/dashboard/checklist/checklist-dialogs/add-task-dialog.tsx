@@ -3,20 +3,12 @@
 import { useState } from "react";
 import { format } from "date-fns";
 
+import FormDialog from "@/components/form-dialog";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
-import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
 
 import { createTask, type ErrorField } from "@/app/(protected)/dashboard/checklist/action";
 
@@ -36,10 +28,8 @@ export default function AddTaskDialog({ categoryId, onSuccess }: AddTaskDialogPr
   const [serverError, setServerError] = useState('');
   const [serverErrorField, setServerErrorField] = useState<ErrorField | null>(null);
 
-  async function addTask(event: React.MouseEvent) {
-    // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
-    event.preventDefault();
-
+  // FormDialog has already called preventDefault, so this just runs our logic.
+  async function addTask() {
     // Client-side check for instant feedback (the server re-checks this too).
     if (taskName.trim() === '') {
       setIsEmptyInput(true);
@@ -60,70 +50,61 @@ export default function AddTaskDialog({ categoryId, onSuccess }: AddTaskDialogPr
   }
 
   return (
-    <AlertDialogContent id="add-task-dialog" className="bg-popover rounded-sm">
-      <AlertDialogHeader>
-        <AlertDialogTitle className="page-title border-b border-b-burg w-full">Add New Task?</AlertDialogTitle>
-        <Field className="flex w-full text-burg">
-          <FieldLabel htmlFor="task-name">Task Name</FieldLabel>
-          <Input
-            id="task-name"
-            type="text"
-            placeholder="Task"
-            className={`bg-popover text-burg placeholder:text-muted-foreground rounded-sm ${(isEmptyInput || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
-            onChange={(e) => {
-              setTaskName(e.target.value);
-              if (e.target.value !== '') {
-                setIsEmptyInput(false);
-              }
-              setServerError('');
-              setServerErrorField(null);
-            }}
-          />
-          {isEmptyInput && <p className="text-destructive/80 text-xs">Task name cannot be empty</p>}
-          {/* name-specific or general (no field) errors show here */}
-          {(serverError && (serverErrorField === 'name' || serverErrorField === null)) && <p className="text-destructive/80 text-xs">{serverError}</p>}
+    <FormDialog
+      id="add-task-dialog"
+      title="Add New Task?"
+      isLoading={isLoading}
+      onSubmit={addTask}
+    >
+      <Field className="flex w-full text-burg">
+        <FieldLabel htmlFor="task-name">Task Name</FieldLabel>
+        <Input
+          id="task-name"
+          type="text"
+          placeholder="Task"
+          className={`bg-popover text-burg placeholder:text-muted-foreground rounded-sm ${(isEmptyInput || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+          onChange={(e) => {
+            setTaskName(e.target.value);
+            if (e.target.value !== '') {
+              setIsEmptyInput(false);
+            }
+            setServerError('');
+            setServerErrorField(null);
+          }}
+        />
+        {isEmptyInput && <p className="text-destructive/80 text-xs">Task name cannot be empty</p>}
+        {/* name-specific or general (no field) errors show here */}
+        {(serverError && (serverErrorField === 'name' || serverErrorField === null)) && <p className="text-destructive/80 text-xs">{serverError}</p>}
+      </Field>
+      <div className="flex flex-col w-full items-start overflow-y overflow-y-scroll mt-2 text-burg">
+        <Field>
+          <FieldLabel htmlFor="date-picker-simple">Date</FieldLabel>
+          <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
+            <PopoverTrigger asChild>
+              <Button
+                variant="outline"
+                id="date-picker-simple"
+                className={`justify-start font-normal bg-popover rounded-sm ${serverErrorField === 'date' ? 'border-destructive' : 'border-input'}`}
+              >
+                {taskDate ? format(taskDate, "PPP") : <span>Pick a date</span>}
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+              <Calendar
+                mode="single"
+                selected={taskDate}
+                onSelect={(date) => {
+                  setTaskDate(date);
+                  setIsCalendarOpen(false);
+                }}
+                defaultMonth={taskDate}
+              />
+            </PopoverContent>
+          </Popover>
         </Field>
-        <div className="flex flex-col w-full items-start overflow-y overflow-y-scroll mt-2 text-burg">
-          <Field>
-            <FieldLabel htmlFor="date-picker-simple">Date</FieldLabel>
-            <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  id="date-picker-simple"
-                  className={`justify-start font-normal bg-popover rounded-sm ${serverErrorField === 'date' ? 'border-destructive' : 'border-input'}`}
-                >
-                  {taskDate ? format(taskDate, "PPP") : <span>Pick a date</span>}
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-auto p-0" align="start">
-                <Calendar
-                  mode="single"
-                  selected={taskDate}
-                  onSelect={(date) => {
-                    setTaskDate(date);
-                    setIsCalendarOpen(false);
-                  }}
-                  defaultMonth={taskDate}
-                />
-              </PopoverContent>
-            </Popover>
-          </Field>
-          {/* date- or category-specific errors show here */}
-          {(serverError && (serverErrorField === 'date' || serverErrorField === 'category')) && <p className="text-destructive/80 text-xs">{serverError}</p>}
-        </div>
-      </AlertDialogHeader>
-      <AlertDialogFooter className="bg-background rounded-sm rounded-t-none">
-        <AlertDialogCancel variant={'secondary'} className="hover:bg-gold/90">
-          Cancel
-        </AlertDialogCancel>
-        <AlertDialogAction
-          className={isLoading ? 'bg-primary/30' : 'bg-primary text-primary-foreground hover:bg-primary/90'}
-          onClick={addTask}
-        >
-          {isLoading ? <Spinner /> : 'Add'}
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
+        {/* date- or category-specific errors show here */}
+        {(serverError && (serverErrorField === 'date' || serverErrorField === 'category')) && <p className="text-destructive/80 text-xs">{serverError}</p>}
+      </div>
+    </FormDialog>
   );
 }
