@@ -20,3 +20,7 @@ export function getDaysRemaining (endDate: string) {
   // Convert to days and return
   return Math.ceil(timeInMs / (1000 * 60 * 60 * 24));
 }
+
+export function toCurrency (num: number) {
+  return Intl.NumberFormat('en-us', { style: 'currency', currency: 'USD' }).format(num);
+}
