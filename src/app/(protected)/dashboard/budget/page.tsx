@@ -22,6 +22,7 @@ export async function getCategories () {
       estimatedCost: budgetSubCategory.estimatedCost.toNumber(),
       paidAmount: budgetSubCategory.paidAmount.toNumber(),
       status: budgetSubCategory.status,
+      budgetCategoryId: budgetSubCategory.budgetCategoryId
     })),
   }));
 }

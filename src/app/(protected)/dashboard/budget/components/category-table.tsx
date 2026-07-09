@@ -20,6 +20,7 @@ import { toCurrency } from "@/lib/utils";
 import CategoryColumns from "./category-columns";
 import { BudgetCategory } from "../page";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 
 interface CategoryTableProps {
   data: BudgetCategory[];
@@ -106,7 +107,11 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                   <TableHead className="hidden font-bold md:table-cell">{toCurrency(totalEstimated)}</TableHead>
                   <TableHead className="hidden font-bold md:table-cell">{toCurrency(totalPaid)}</TableHead>
                   <TableHead className="text-right font-bold">{toCurrency(totalBalance)}</TableHead>
-                  <TableHead className="text-right font-bold">DUE</TableHead>
+                  <TableHead className="text-right font-bold">
+                  <Badge variant={'due'}>
+                    DUE
+                  </Badge>
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <CollapsibleContent asChild>
@@ -137,7 +142,11 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                       <TableCell className="hidden md:table-cell">{toCurrency(budgetSubCategory.estimatedCost)}</TableCell>
                       <TableCell className="hidden md:table-cell">{toCurrency(budgetSubCategory.paidAmount)}</TableCell>
                       <TableCell className="text-right">{toCurrency(budgetSubCategory.estimatedCost - budgetSubCategory.paidAmount)}</TableCell>
-                      <TableCell className="text-right">PAID</TableCell>
+                      <TableCell className="text-right">
+                        <Badge variant={budgetSubCategory.status.toLowerCase() as "due" | "deposit" | "paid"}>
+                          {budgetSubCategory.status}
+                        </Badge>
+                      </TableCell>
                     </TableRow>
                   ))}
                   <TableRow className="hover:bg-background">
