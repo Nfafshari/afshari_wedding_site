@@ -112,11 +112,11 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                       </div>
                     </div>
                   </TableHead>
-                  <TableHead className="hidden font-bold md:table-cell">{toCurrency(totalEstimated)}</TableHead>
-                  <TableHead className="hidden font-bold md:table-cell">{toCurrency(totalPaid)}</TableHead>
-                  <TableHead className="text-right font-bold">{toCurrency(totalBalance)}</TableHead>
+                  <TableHead className="hidden font-bold md:table-cell md:text-lg">{toCurrency(totalEstimated)}</TableHead>
+                  <TableHead className="hidden font-bold md:table-cell md:text-lg">{toCurrency(totalPaid)}</TableHead>
+                  <TableHead className="text-right font-bold md:text-lg">{toCurrency(totalBalance)}</TableHead>
                   <TableHead className="text-right font-bold">
-                  <Badge variant={isCategoryPaid ? 'PAID' : 'DUE'}>
+                  <Badge variant={isCategoryPaid ? 'PAID' : 'DUE'} className="text-lg h-6">
                     {isCategoryPaid ? 'PAID' : 'DUE'}
                   </Badge>
                   </TableHead>
@@ -156,12 +156,12 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                           {budgetSubCategory.name}
                           <p className="text-xs text-accent">{toCurrency(budgetSubCategory.estimatedCost)} est. <span className="text-sm leading-tight">•</span> {toCurrency(budgetSubCategory.paidAmount)} paid</p>
                         </div>
-                        <div className="hidden overflow-x-scroll md:block">{budgetSubCategory.name}</div>
+                        <div className="hidden overflow-x-scroll text-lg md:block">{budgetSubCategory.name}</div>
                       </TableCell>
-                      <TableCell className="hidden md:table-cell">{toCurrency(budgetSubCategory.estimatedCost)}</TableCell>
-                      <TableCell className="hidden md:table-cell">{toCurrency(budgetSubCategory.paidAmount)}</TableCell>
-                      <TableCell className="text-right">{toCurrency(budgetSubCategory.estimatedCost - budgetSubCategory.paidAmount)}</TableCell>
-                      <TableCell className="text-right">
+                      <TableCell className="hidden text-lg md:table-cell">{toCurrency(budgetSubCategory.estimatedCost)}</TableCell>
+                      <TableCell className="hidden text-lg md:table-cell">{toCurrency(budgetSubCategory.paidAmount)}</TableCell>
+                      <TableCell className="text-right md:text-lg">{toCurrency(budgetSubCategory.estimatedCost - budgetSubCategory.paidAmount)}</TableCell>
+                      <TableCell className="text-right md:text-lg">
                         <Badge variant={budgetSubCategory.status}>
                           {budgetSubCategory.status}
                         </Badge>
