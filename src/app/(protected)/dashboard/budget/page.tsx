@@ -28,7 +28,7 @@ export async function getCategories () {
 }
 
 export type BudgetCategory = Awaited<ReturnType<typeof getCategories>>[number]
-export type BudgetSubCategory = BudgetCategory["budgetSubCategories"][number]
+export type BudgetSubcategory = BudgetCategory["budgetSubCategories"][number]
 
 export default async function BudgetWrapper () {
   const budgetCategories = await getCategories();

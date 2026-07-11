@@ -52,7 +52,7 @@ export default function FormDialog({
         </AlertDialogTitle>
         {children}
       </AlertDialogHeader>
-      <AlertDialogFooter className="bg-background rounded-sm rounded-t-none">
+      <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
         <AlertDialogCancel variant={"secondary"} className="hover:bg-gold/90">
           Cancel
         </AlertDialogCancel>

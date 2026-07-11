@@ -1,13 +1,20 @@
 "use server";
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@/generated/prisma/client';
+import { BudgetStatus, Prisma } from '@/generated/prisma/client';
 import { revalidatePath } from 'next/cache';
 
 /**
  * Which input a failure relates to, so the client can highlight the right field.
  * Omitted for general/unexpected errors.
  */
-export type ErrorField = 'name' | 'estimatedCost' | 'paidAmount' | 'budgetCategory';
+export type ErrorField = 'name' | 'estimatedCost' | 'paidAmount' | 'budgetCategory' | 'status';
+
+export interface BudgetSubcategoryInput {
+  name: string | undefined;
+  estimatedCost: number | undefined;
+  paidAmount: number | undefined;
+  status: BudgetStatus | undefined;
+}
 
 const BUDGET_PATH = '/dashboard/budget';
 
@@ -135,12 +142,7 @@ export async function deleteBudgetCategory (budgetCategoryId: number | undefined
  * @param budgetCategoryId - id of the parent category
  * @returns an ActionResult the client can react to
  */
-export async function createBudgetSubcategory (
-  name: string,
-  estimatedCost: number,
-  paidAmount: number,
-  budgetCategoryId: number | null,
-): Promise<ActionResult> {
+export async function createBudgetSubcategory (name: string, estimatedCost: number, paidAmount: number, budgetCategoryId: number | null): Promise<ActionResult> {
   // Validate on the server (the client re-checks these too, for instant feedback).
   const trimmedName = name.trim();
   if (trimmedName === '') {
@@ -214,6 +216,76 @@ export async function deleteBudgetSubcategory (subcategoryId: number | undefined
     console.error(`*ERROR - error deleting budget subcategory, see below:\n${error}`);
     return { ok: false, error: 'Something went wrong. Please try again.' };
   }
+
+  // refresh the page data after a successful write
+  revalidatePath(BUDGET_PATH);
+  return { ok: true };
+}
+
+/**
+ * Updates the subcategory with the passed parameters.
+ * if any of the optional parameters are undefined, that value is left untouched
+ * @param budgetSubcategoryId - id of the category to update
+ * @param data - an object of all optional inputs that can be updated:
+ * - name
+ * - estimated cost
+ * - paid amount
+ * - status 
+ *  
+ * see {@link BudgetSubcategoryInput}
+ * @returns an ActionResult the client can react to
+ */
+export async function updateBudgetSubcategory (budgetSubcategoryId: number | undefined, data: BudgetSubcategoryInput): Promise<ActionResult> {
+  if (budgetSubcategoryId === undefined) {
+    return { ok: false, error: 'Subcategory could not be found.', field: 'budgetCategory' };
+  }
+
+  // return the function worked since now values were passed (all undefined)
+  if (data.name === undefined && data.estimatedCost === undefined && data.paidAmount === undefined && data.status === undefined) {
+    return { ok: true }
+  }
+
+  // validate all parameters
+  const trimmedName = data.name?.trim();
+  if (trimmedName === '') {
+    return { ok: false, error: 'Subcategory name can not be empty', field: 'name' }
+  }
+
+  // set trimmed name
+  data.name = trimmedName;
+
+  if (data.estimatedCost !== undefined && (!Number.isFinite(data.estimatedCost) || data.estimatedCost < 0 || data.estimatedCost >= 100_000_000)) {
+    return { ok: false, error: 'Subcategory estimated cost is incorrect. Please try again.', field: 'estimatedCost'}
+  }
+
+  if (data.paidAmount !== undefined && (!Number.isFinite(data.paidAmount) || data.paidAmount < 0 || data.paidAmount >= 100_000_000)) {
+    return { ok: false, error: 'Subcategory paid amount is incorrect. Please try again.', field: 'paidAmount'}
+  }
+  
+  if (data.status !== undefined && !Object.values(BudgetStatus).includes(data.status)) {
+    return { ok: false, error: 'Subcategory status is incorrect. Please try again.', field: 'status'}
+  }
+
+  // Try to write name if it is valid 
+  try {
+    await prisma.budgetSubcategory.update({
+      where: { id: budgetSubcategoryId },
+      data: data,
+    });
+  } catch (error) {
+    // P2002 = unique constraint (a category with this name already exists).
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
+      return { ok: false, error: 'Subcategory already exists.', field: 'name' };
+    }
+    // P2025 = record to update not found (category was deleted).
+    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
+      return { ok: false, error: 'That subcategory no longer exists, refresh your page and try again.', field: 'name' };
+    }
+    // Anything else is unexpected, log it and show a generic message to the user.
+    console.error(`*ERROR - error updating budget subcategory, see below:\n${error}`);
+    return { ok: false, error: 'Something went wrong. Please try again.' };
+  }
+
 
   // refresh the page data after a successful write
   revalidatePath(BUDGET_PATH);

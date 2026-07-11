@@ -1,18 +1,20 @@
 "use client";
 
-import CategoryTable from "@/app/(protected)/dashboard/budget/components/category-table";
-import {StackedProgressBar, type ProgressBarLegend} from "@/components/stacked-progress-bar";
-import { Button } from "@/components/ui/button";
-import { toCurrency } from "@/lib/utils";
+import { useState } from "react";
 import { CirclePlus } from "lucide-react";
 
-import { BudgetCategory } from './page'
+import { Button } from "@/components/ui/button";
+import { StackedProgressBar, type ProgressBarLegend } from "@/components/stacked-progress-bar";
 import { AlertDialog } from "@/components/ui/alert-dialog";
-import { useState } from "react";
+
+import { BudgetCategory } from './page'
+import { toCurrency } from "@/lib/utils";
+import CategoryTable from "./components/category-table";
 import AddCategoryDialog from "./components/budget-dialogs/add-category-dialog";
 import AddSubcategoryDialog from "./components/budget-dialogs/add-subcategory-dialog";
 import RemoveSubcategoryDialog from "./components/budget-dialogs/remove-subcategory-dialog";
 import EditCategoryDialog from "./components/budget-dialogs/edit-category-dialog";
+import EditSubcategoryDialog from "./components/budget-dialogs/edit-subcategory-dialog";
 
 interface BudgetProps {
   budgetCategories: BudgetCategory[]
@@ -23,6 +25,7 @@ export enum DialogType {
   Category =    'category',
   Subcategory = 'subcategory',
   Edit =        'edit',
+  EditSubcat =  'editSubcat',
   Delete =      'delete'
 }
 
@@ -63,13 +66,19 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
     setActiveDialog(DialogType.Edit);
   }
 
+  // Opens the edit/delete dialog for a specific subcategory.
+  function onEditSubcategory (budgetSubcategoryId: number) {
+    setActiveSubcategoryId(budgetSubcategoryId);
+    setActiveDialog(DialogType.EditSubcat);
+  }
+
   // The category a pending edit refers to.
   const categoryToUpdate = budgetCategories.find(
     (budgetCategory) => budgetCategory.id === activeBudgetCategoryId
   );
 
   // The subcategory a pending delete refers to (searched across every category).
-  const subcategoryToRemove = budgetCategories
+  const activeSubcategory = budgetCategories
     .flatMap((budgetCategory) => budgetCategory.budgetSubCategories)
     .find((subcategory) => subcategory.id === activeSubcategoryId);
 
@@ -132,6 +141,7 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
             onAddSubcategory={onAddSubcategory}
             onDeleteSubcategory={onDeleteSubcategory}
             onEditCategory={onEditCategory}
+            onEditSubcategory={onEditSubcategory}
           />
           <Button
             variant={'ghost'}
@@ -164,7 +174,7 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
 
       {activeDialog === DialogType.Delete && (
         <RemoveSubcategoryDialog
-          subcategoryToRemove={subcategoryToRemove}
+          subcategoryToRemove={activeSubcategory}
           onSuccess={closeDialog}
         />
       )}
@@ -173,6 +183,13 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
         <EditCategoryDialog
           budgetCategories={budgetCategories}
           categoryToUpdate={categoryToUpdate}
+          onSuccess={closeDialog}
+        />
+      )}
+
+      {activeDialog === DialogType.EditSubcat && activeSubcategory && (
+        <EditSubcategoryDialog
+          subcategoryToUpdate={activeSubcategory}
           onSuccess={closeDialog}
         />
       )}

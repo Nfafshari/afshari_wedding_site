@@ -13,11 +13,11 @@ import {
 import { useDialogSubmit } from "@/hooks/dialog-submit";
 
 import { deleteBudgetSubcategory, type ErrorField } from "../../action";
-import type { BudgetSubCategory } from "../../page";
+import type { BudgetSubcategory } from "../../page";
 
 interface RemoveSubcategoryDialogProps {
   /** The subcategory to delete. */
-  subcategoryToRemove: BudgetSubCategory | undefined;
+  subcategoryToRemove: BudgetSubcategory | undefined;
   /** Called after the subcategory is deleted so the parent can close the dialog. */
   onSuccess: () => void;
 }

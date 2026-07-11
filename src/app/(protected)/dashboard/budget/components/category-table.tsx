@@ -21,6 +21,7 @@ import CategoryColumns from "./category-columns";
 import { BudgetCategory } from "../page";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { BudgetStatus } from "@/generated/prisma/enums";
 
 interface CategoryTableProps {
   data: BudgetCategory[];
@@ -30,9 +31,11 @@ interface CategoryTableProps {
   onDeleteSubcategory(subcategoryId: number): void;
   /** Open the edit/delete dialog for the given category. */
   onEditCategory(budgetCategoryId: number): void;
+  /** Open the edit/delete dialog for the given subcategory. */
+  onEditSubcategory(budgetSubcategoryId: number): void;
 }
 
-export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcategory, onEditCategory }: CategoryTableProps) {
+export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcategory, onEditCategory, onEditSubcategory }: CategoryTableProps) {
   return (
     <>
       {/** custom heading */}
@@ -56,6 +59,11 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
         const totalPaid = budgetCategory.budgetSubCategories.reduce((sum, sub) => sum + sub.paidAmount, 0);
         const totalBalance = totalEstimated - totalPaid;
 
+        let isCategoryPaid = false;
+        if (budgetCategory.budgetSubCategories.length > 0) {
+          isCategoryPaid = budgetCategory.budgetSubCategories.every((subcategory) => subcategory.status === BudgetStatus.PAID);
+        }
+
         return (
           <Collapsible key={budgetCategory.id} defaultOpen>
             <Table className="table-fixed">
@@ -68,9 +76,9 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                       <ChevronDown className="w-4 h-4 group-data-[state=open]:rotate-180 transition-transform"/>
                     </CollapsibleTrigger>
                   </TableHead>
-                  <TableHead className="font-bold">
+                  <TableHead className="font-bold text-lg pb-1 md:pb-0">
                     {/* Mobile: no hover on touch, so the pen is always shown to the right of the title. */}
-                    <div className="flex items-center md:hidden">
+                    <div className="flex items-center overflow-y-scroll py-2 text-xl md:hidden">
                       <div>
                         {budgetCategory.name}
                         <p className="text-xs text-accent">{toCurrency(totalEstimated)} est. <span className="text-sm leading-tight">•</span> {toCurrency(totalPaid)} paid</p>
@@ -92,7 +100,7 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                       <Button
                         variant={'ghost'}
                         aria-label={`Edit ${budgetCategory.name}`}
-                        className="absolute left-0 top-1/2 -translate-y-1/2 text-gold/40 p-1 opacity-0 transition-opacity group-hover/category:opacity-100 focus-visible:opacity-100 hover:bg-olivine hover:text-background"
+                        className="absolute left-0 top-1/2 -translate-y-1/2 text-gold/40 p-1 opacity-0 transition-opacity group-hover/category:opacity-100 focus-visible:opacity-100 hover:bg-olivine hover:text-background active:-translate-y-3.75!"
                         onClick={() => {
                           onEditCategory(budgetCategory.id)
                         }}
@@ -108,8 +116,8 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                   <TableHead className="hidden font-bold md:table-cell">{toCurrency(totalPaid)}</TableHead>
                   <TableHead className="text-right font-bold">{toCurrency(totalBalance)}</TableHead>
                   <TableHead className="text-right font-bold">
-                  <Badge variant={'due'}>
-                    DUE
+                  <Badge variant={isCategoryPaid ? 'PAID' : 'DUE'}>
+                    {isCategoryPaid ? 'PAID' : 'DUE'}
                   </Badge>
                   </TableHead>
                 </TableRow>
@@ -120,30 +128,41 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                     <TableRow key={budgetSubCategory.id}>
                       <TableCell>
                         <div className="flex justify-center">
+                          {/** Show trash can on desktop and edit on mobile */}
                           <Button
                             variant={'ghost'}
                             aria-label={`Delete ${budgetSubCategory.name}`}
-                            className="text-gold/40 p-1 ml-1 hover:bg-destructive hover:text-background"
+                            className="hidden text-gold/40 p-1 ml-1 hover:bg-destructive hover:text-background md:flex"
                             onClick={() => {
                               onDeleteSubcategory(budgetSubCategory.id)
                             }}
                           >
                             <Trash2 />
                           </Button>
+                          <Button
+                            variant={'ghost'}
+                            aria-label={`Delete ${budgetSubCategory.name}`}
+                            className="text-gold/40 p-1 ml-1 hover:bg-olivine hover:text-background md:hidden"
+                            onClick={() => {
+                              onEditSubcategory(budgetSubCategory.id)
+                            }}
+                          >
+                            <SquarePen />
+                          </Button>
                         </div>
                       </TableCell>
                       <TableCell className="font-medium">
-                        <div className="text-lg md:hidden">
+                        <div className="flex flex-col overflow-x-scroll pb-2 text-lg md:hidden">
                           {budgetSubCategory.name}
                           <p className="text-xs text-accent">{toCurrency(budgetSubCategory.estimatedCost)} est. <span className="text-sm leading-tight">•</span> {toCurrency(budgetSubCategory.paidAmount)} paid</p>
                         </div>
-                        <div className="hidden truncate md:block">{budgetSubCategory.name}</div>
+                        <div className="hidden overflow-x-scroll md:block">{budgetSubCategory.name}</div>
                       </TableCell>
                       <TableCell className="hidden md:table-cell">{toCurrency(budgetSubCategory.estimatedCost)}</TableCell>
                       <TableCell className="hidden md:table-cell">{toCurrency(budgetSubCategory.paidAmount)}</TableCell>
                       <TableCell className="text-right">{toCurrency(budgetSubCategory.estimatedCost - budgetSubCategory.paidAmount)}</TableCell>
                       <TableCell className="text-right">
-                        <Badge variant={budgetSubCategory.status.toLowerCase() as "due" | "deposit" | "paid"}>
+                        <Badge variant={budgetSubCategory.status}>
                           {budgetSubCategory.status}
                         </Badge>
                       </TableCell>

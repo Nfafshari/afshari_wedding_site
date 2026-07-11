@@ -21,6 +21,28 @@ export function getDaysRemaining (endDate: string) {
   return Math.ceil(timeInMs / (1000 * 60 * 60 * 24));
 }
 
+/** 
+ * Converts number to USD currency
+ * @param num - number to format can be any value
+ * @returns formatted number in USD
+ */
 export function toCurrency (num: number) {
   return Intl.NumberFormat('en-us', { style: 'currency', currency: 'USD' }).format(num);
+}
+
+/** Parses a currency string into a usable number */
+export function parseMoneyString (value: string): number | null {
+  // regex for Decimal(10,2) i.e. 0.00 to 100000000.00
+  const numberFormatRegex = /^\d{1,8}(\.\d{1,2})?$/;
+
+  // strip commas and dollar sign (if there is a dollar sign)
+  let strippedValue = value.trim().replaceAll(',', '');
+  strippedValue = strippedValue.replaceAll('$', '');
+
+  // test value against regex first
+  if (!numberFormatRegex.test(strippedValue)) {
+    return null;
+  }
+  
+  return Number(strippedValue);
 }

@@ -19,12 +19,12 @@ const badgeVariants = cva(
         ghost:
           "hover:bg-muted hover:text-muted-foreground dark:hover:bg-muted/50",
         link: "text-primary underline-offset-4 hover:underline",
-        due:
+        DUE:
           "border-gold text-accent [a]:hover:bg-gold [a]:hover:text-muted-foreground",
-        deposit:
-          "bg-muted-foreground/80 text-burg border-burg",
-        paid:
-          "bg-olivine/40 text-olivine border-olivine",
+        DEPOSIT:
+          "bg-muted-foreground/80 text-burg border-burg [a]:hover:bg-gold [a]:hover:text-muted-foreground",
+        PAID:
+          "bg-olivine/40 text-olivine border-olivine hover:text-olivine [a]:hover:bg-gold [a]:hover:text-muted-foreground",
       },
     },
     defaultVariants: {
