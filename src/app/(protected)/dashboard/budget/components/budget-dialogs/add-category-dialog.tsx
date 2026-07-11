@@ -19,25 +19,37 @@ interface AddCategoryDialogProps {
 
 export default function AddCategoryDialog({ budgetCategories, onSuccess }: AddCategoryDialogProps) {
   const [categoryName, setCategoryName] = useState('');
-  const [isEmptyInput, setIsEmptyInput] = useState(false);
-  const [isUniqueCategory, setIsUniqueCategory] = useState(true);
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<ErrorField, string>>>({});
   const { isLoading, serverError, serverErrorField, clearServerError, runAction } = useDialogSubmit<ErrorField>(onSuccess);
 
-  // FormDialog has already called preventDefault, so this just runs our logic.
-  async function addCategory() {
-    // Client-side checks for instant feedback (the server re-checks these too).
-    if (categoryName.trim() === '') {
-      setIsEmptyInput(true);
-      return;
+  /**
+   * Validates the category name by checking if it is empty or already taken
+   * @param value - string value of the name
+   * @returns a **string** message if it fails, otherwise **null** to clear errors
+   */
+  function nameValidator (value: string): string | null {
+    if (value.trim() === '') {
+      return 'Category name cannot be empty.';
     }
 
     // check if there is already a category with that name
     const isDuplicate = budgetCategories.some(
-      (cat) => cat.name.toLowerCase().trim() === categoryName.toLowerCase().trim()
+      (cat) => cat.name.toLowerCase().trim() === value.toLowerCase().trim()
     );
-
     if (isDuplicate) {
-      setIsUniqueCategory(false);
+      return 'Category already exists!';
+    }
+
+    // return null if validation succeeded
+    return null;
+  }
+
+  // FormDialog has already called preventDefault, so this just runs our logic.
+  async function addCategory() {
+    // Client-side checks for instant feedback (the server re-checks these too).
+    const nameError = nameValidator(categoryName);
+    if (nameError) {
+      setFieldErrors({ name: nameError });
       return;
     }
 
@@ -57,20 +69,26 @@ export default function AddCategoryDialog({ budgetCategories, onSuccess }: AddCa
           id="category-name"
           type="text"
           placeholder="Category"
-          className={`bg-popover text-burg rounded-sm ${(isEmptyInput || !isUniqueCategory || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+          className={`bg-popover text-burg rounded-sm ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
           onChange={(e) => {
             setCategoryName(e.target.value);
             // Typing clears any previous error so the user gets a fresh start.
-            if (e.target.value !== '') {
-              setIsEmptyInput(false);
+            if (e.target.value.trim() !== '') {
+              setFieldErrors(({ name, ...rest }) => rest);
             }
-            setIsUniqueCategory(true);
             clearServerError();
           }}
+          onBlur={(e) => {
+            const msg = nameValidator(e.target.value);
+            if (msg) {
+              setFieldErrors(prev => ({ ...prev, name: msg }));
+            } else {
+              setFieldErrors(({ name, ...rest }) => rest);
+            }
+          }}
         />
-        {isEmptyInput && <p className="text-destructive/80 text-xs">Category name cannot be empty</p>}
-        {!isUniqueCategory && <p className="text-destructive/80 text-xs">Category already exists!</p>}
-        {serverError && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.name && <p className="text-destructive/80 text-xs">{fieldErrors.name}</p>}
+        {(serverError && serverErrorField === 'name') && <p className="text-destructive/80 text-xs">{serverError}</p>}
       </Field>
     </FormDialog>
   );

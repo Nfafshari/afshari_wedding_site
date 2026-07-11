@@ -49,31 +49,35 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
     // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
     event.preventDefault();
 
-    // 1. Validate every field into one local object, then gate on it. We can't rely
-    //    on fieldErrors here — a field the user never blurred was never validated.
+    // Validate every field into one local object, then gate on it
     const errors: Partial<Record<ErrorField, string>> = {};
 
     const nameError = nameValidator(newName);
-    if (nameError) errors.name = nameError;
+    if (nameError) {
+      errors.name = nameError;
+    }
 
     const estimatedCostError = estimatedCostValidator(newEstimatedCost);
-    if (estimatedCostError) errors.estimatedCost = estimatedCostError;
+    if (estimatedCostError) {
+      errors.estimatedCost = estimatedCostError;
+    }
 
     const paidAmountError = paidAmountValidator(newPaidAmount);
-    if (paidAmountError) errors.paidAmount = paidAmountError;
+    if (paidAmountError) {
+      errors.paidAmount = paidAmountError;
+    }
 
     if (Object.keys(errors).length > 0) {
       setFieldErrors(errors);
       return;
     }
 
-    // 2. Validation passed, so both money strings parse. Re-parse for the diff; the
-    //    null guard is logically redundant but narrows number | null -> number for TS.
+    // Validation passed, so both money strings parse. Re-parse for the diff
     const parsedEstimatedCost = parseMoneyString(newEstimatedCost);
     const parsedPaidAmount = parseMoneyString(newPaidAmount);
     if (parsedEstimatedCost === null || parsedPaidAmount === null) return;
 
-    // 3. Build the payload with only the fields that actually changed; unchanged
+    // Build the payload with only the fields that actually changed; unchanged
     //    fields stay undefined so the server (and Prisma) leave those columns alone.
     //    Money is compared in cents so "100" and "100.00" don't count as a change.
     const trimmedName = newName.trim();
@@ -90,13 +94,13 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
       status: newStatus !== subcategoryToUpdate.status ? newStatus : undefined,
     };
 
-    // 4. Nothing changed — close the dialog without a pointless write.
+    // Nothing changed, close the dialog without a pointless write.
     if (Object.values(payload).every((value) => value === undefined)) {
       onSuccess();
       return;
     }
 
-    // 5. Send it. Server-side field errors surface via serverError / serverErrorField.
+    // Send it. Server-side field errors surface via serverError / serverErrorField.
     await runAction(() => updateBudgetSubcategory(subcategoryToUpdate.id, payload));
   }
 

@@ -31,30 +31,43 @@ interface EditCategoryDialogProps {
 
 export default function EditCategoryDialog({ budgetCategories, categoryToUpdate, onSuccess }: EditCategoryDialogProps) {
   const [newCategoryName, setNewCategoryName] = useState('');
-  const [isEmptyInput, setIsEmptyInput] = useState(false);
-  const [isUniqueCategory, setIsUniqueCategory] = useState(true);
+  const [fieldErrors, setFieldErrors] = useState<Partial<Record<ErrorField, string>>>({});
   // Flips this dialog between the "edit" view and the "confirm delete" view.
   const [isDeleteCategoryActive, setIsDeleteCategoryActive] = useState(false);
   const { isLoading, serverError, serverErrorField, clearServerError, runAction } = useDialogSubmit<ErrorField>(onSuccess);
 
-  async function editCategory(event: React.MouseEvent) {
-    // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
-    event.preventDefault();
-
-    // Client-side checks for instant feedback (the server re-checks these too).
-    if (newCategoryName.trim() === '') {
-      setIsEmptyInput(true);
-      return;
+  /**
+   * Validates the category name by checking if it is empty or already taken
+   * @param value - string value of the name
+   * @returns a **string** message if it fails, otherwise **null** to clear errors
+   */
+  function nameValidator (value: string): string | null {
+    if (value.trim() === '') {
+      return 'Category name cannot be empty.';
     }
 
     // Reject a name already used by *another* category (skip the one being edited).
     const isDuplicate = budgetCategories.some(
       (cat) =>
         cat.id !== categoryToUpdate?.id &&
-        cat.name.toLowerCase().trim() === newCategoryName.toLowerCase().trim()
+        cat.name.toLowerCase().trim() === value.toLowerCase().trim()
     );
     if (isDuplicate) {
-      setIsUniqueCategory(false);
+      return 'Category already exists!';
+    }
+
+    // return null if validation succeeded
+    return null;
+  }
+
+  async function editCategory(event: React.MouseEvent) {
+    // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
+    event.preventDefault();
+
+    // Client-side checks for instant feedback (the server re-checks these too).
+    const nameError = nameValidator(newCategoryName);
+    if (nameError) {
+      setFieldErrors({ name: nameError });
       return;
     }
 
@@ -79,20 +92,26 @@ export default function EditCategoryDialog({ budgetCategories, categoryToUpdate,
               id="edit-category-name"
               type="text"
               placeholder={categoryToUpdate?.name}
-              className={`bg-popover text-burg rounded-sm placeholder:text-muted-foreground ${(isEmptyInput || !isUniqueCategory || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+              className={`bg-popover text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
               onChange={(e) => {
                 setNewCategoryName(e.target.value);
                 // Typing clears any previous error so the user gets a fresh start.
-                if (e.target.value !== '') {
-                  setIsEmptyInput(false);
+                if (e.target.value.trim() !== '') {
+                  setFieldErrors(({ name, ...rest }) => rest);
                 }
-                setIsUniqueCategory(true);
                 clearServerError();
               }}
+              onBlur={(e) => {
+                const msg = nameValidator(e.target.value);
+                if (msg) {
+                  setFieldErrors(prev => ({ ...prev, name: msg }));
+                } else {
+                  setFieldErrors(({ name, ...rest }) => rest);
+                }
+              }}
             />
-            {isEmptyInput && <p className="text-destructive/80 text-xs">Category name cannot be empty</p>}
-            {!isUniqueCategory && <p className="text-destructive/80 text-xs">Category already exists!</p>}
-            {serverError && <p className="text-destructive/80 text-xs">{serverError}</p>}
+            {fieldErrors.name && <p className="text-destructive/80 text-xs">{fieldErrors.name}</p>}
+            {(serverError && serverErrorField === 'name') && <p className="text-destructive/80 text-xs">{serverError}</p>}
           </Field>
           <Button
             variant={'destructive'}
