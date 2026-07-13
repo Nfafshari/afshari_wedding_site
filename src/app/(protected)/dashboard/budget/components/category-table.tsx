@@ -22,6 +22,7 @@ import { BudgetCategory } from "../page";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BudgetStatus } from "@/generated/prisma/enums";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 
 interface CategoryTableProps {
   data: BudgetCategory[];
@@ -55,13 +56,13 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
       </Table>
 
       {data.map((budgetCategory) => {
-        const totalEstimated = budgetCategory.budgetSubCategories.reduce((sum, sub) => sum + sub.estimatedCost, 0);
-        const totalPaid = budgetCategory.budgetSubCategories.reduce((sum, sub) => sum + sub.paidAmount, 0);
+        const totalEstimated = budgetCategory.budgetSubcategories.reduce((sum, sub) => sum + sub.estimatedCost, 0);
+        const totalPaid = budgetCategory.budgetSubcategories.reduce((sum, sub) => sum + sub.paidAmount, 0);
         const totalBalance = totalEstimated - totalPaid;
 
         let isCategoryPaid = false;
-        if (budgetCategory.budgetSubCategories.length > 0) {
-          isCategoryPaid = budgetCategory.budgetSubCategories.every((subcategory) => subcategory.status === BudgetStatus.PAID);
+        if (budgetCategory.budgetSubcategories.length > 0) {
+          isCategoryPaid = budgetCategory.budgetSubcategories.every((subcategory) => subcategory.status === BudgetStatus.PAID);
         }
 
         return (
@@ -112,11 +113,11 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                       </div>
                     </div>
                   </TableHead>
-                  <TableHead className="hidden font-bold md:table-cell md:text-lg">{toCurrency(totalEstimated)}</TableHead>
-                  <TableHead className="hidden font-bold md:table-cell md:text-lg">{toCurrency(totalPaid)}</TableHead>
+                  <TableHead className="hidden font-bold text-lg md:table-cell">{toCurrency(totalEstimated)}</TableHead>
+                  <TableHead className="hidden font-bold text-lg md:table-cell">{toCurrency(totalPaid)}</TableHead>
                   <TableHead className="text-right font-bold md:text-lg">{toCurrency(totalBalance)}</TableHead>
                   <TableHead className="text-right font-bold">
-                  <Badge variant={isCategoryPaid ? 'PAID' : 'DUE'} className="text-lg h-6">
+                  <Badge variant={isCategoryPaid ? 'PAID' : 'DUE'} className="text-lg">
                     {isCategoryPaid ? 'PAID' : 'DUE'}
                   </Badge>
                   </TableHead>
@@ -124,27 +125,27 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
               </TableHeader>
               <CollapsibleContent asChild>
                 <TableBody className="last:border-b border-burg">
-                  {budgetCategory.budgetSubCategories.map((budgetSubCategory) => (
-                    <TableRow key={budgetSubCategory.id}>
+                  {budgetCategory.budgetSubcategories.map((budgetSubcategory) => (
+                    <TableRow key={budgetSubcategory.id}>
                       <TableCell>
                         <div className="flex justify-center">
                           {/** Show trash can on desktop and edit on mobile */}
                           <Button
                             variant={'ghost'}
-                            aria-label={`Delete ${budgetSubCategory.name}`}
+                            aria-label={`Delete ${budgetSubcategory.name}`}
                             className="hidden text-gold/40 p-1 ml-1 hover:bg-destructive hover:text-background md:flex"
                             onClick={() => {
-                              onDeleteSubcategory(budgetSubCategory.id)
+                              onDeleteSubcategory(budgetSubcategory.id)
                             }}
                           >
                             <Trash2 />
                           </Button>
                           <Button
                             variant={'ghost'}
-                            aria-label={`Delete ${budgetSubCategory.name}`}
+                            aria-label={`Delete ${budgetSubcategory.name}`}
                             className="text-gold/40 p-1 ml-1 hover:bg-olivine hover:text-background md:hidden"
                             onClick={() => {
-                              onEditSubcategory(budgetSubCategory.id)
+                              onEditSubcategory(budgetSubcategory.id)
                             }}
                           >
                             <SquarePen />
@@ -153,17 +154,29 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                       </TableCell>
                       <TableCell className="font-medium">
                         <div className="flex flex-col overflow-x-scroll pb-2 text-lg md:hidden">
-                          {budgetSubCategory.name}
-                          <p className="text-xs text-accent">{toCurrency(budgetSubCategory.estimatedCost)} est. <span className="text-sm leading-tight">•</span> {toCurrency(budgetSubCategory.paidAmount)} paid</p>
+                          {budgetSubcategory.name}
+                          <p className="text-xs text-accent">{toCurrency(budgetSubcategory.estimatedCost)} est. <span className="text-sm leading-tight">•</span> {toCurrency(budgetSubcategory.paidAmount)} paid</p>
                         </div>
-                        <div className="hidden overflow-x-scroll text-lg md:block">{budgetSubCategory.name}</div>
+                        <div className="hidden overflow-x-scroll text-lg md:block">{budgetSubcategory.name}</div>
                       </TableCell>
-                      <TableCell className="hidden text-lg md:table-cell">{toCurrency(budgetSubCategory.estimatedCost)}</TableCell>
-                      <TableCell className="hidden text-lg md:table-cell">{toCurrency(budgetSubCategory.paidAmount)}</TableCell>
-                      <TableCell className="text-right md:text-lg">{toCurrency(budgetSubCategory.estimatedCost - budgetSubCategory.paidAmount)}</TableCell>
-                      <TableCell className="text-right md:text-lg">
-                        <Badge variant={budgetSubCategory.status}>
-                          {budgetSubCategory.status}
+                      <TableCell className="hidden md:table-cell">
+                        <InputGroup className="border-none focus:border-border w-1/2">
+                          <InputGroupAddon className="text-lg text-foreground">$</InputGroupAddon>
+                          <InputGroupInput
+                            className="text-lg! pl-px!"
+                            value={budgetSubcategory.estimatedCost}
+                            onChange={() => {
+
+                            }}
+                          />
+                         
+                        </InputGroup>
+                      </TableCell>
+                      <TableCell className="hidden text-lg md:table-cell">{toCurrency(budgetSubcategory.paidAmount)}</TableCell>
+                      <TableCell className="text-right text-lg">{toCurrency(budgetSubcategory.estimatedCost - budgetSubcategory.paidAmount)}</TableCell>
+                      <TableCell className="text-right">
+                        <Badge variant={budgetSubcategory.status} className="text-lg">
+                          {budgetSubcategory.status}
                         </Badge>
                       </TableCell>
                     </TableRow>

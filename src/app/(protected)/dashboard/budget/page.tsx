@@ -16,19 +16,19 @@ export async function getCategories () {
   return categories.map((budgetCategory) => ({
     id: budgetCategory.id,
     name: budgetCategory.name,
-    budgetSubCategories: budgetCategory.budgetSubcategories.map((budgetSubCategory) => ({
-      id: budgetSubCategory.id,
-      name: budgetSubCategory.name,
-      estimatedCost: budgetSubCategory.estimatedCost.toNumber(),
-      paidAmount: budgetSubCategory.paidAmount.toNumber(),
-      status: budgetSubCategory.status,
-      budgetCategoryId: budgetSubCategory.budgetCategoryId
+    budgetSubcategories: budgetCategory.budgetSubcategories.map((budgetSubcategory) => ({
+      id: budgetSubcategory.id,
+      name: budgetSubcategory.name,
+      estimatedCost: budgetSubcategory.estimatedCost.toNumber(),
+      paidAmount: budgetSubcategory.paidAmount.toNumber(),
+      status: budgetSubcategory.status,
+      budgetCategoryId: budgetSubcategory.budgetCategoryId
     })),
   }));
 }
 
 export type BudgetCategory = Awaited<ReturnType<typeof getCategories>>[number]
-export type BudgetSubcategory = BudgetCategory["budgetSubCategories"][number]
+export type BudgetSubcategory = BudgetCategory["budgetSubcategories"][number]
 
 export default async function BudgetWrapper () {
   const budgetCategories = await getCategories();

@@ -40,8 +40,8 @@ export default function AddSubcategoryDialog({ budgetCategories, budgetCategoryI
 
     // A subcategory name only has to be unique *within its own category*.
     const targetCategory = budgetCategories.find((cat) => cat.id === budgetCategoryId);
-    const isDuplicate = targetCategory?.budgetSubCategories.some(
-      (sub) => sub.name.toLowerCase().trim() === value.toLowerCase().trim()
+    const isDuplicate = targetCategory?.budgetSubcategories.some(
+      (sub) => sub.name.toLowerCase().trim() === name.toLowerCase().trim()
     ) ?? false;
     if (isDuplicate) {
       return 'This category already has that subcategory!';

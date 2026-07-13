@@ -37,9 +37,32 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
   const [activeBudgetCategoryId, setActiveBudgetCategoryId] = useState<number | null>(null);
   const [activeSubcategoryId, setActiveSubcategoryId] = useState<number | null>(null);
 
+  // The category a pending edit refers to.
+  const categoryToUpdate = budgetCategories.find(
+    (budgetCategory) => budgetCategory.id === activeBudgetCategoryId
+  );
+
+  // The subcategory a pending delete refers to (searched across every category).
+  const activeSubcategory = budgetCategories
+    .flatMap((budgetCategory) => budgetCategory.budgetSubcategories)
+    .find((subcategory) => subcategory.id === activeSubcategoryId);
+
+  // total estimated cost of all categories
+  const totalEstimatedCost = budgetCategories
+    .flatMap((budgetCategory) => budgetCategory.budgetSubcategories)
+    .reduce((sum, subcategory) => sum += subcategory.estimatedCost, 0);
+
+  // total paid amount of all categories
+  const totalPaidAmount = budgetCategories
+    .flatMap((budgetCategory) => budgetCategory.budgetSubcategories)
+    .reduce((sum, subcategory) => sum += subcategory.paidAmount, 0);
+
+  const totalBalance = totalEstimatedCost - totalPaidAmount;
+
+  // progress bar legend values
   const progressLegend: ProgressBarLegend = {
-    primary: { label: 'Estimated', value: 16000, color: 'var(--gold)' },
-    secondary: { label: 'Spent', value: 10000, color: 'var(--foreground)' }
+    primary: { label: 'Estimated', value: totalEstimatedCost, color: 'var(--gold)' },
+    secondary: { label: 'Spent', value: totalPaidAmount, color: 'var(--foreground)' }
   }
 
   function closeDialog () {
@@ -72,16 +95,6 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
     setActiveDialog(DialogType.EditSubcat);
   }
 
-  // The category a pending edit refers to.
-  const categoryToUpdate = budgetCategories.find(
-    (budgetCategory) => budgetCategory.id === activeBudgetCategoryId
-  );
-
-  // The subcategory a pending delete refers to (searched across every category).
-  const activeSubcategory = budgetCategories
-    .flatMap((budgetCategory) => budgetCategory.budgetSubCategories)
-    .find((subcategory) => subcategory.id === activeSubcategoryId);
-
   return (
     <AlertDialog
       open={activeDialog !== DialogType.None}
@@ -97,15 +110,15 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
         <div className="flex w-full">
           <h1 className="page-title w-full text-center translate-y-3 md:text-start">Budget Tracker</h1>
           <div className="hidden flex-col w-1/2 ml-auto md:flex">
-            <h2 className="page-title text-2xl text-end">{toCurrency(10000)} Paid</h2>
-            <h3 className="section-title text-end text-sm">{toCurrency(6000)} Remaining</h3>
+            <h2 className="page-title text-2xl text-end">{toCurrency(totalPaidAmount)} Paid</h2>
+            <h3 className="section-title text-end text-sm">{toCurrency(totalBalance)} Remaining</h3>
           </div>
         </div>
         <hr className="my-5 bg-accent"/>
 
         <div className="flex flex-col justify-center items-center md:hidden">
-          <h2 className="page-title text-6xl text-olivine">{toCurrency(10000)}</h2>
-          <h3 className="section-title text-sm text-accent-foreground font-normal">Paid of {toCurrency(16000)} Estimated</h3>
+          <h2 className="page-title text-6xl text-olivine">{toCurrency(totalPaidAmount)}</h2>
+          <h3 className="section-title text-sm text-accent-foreground font-normal">Paid of {toCurrency(totalEstimatedCost)} Estimated</h3>
         </div>
 
         {/** overview */}
@@ -120,15 +133,15 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
           <div className="hidden flex-col w-full mt-5 md:mt-0 md:flex">
             <div className="flex py-4 items-center border-b border-b-accent">
               <p className="text-gold mt-1 text-xl">ESTIMATED TOTAL</p>
-              <p className="ml-auto text-3xl md:text-4xl">{toCurrency(16000)}</p>
+              <p className="ml-auto text-3xl md:text-4xl">{toCurrency(totalEstimatedCost)}</p>
             </div>
             <div className="flex py-4 items-center border-b border-b-accent">
               <p className="text-gold mt-1 text-xl">PAID TO DATE</p>
-              <p className="ml-auto text-3xl text-olivine md:text-4xl">{toCurrency(10000)}</p>
+              <p className="ml-auto text-3xl text-olivine md:text-4xl">{toCurrency(totalPaidAmount)}</p>
             </div>
             <div className="flex py-4 items-center border-b border-b-accent">
               <p className="text-gold mt-1 text-xl">BALANCE DUE</p>
-              <p className="ml-auto text-red-800 text-3xl md:text-4xl">{toCurrency(6000)}</p>
+              <p className="ml-auto text-red-800 text-3xl md:text-4xl">{toCurrency(totalBalance)}</p>
             </div>
           </div>
         </div>
