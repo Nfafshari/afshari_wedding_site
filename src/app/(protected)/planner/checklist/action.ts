@@ -50,7 +50,7 @@ export async function createCategory (name: string, icon: string): Promise<Actio
   }
 
   // refresh the page data after a successful write
-  revalidatePath('/dashboard/checklist');
+  revalidatePath('/planner/checklist');
   return { ok: true };
 }
 
@@ -97,7 +97,7 @@ export async function updateCategory (categoryId: number | undefined, newName: s
   }
 
   // refresh the page data after a successful write
-  revalidatePath('/dashboard/checklist');
+  revalidatePath('/planner/checklist');
   return { ok: true };
 }
 
@@ -128,7 +128,7 @@ export async function deleteCategory (categoryId: number | undefined): Promise<A
   }
 
   // refresh the page data after a successful write
-  revalidatePath('/dashboard/checklist');
+  revalidatePath('/planner/checklist');
   return { ok: true };
 }
 
@@ -159,7 +159,7 @@ export async function deleteTask (taskId: number | undefined): Promise<ActionRes
   }
 
   // refresh the page data after a successful write
-  revalidatePath('/dashboard/checklist');
+  revalidatePath('/planner/checklist');
   return { ok: true };
 }
 
@@ -201,7 +201,7 @@ export async function createTask (taskName: string, date: Date | undefined, cate
   }
 
   // refresh the page data after a successful write
-  revalidatePath('/dashboard/checklist');
+  revalidatePath('/planner/checklist');
   return { ok: true };
 }
 
@@ -231,6 +231,6 @@ export async function toggleTaskStatus (taskId: number | undefined, status: bool
   }
 
   // refresh the page data after a successful write
-  revalidatePath('/dashboard/checklist');
+  revalidatePath('/planner/checklist');
   return { ok: true };
 }

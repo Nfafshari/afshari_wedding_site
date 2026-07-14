@@ -9,7 +9,7 @@ import Budget from "./client";
  * `?sort`/`?dir` via useSearchParams, which then forces a client-side bailout and
  * fails the build unless the subtree sits in a <Suspense> boundary.
  *
- * A private dashboard over live financial data has nothing to gain from being
+ * A private planner over live financial data has nothing to gain from being
  * prerendered, so declaring it dynamic is both the fix and the honest description
  * of what this page is.
  */

@@ -2,9 +2,9 @@
 
 import { Circle, CircleCheck, Trash2 } from "lucide-react";
 
-import { CategoryWithTasks } from "@/app/(protected)/dashboard/checklist/page";
+import { CategoryWithTasks } from "@/app/(protected)/planner/checklist/page";
 import { Button } from "./ui/button";
-import { toggleTaskStatus } from "@/app/(protected)/dashboard/checklist/action";
+import { toggleTaskStatus } from "@/app/(protected)/planner/checklist/action";
 
 type TaskItem = CategoryWithTasks["tasks"][number];
 
