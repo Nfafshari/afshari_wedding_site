@@ -28,8 +28,22 @@ export function useDialogSubmit<Field extends string>(onSuccess: () => void) {
   /** Runs a server action, tracking loading + error and closing on success. */
   async function runAction(action: () => Promise<ActionResult<Field>>) {
     setIsLoading(true);
-    const result = await action();
-    setIsLoading(false);
+
+    let result: ActionResult<Field>;
+    try {
+      result = await action();
+    } catch (error) {
+      // Actions return { ok: false } for failures they expect. A *rejection* means
+      // the call never completed — a dropped connection, a timeout, a deploy
+      // mid-request. Without this the finally below never runs and the dialog
+      // stays disabled forever.
+      console.error(`*ERROR - server action failed to complete, see below:\n${error}`);
+      setServerError('Something went wrong. Please try again.');
+      setServerErrorField(null);
+      return;
+    } finally {
+      setIsLoading(false);
+    }
 
     if (!result.ok) {
       setServerError(result.error);

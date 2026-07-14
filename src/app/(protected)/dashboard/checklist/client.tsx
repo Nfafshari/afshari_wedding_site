@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { CirclePlus, LucideIcon, SquarePen } from "lucide-react";
 import * as Lucide from "lucide-react"
 
@@ -158,7 +157,7 @@ export default function Checklist({ categories }: ChecklistProps) {
 
                   {/** Tasks */}
                   <div className="p-2 flex-col">
-                    {category.tasks.map((task, idx) => (
+                    {category.tasks.map((task) => (
                       <Task
                         key={task.id}
                         task={task}

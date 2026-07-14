@@ -307,7 +307,7 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
               setIsDeleteSubcategoryActive(true)
             }}
           >
-            Delete "{subcategoryToUpdate.name}"?
+            Delete &ldquo;{subcategoryToUpdate.name}&rdquo;?
           </Button>
         </AlertDialogHeader>
         <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">

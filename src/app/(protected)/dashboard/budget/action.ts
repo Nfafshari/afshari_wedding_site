@@ -18,6 +18,9 @@ export interface BudgetSubcategoryInput {
 
 const BUDGET_PATH = '/dashboard/budget';
 
+/** estimatedCost/paidAmount are Decimal(10,2), so anything this large overflows the column. */
+const MAX_MONEY = 100_000_000;
+
 /**
  * The shape every action returns: either it worked, or it failed with a reason.
  * The client checks `ok` to decide whether to close the dialog or show an error,
@@ -26,6 +29,25 @@ const BUDGET_PATH = '/dashboard/budget';
 export type ActionResult =
   | { ok: true }
   | { ok: false; error: string; field?: ErrorField };
+
+/**
+ * Bounds a money value once, so create and update can't drift apart on what counts
+ * as valid — they already had.
+ * @returns a failing ActionResult, or null when the value is acceptable
+ */
+function validateMoney (value: number, field: 'estimatedCost' | 'paidAmount', label: string): ActionResult | null {
+  // Number(...) can hand us NaN if the user typed something non-numeric.
+  if (!Number.isFinite(value) || value < 0) {
+    return { ok: false, error: `${label} must be a number of 0 or more.`, field };
+  }
+
+  // Past this the DB write throws and the user only sees "Something went wrong".
+  if (value >= MAX_MONEY) {
+    return { ok: false, error: `${label} must be less than $100,000,000.`, field };
+  }
+
+  return null;
+}
 
 /**
  * Creates a new budget category in the DB.
@@ -153,13 +175,14 @@ export async function createBudgetSubcategory (name: string, estimatedCost: numb
     return { ok: false, error: 'No category selected.', field: 'budgetCategory' };
   }
 
-  // Number(...) can hand us NaN if the user typed something non-numeric.
-  if (!Number.isFinite(estimatedCost) || estimatedCost < 0) {
-    return { ok: false, error: 'Estimated cost must be a number of 0 or more.', field: 'estimatedCost' };
+  const estimatedCostError = validateMoney(estimatedCost, 'estimatedCost', 'Estimated cost');
+  if (estimatedCostError) {
+    return estimatedCostError;
   }
 
-  if (!Number.isFinite(paidAmount) || paidAmount < 0) {
-    return { ok: false, error: 'Amount paid must be a number of 0 or more.', field: 'paidAmount' };
+  const paidAmountError = validateMoney(paidAmount, 'paidAmount', 'Amount paid');
+  if (paidAmountError) {
+    return paidAmountError;
   }
 
   // Try the write. The DB's @@unique([budgetCategoryId, name]) guards duplicates.
@@ -251,26 +274,30 @@ export async function updateBudgetSubcategory (budgetSubcategoryId: number | und
     return { ok: false, error: 'Subcategory name can not be empty', field: 'name' }
   }
 
-  // set trimmed name
-  data.name = trimmedName;
-
-  if (data.estimatedCost !== undefined && (!Number.isFinite(data.estimatedCost) || data.estimatedCost < 0 || data.estimatedCost >= 100_000_000)) {
-    return { ok: false, error: 'Subcategory estimated cost is incorrect. Please try again.', field: 'estimatedCost'}
+  if (data.estimatedCost !== undefined) {
+    const estimatedCostError = validateMoney(data.estimatedCost, 'estimatedCost', 'Estimated cost');
+    if (estimatedCostError) {
+      return estimatedCostError;
+    }
   }
 
-  if (data.paidAmount !== undefined && (!Number.isFinite(data.paidAmount) || data.paidAmount < 0 || data.paidAmount >= 100_000_000)) {
-    return { ok: false, error: 'Subcategory paid amount is incorrect. Please try again.', field: 'paidAmount'}
+  if (data.paidAmount !== undefined) {
+    const paidAmountError = validateMoney(data.paidAmount, 'paidAmount', 'Amount paid');
+    if (paidAmountError) {
+      return paidAmountError;
+    }
   }
-  
+
   if (data.status !== undefined && !Object.values(BudgetStatus).includes(data.status)) {
     return { ok: false, error: 'Subcategory status is incorrect. Please try again.', field: 'status'}
   }
 
-  // Try to write name if it is valid 
+  // Spread rather than mutating `data` — it belongs to the caller. Prisma skips any
+  // key that is undefined, so absent fields are left untouched.
   try {
     await prisma.budgetSubcategory.update({
       where: { id: budgetSubcategoryId },
-      data: data,
+      data: { ...data, name: trimmedName },
     });
   } catch (error) {
     // P2002 = unique constraint (a category with this name already exists).
