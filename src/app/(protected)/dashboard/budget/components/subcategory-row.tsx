@@ -220,7 +220,7 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
         </div>
       </TableCell>
       <TableCell className="hidden md:table-cell">
-      <InputGroup className={`border-transparent rounded-sm hover:border-border w-fit min-w-20 ${(fieldErrors.estimatedCost || serverErrorField === 'estimatedCost') ? 'border-destructive' : ''}`}>
+        <InputGroup className={`border-transparent rounded-sm hover:border-border w-fit min-w-20 ${(fieldErrors.estimatedCost || serverErrorField === 'estimatedCost') ? 'border-destructive' : ''}`}>
           <InputGroupAddon className="text-lg text-foreground">$</InputGroupAddon>
           <InputGroupInput
             className="field-sizing-content flex-none! text-lg! pl-px!"

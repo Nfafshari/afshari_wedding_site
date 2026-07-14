@@ -66,7 +66,7 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
         }
 
         return (
-          <Collapsible key={budgetCategory.id} defaultOpen>
+          <Collapsible key={budgetCategory.id} defaultOpen={budgetCategory.budgetSubcategories.length > 0}>
             <Table className="table-fixed">
               {/** custom column sizing */}
               <CategoryColumns />
