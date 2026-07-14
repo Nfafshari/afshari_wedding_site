@@ -6,7 +6,7 @@ import FormDialog from "@/components/form-dialog";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
-import { useDialogSubmit } from "@/hooks/dialog-submit";
+import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 import { createBudgetSubcategory, type ErrorField } from "../../action";
 import type { BudgetCategory } from "../../page";

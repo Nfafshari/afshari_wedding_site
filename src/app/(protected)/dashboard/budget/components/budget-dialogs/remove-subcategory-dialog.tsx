@@ -10,7 +10,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useDialogSubmit } from "@/hooks/dialog-submit";
+import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 import { deleteBudgetSubcategory, type ErrorField } from "../../action";
 import type { BudgetSubcategory } from "../../page";

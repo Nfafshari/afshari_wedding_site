@@ -5,7 +5,7 @@ import { useState } from "react";
 import FormDialog from "@/components/form-dialog";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-import { useDialogSubmit } from "@/hooks/dialog-submit";
+import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 import { createBudgetCategory, type ErrorField } from "../../action";
 import type { BudgetCategory } from "../../page";

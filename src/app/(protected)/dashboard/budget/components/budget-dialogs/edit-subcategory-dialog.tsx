@@ -20,7 +20,7 @@ import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/in
 import { updateBudgetSubcategory, deleteBudgetSubcategory, type ErrorField, type BudgetSubcategoryInput } from "../../action";
 import type { BudgetSubcategory } from "../../page";
 import { BudgetStatus } from "@/generated/prisma/enums";
-import { useDialogSubmit } from "@/hooks/dialog-submit";
+import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { parseMoneyString, toAmount } from "@/lib/utils";

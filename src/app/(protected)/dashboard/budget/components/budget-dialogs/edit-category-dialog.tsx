@@ -15,7 +15,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { useDialogSubmit } from "@/hooks/dialog-submit";
+import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 import { updateBudgetCategory, deleteBudgetCategory, type ErrorField } from "../../action";
 import type { BudgetCategory } from "../../page";

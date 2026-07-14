@@ -13,7 +13,7 @@ import { BudgetStatus } from "@/generated/prisma/enums";
 import { parseMoneyString, toAmount, toCurrency } from "@/lib/utils";
 import { BudgetSubcategory } from "../page";
 import { ErrorField, updateBudgetSubcategory } from "../action";
-import { useDialogSubmit } from "@/hooks/dialog-submit";
+import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 interface SubcategoryRowProps {
   subcategory: BudgetSubcategory;

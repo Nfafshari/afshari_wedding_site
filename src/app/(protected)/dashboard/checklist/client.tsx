@@ -18,6 +18,7 @@ import RemoveTaskDialog from "@/app/(protected)/dashboard/checklist/checklist-di
 import { getDaysRemaining } from "@/lib/utils";
 import { CategoryWithTasks } from "./page";
 import Task from "@/components/task";
+import { useQueryParams } from "@/hooks/use-query-params";
 
 interface ChecklistProps {
   categories: CategoryWithTasks[]
@@ -37,20 +38,9 @@ export default function Checklist({ categories }: ChecklistProps) {
   const [activeCategoryId, setActiveCategoryId] = useState<number | null>(null);
   const [activeTaskId, setActiveTaskId] = useState<number | null>(null);
 
-  // tab filtering using url parameters
-  const searchParams = useSearchParams();
+  
+  const { searchParams, setParams } = useQueryParams();
   const activeTab = searchParams.get('category') ?? 'All';
-  const pathname = usePathname();
-  const router = useRouter();
-
-  // Build a URL for the current path with the query string mutated by `update`.
-  // Starts from the current params so any other query values are preserved.
-  function buildHref (update: (params: URLSearchParams) => void) {
-    const params = new URLSearchParams(searchParams);
-    update(params);
-    const query = params.toString();
-    return query ? `${pathname}?${query}` : pathname;
-  }
 
   const WEDDING_DATE = '2027-09-11';
   const daysToWedding = getDaysRemaining(WEDDING_DATE);
@@ -125,7 +115,7 @@ export default function Checklist({ categories }: ChecklistProps) {
                 isActive={category.name === activeTab}
                 key={`${category.name}-${idx}`}
                 onClick={() => {
-                  router.replace(buildHref((params) => params.set('category', category.name)));
+                  setParams((params) => params.set('category', category.name))
                 }}
               >
                 {category.name}
@@ -135,7 +125,7 @@ export default function Checklist({ categories }: ChecklistProps) {
               isActive={activeTab === 'All'}
               key={'all'}
               onClick={() => {
-                router.replace(buildHref((params) => params.delete('category')));
+                setParams((params) => params.delete('category'))
               }}
             >
               All
