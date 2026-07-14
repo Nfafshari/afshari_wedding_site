@@ -21,13 +21,36 @@ export function getDaysRemaining (endDate: string) {
   return Math.ceil(timeInMs / (1000 * 60 * 60 * 24));
 }
 
-/** 
- * Converts number to USD currency
+// Building an Intl.NumberFormat is the expensive part (locale resolution); .format() is
+// cheap. These render several times per table row, so construct them once.
+const currencyFormatter = Intl.NumberFormat('en-us', {
+  style: 'currency',
+  currency: 'USD',
+});
+
+const amountFormatter = Intl.NumberFormat('en-us', {
+  style: 'decimal',
+  minimumFractionDigits: 2,
+  maximumFractionDigits: 2,
+});
+
+/**
+ * Converts number to USD currency, symbol included. Use for display text.
  * @param num - number to format can be any value
- * @returns formatted number in USD
+ * @returns formatted number in USD, e.g. "$1,234.56" (negatives as "-$50.00")
  */
 export function toCurrency (num: number) {
-  return Intl.NumberFormat('en-us', { style: 'currency', currency: 'USD' }).format(num);
+  return currencyFormatter.format(num);
+}
+
+/**
+ * Converts number to a bare money string with no currency symbol. Use inside inputs
+ * that already render their own "$" addon, so the user never types the symbol.
+ * @param num - number to format can be any value
+ * @returns formatted number without a symbol, e.g. "1,234.56"
+ */
+export function toAmount (num: number) {
+  return amountFormatter.format(num);
 }
 
 /** Parses a currency string into a usable number */

@@ -10,7 +10,7 @@ import { useDialogSubmit } from "@/hooks/dialog-submit";
 
 import { createBudgetSubcategory, type ErrorField } from "../../action";
 import type { BudgetCategory } from "../../page";
-import { parseMoneyString } from "@/lib/utils";
+import { parseMoneyString, toAmount } from "@/lib/utils";
 
 interface AddSubcategoryDialogProps {
   /** All categories, used to find the target category for the duplicate-name check. */
@@ -185,6 +185,12 @@ export default function AddSubcategoryDialog({ budgetCategories, budgetCategoryI
                 setFieldErrors(prev => ({ ...prev, estimatedCost: msg }));
               } else {
                 setFieldErrors(({ estimatedCost, ...rest }) => rest);
+
+                // Known-good, so snap the field to canonical formatting ("1000" -> "1,000.00").
+                const parsedEstimatedCost = parseMoneyString(e.target.value);
+                if (parsedEstimatedCost !== null) {
+                  setEstimatedCost(toAmount(parsedEstimatedCost));
+                }
               }
             }}
           />
@@ -212,15 +218,18 @@ export default function AddSubcategoryDialog({ budgetCategories, budgetCategoryI
               clearServerError();
             }}
             onBlur={(e) => {
-              // Blank paid amount defaults to 0, so reflect that in the field itself.
-              if (e.target.value.trim() === '') {
-                setPaidAmount('0.00');
-              }
               const msg = paidAmountValidator(e.target.value);
               if (msg) {
                 setFieldErrors(prev => ({ ...prev, paidAmount: msg }));
               } else {
                 setFieldErrors(({ paidAmount, ...rest }) => rest);
+
+                // Known-good, so snap the field to canonical formatting. A blank paid
+                // amount defaults to 0, which formats to "0.00" on its own.
+                const parsedPaidAmount = e.target.value.trim() === '' ? 0 : parseMoneyString(e.target.value);
+                if (parsedPaidAmount !== null) {
+                  setPaidAmount(toAmount(parsedPaidAmount));
+                }
               }
             }}
           />

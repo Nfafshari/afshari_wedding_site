@@ -23,7 +23,7 @@ import { BudgetStatus } from "@/generated/prisma/enums";
 import { useDialogSubmit } from "@/hooks/dialog-submit";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
-import { parseMoneyString } from "@/lib/utils";
+import { parseMoneyString, toAmount } from "@/lib/utils";
 
 interface EditSubcategoryDialogProps {
   /** The subcategory being edited. */
@@ -37,8 +37,8 @@ const BADGE_VARIANT = Object.values(BudgetStatus);
 
 export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }: EditSubcategoryDialogProps) {
   const [newName, setNewName] = useState(subcategoryToUpdate.name);
-  const [newEstimatedCost, setNewEstimatedCost] = useState(`${subcategoryToUpdate.estimatedCost}`);
-  const [newPaidAmount, setNewPaidAmount] = useState(`${subcategoryToUpdate.paidAmount}`);
+  const [newEstimatedCost, setNewEstimatedCost] = useState(toAmount(subcategoryToUpdate.estimatedCost));
+  const [newPaidAmount, setNewPaidAmount] = useState(toAmount(subcategoryToUpdate.paidAmount));
   const [newStatus, setNewStatus] = useState<BudgetStatus>(subcategoryToUpdate.status)
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<ErrorField, string>>>({});
   const [isDeleteSubcategoryActive, setIsDeleteSubcategoryActive] = useState(false);   // Flips this dialog between the "edit" view and the "confirm delete" view.
@@ -223,6 +223,12 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
                     setFieldErrors(prev => ({ ...prev, estimatedCost: msg }));
                   } else {
                     setFieldErrors(({ estimatedCost, ...rest }) => rest);
+
+                    // Known-good, so snap the field to canonical formatting ("1000" -> "1,000.00").
+                    const parsedEstimatedCost = parseMoneyString(e.target.value);
+                    if (parsedEstimatedCost !== null) {
+                      setNewEstimatedCost(toAmount(parsedEstimatedCost));
+                    }
                   }
                 }}
               />
@@ -254,6 +260,12 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
                     setFieldErrors(prev => ({ ...prev, paidAmount: msg }));
                   } else {
                     setFieldErrors(({ paidAmount, ...rest }) => rest);
+
+                    // Known-good, so snap the field to canonical formatting ("1000" -> "1,000.00").
+                    const parsedPaidAmount = parseMoneyString(e.target.value);
+                    if (parsedPaidAmount !== null) {
+                      setNewPaidAmount(toAmount(parsedPaidAmount));
+                    }
                   }
                 }}
               />

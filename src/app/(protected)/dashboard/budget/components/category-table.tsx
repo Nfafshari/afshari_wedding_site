@@ -15,14 +15,14 @@ import {
   CollapsibleTrigger,
 } from "@/components/ui/collapsible"
 
-import { ChevronDown, CirclePlus, SquarePen, Trash2 } from "lucide-react";
+import { ChevronDown, CirclePlus, SquarePen } from "lucide-react";
 import { toCurrency } from "@/lib/utils";
 import CategoryColumns from "./category-columns";
 import { BudgetCategory } from "../page";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { BudgetStatus } from "@/generated/prisma/enums";
-import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import SubcategoryRow from "./subcategory-row";
 
 interface CategoryTableProps {
   data: BudgetCategory[];
@@ -126,60 +126,12 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
               <CollapsibleContent asChild>
                 <TableBody className="last:border-b border-burg">
                   {budgetCategory.budgetSubcategories.map((budgetSubcategory) => (
-                    <TableRow key={budgetSubcategory.id}>
-                      <TableCell>
-                        <div className="flex justify-center">
-                          {/** Show trash can on desktop and edit on mobile */}
-                          <Button
-                            variant={'ghost'}
-                            aria-label={`Delete ${budgetSubcategory.name}`}
-                            className="hidden text-gold/40 p-1 ml-1 hover:bg-destructive hover:text-background md:flex"
-                            onClick={() => {
-                              onDeleteSubcategory(budgetSubcategory.id)
-                            }}
-                          >
-                            <Trash2 />
-                          </Button>
-                          <Button
-                            variant={'ghost'}
-                            aria-label={`Delete ${budgetSubcategory.name}`}
-                            className="text-gold/40 p-1 ml-1 hover:bg-olivine hover:text-background md:hidden"
-                            onClick={() => {
-                              onEditSubcategory(budgetSubcategory.id)
-                            }}
-                          >
-                            <SquarePen />
-                          </Button>
-                        </div>
-                      </TableCell>
-                      <TableCell className="font-medium">
-                        <div className="flex flex-col overflow-x-scroll pb-2 text-lg md:hidden">
-                          {budgetSubcategory.name}
-                          <p className="text-xs text-accent">{toCurrency(budgetSubcategory.estimatedCost)} est. <span className="text-sm leading-tight">•</span> {toCurrency(budgetSubcategory.paidAmount)} paid</p>
-                        </div>
-                        <div className="hidden overflow-x-scroll text-lg md:block">{budgetSubcategory.name}</div>
-                      </TableCell>
-                      <TableCell className="hidden md:table-cell">
-                        <InputGroup className="border-none focus:border-border w-1/2">
-                          <InputGroupAddon className="text-lg text-foreground">$</InputGroupAddon>
-                          <InputGroupInput
-                            className="text-lg! pl-px!"
-                            value={budgetSubcategory.estimatedCost}
-                            onChange={() => {
-
-                            }}
-                          />
-                         
-                        </InputGroup>
-                      </TableCell>
-                      <TableCell className="hidden text-lg md:table-cell">{toCurrency(budgetSubcategory.paidAmount)}</TableCell>
-                      <TableCell className="text-right text-lg">{toCurrency(budgetSubcategory.estimatedCost - budgetSubcategory.paidAmount)}</TableCell>
-                      <TableCell className="text-right">
-                        <Badge variant={budgetSubcategory.status} className="text-lg">
-                          {budgetSubcategory.status}
-                        </Badge>
-                      </TableCell>
-                    </TableRow>
+                    <SubcategoryRow
+                      key={budgetSubcategory.id}
+                      subcategory={budgetSubcategory}
+                      onDeleteSubcategory={onDeleteSubcategory}
+                      onEditSubcategory={onEditSubcategory}
+                    />
                   ))}
                   <TableRow className="hover:bg-background">
                     <TableCell>

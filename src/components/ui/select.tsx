@@ -34,10 +34,12 @@ function SelectValue({
 function SelectTrigger({
   className,
   size = "default",
+  align = 'right',
   children,
   ...props
 }: React.ComponentProps<typeof SelectPrimitive.Trigger> & {
-  size?: "sm" | "default"
+  size?: "sm" | "default",
+  align?: 'left' | 'right'
 }) {
   return (
     <SelectPrimitive.Trigger
@@ -49,10 +51,17 @@ function SelectTrigger({
       )}
       {...props}
     >
+      {align === 'left' && 
+        <SelectPrimitive.Icon asChild>
+          <ChevronDownIcon className="pointer-events-none size-4 text-muted-foreground" />
+        </SelectPrimitive.Icon>
+      }
       {children}
-      <SelectPrimitive.Icon asChild>
-        <ChevronDownIcon className="pointer-events-none size-4 text-muted-foreground" />
-      </SelectPrimitive.Icon>
+      {align === 'right' && 
+        <SelectPrimitive.Icon asChild>
+          <ChevronDownIcon className="pointer-events-none size-4 text-muted-foreground" />
+        </SelectPrimitive.Icon>
+      }
     </SelectPrimitive.Trigger>
   )
 }

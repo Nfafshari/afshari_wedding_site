@@ -10,10 +10,10 @@ import { revalidatePath } from 'next/cache';
 export type ErrorField = 'name' | 'estimatedCost' | 'paidAmount' | 'budgetCategory' | 'status';
 
 export interface BudgetSubcategoryInput {
-  name: string | undefined;
-  estimatedCost: number | undefined;
-  paidAmount: number | undefined;
-  status: BudgetStatus | undefined;
+  name?: string | undefined;
+  estimatedCost?: number | undefined;
+  paidAmount?: number | undefined;
+  status?: BudgetStatus | undefined;
 }
 
 const BUDGET_PATH = '/dashboard/budget';
