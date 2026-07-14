@@ -13,8 +13,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import { deleteTask } from "@/app/(protected)/dashboard/checklist/action";
-import type { CategoryWithTasks } from "@/app/(protected)/dashboard/checklist/page";
+import { deleteTask } from "@/app/(protected)/planner/checklist/action";
+import type { CategoryWithTasks } from "@/app/(protected)/planner/checklist/page";
 
 type TaskItem = CategoryWithTasks["tasks"][number];
 

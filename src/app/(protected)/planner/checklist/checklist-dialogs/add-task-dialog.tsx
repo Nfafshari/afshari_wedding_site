@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Calendar } from "@/components/ui/calendar";
 
-import { createTask, type ErrorField } from "@/app/(protected)/dashboard/checklist/action";
+import { createTask, type ErrorField } from "@/app/(protected)/planner/checklist/action";
 
 interface AddTaskDialogProps {
   /** The category the new task belongs to. */

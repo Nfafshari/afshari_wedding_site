@@ -18,8 +18,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import { updateCategory, deleteCategory, type ErrorField } from "@/app/(protected)/dashboard/checklist/action";
-import type { CategoryWithTasks } from "@/app/(protected)/dashboard/checklist/page";
+import { updateCategory, deleteCategory, type ErrorField } from "@/app/(protected)/planner/checklist/action";
+import type { CategoryWithTasks } from "@/app/(protected)/planner/checklist/page";
 
 const ICON_LIBRARY: LucideIcon[] = [
   Lucide.HandCoins, Lucide.CalendarDays, Lucide.Gift, Lucide.Car,

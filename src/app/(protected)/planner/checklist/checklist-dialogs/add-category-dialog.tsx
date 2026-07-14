@@ -9,8 +9,8 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { createCategory, type ErrorField } from "@/app/(protected)/dashboard/checklist/action";
-import type { CategoryWithTasks } from "@/app/(protected)/dashboard/checklist/page";
+import { createCategory, type ErrorField } from "@/app/(protected)/planner/checklist/action";
+import type { CategoryWithTasks } from "@/app/(protected)/planner/checklist/page";
 
 const ICON_LIBRARY: LucideIcon[] = [
   Lucide.HandCoins, Lucide.CalendarDays, Lucide.Gift, Lucide.Car,

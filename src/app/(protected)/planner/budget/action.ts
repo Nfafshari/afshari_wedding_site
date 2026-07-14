@@ -16,7 +16,7 @@ export interface BudgetSubcategoryInput {
   status?: BudgetStatus | undefined;
 }
 
-const BUDGET_PATH = '/dashboard/budget';
+const BUDGET_PATH = '/planner/budget';
 
 /** estimatedCost/paidAmount are Decimal(10,2), so anything this large overflows the column. */
 const MAX_MONEY = 100_000_000;

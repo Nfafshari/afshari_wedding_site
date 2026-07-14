@@ -43,7 +43,7 @@ declare global {
    * Props for Next.js App Router layout components
    * @example
    * ```tsx
-   * export default function Layout(props: LayoutProps<'/dashboard'>) {
+   * export default function Layout(props: LayoutProps<'/planner'>) {
    *   return <div>{props.children}</div>
    * }
    * ```

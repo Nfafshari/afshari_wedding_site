@@ -5,7 +5,7 @@ import { Progress } from "@/components/ui/progress";
 import { Field, FieldLabel } from "@/components/ui/field"
 import { getDaysRemaining } from "@/lib/utils";
 
-export default function Dashboard() {
+export default function Planner() {
   // days until our wedding date
   const daysTilWedding = getDaysRemaining('2027-09-11');
 
@@ -16,10 +16,10 @@ export default function Dashboard() {
   ];
 
   const tabs: { tabName: string, link: string, icon: LucideIcon }[] = [
-    { tabName: 'Budget Breakdown', link: '/dashboard/budget', icon: ChartPie },
-    { tabName: 'Choice Knockout', link: '/dashboard', icon: Podium },
-    { tabName: 'Registry Purchases', link: '/dashboard', icon: Gift },
-    { tabName: 'Timeline', link: '/dashboard', icon: CalendarClock }
+    { tabName: 'Budget Breakdown', link: '/planner/budget', icon: ChartPie },
+    { tabName: 'Choice Knockout', link: '/planner', icon: Podium },
+    { tabName: 'Registry Purchases', link: '/planner', icon: Gift },
+    { tabName: 'Timeline', link: '/planner', icon: CalendarClock }
   ];
 
   return (
@@ -46,7 +46,7 @@ export default function Dashboard() {
                 return (
                   <Link 
                     className="grid grid-rows-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/65 cursor-pointer hover:shadow active:bg-olivine/20"
-                    href={'/dashboard/checklist'}
+                    href={'/planner/checklist'}
                     key={idx}  
                   >
                     <p className="text-center">{taskName}</p>
@@ -69,7 +69,7 @@ export default function Dashboard() {
             <div className="w-1/2 h-full pt-2 m-1 grid grid-cols-3 gap-3 mt-1">
               <Link 
                 className="grid grid-rows-2 col-span-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/65 cursor-pointer hover:shadow active:bg-olivine/20"
-                href={'/dashboard/checklist'}
+                href={'/planner/checklist'}
                 key={`${exampleUpNextTask[0].taskName}`}  
               >
                 <h1 className="page-subtitle row-span-2 text-burg text-center">{exampleUpNextTask[0].taskName}</h1>
@@ -86,7 +86,7 @@ export default function Dashboard() {
       <div className="flex flex-col w-full h-1/4 justify-center px-10 py-5 text-burg md:px-20">
         <p className="uppercase tracking-[0.16em]">RSVPs</p>
         <Link 
-          href={'/dashboard'}
+          href={'/planner'}
           className="w-full h-full border-2 border-s-0 border-e-0 border-gold/50 hover:shadow cursor-pointer"
         >
           <div className="grid grid-cols-2 h-full md:grid-cols-4">
