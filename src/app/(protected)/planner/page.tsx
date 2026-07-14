@@ -22,6 +22,8 @@ export default function Planner() {
     { tabName: 'Timeline', link: '/planner', icon: CalendarClock }
   ];
 
+  const ExampleIcon = exampleUpNextTask[0].icon;
+
   return (
     <div className="flex flex-col w-full items-center font-serif">
       <h1 className="page-title p-2 pb-0"> Sept. 11th 2027 </h1>
@@ -38,7 +40,7 @@ export default function Planner() {
               value={50}
             />
           </Field>
-          <p className="section-title hidden mt-3 md:flex">Next Steps:</p>
+          <p className="section-title hidden mt-3 md:flex">Next Tasks:</p>
           <div className="hidden w-full h-full justify-center items-center md:flex">
             <div className="w-1/2 h-full pt-2 m-1 grid grid-cols-3 gap-3 mt-1">
               {exampleUpNextTask.map(({taskName, goalDate, icon}, idx) => {
@@ -49,7 +51,7 @@ export default function Planner() {
                     href={'/planner/checklist'}
                     key={idx}  
                   >
-                    <p className="text-center">{taskName}</p>
+                    <p className="text-center text-foreground">{taskName}</p>
                     <div className="flex w-full h-auto justify-center items-center">
                       <Icon
                         className="w-10 h-10 text-gold"
@@ -62,22 +64,36 @@ export default function Planner() {
               })}
             </div>
             <div className="flex items-center">
-              <CircleArrowRight className="text-burg/30 cursor-pointer hover:text-burg/50"/>
+              <Link 
+                href={'/planner/checklist'}
+              >
+                <CircleArrowRight className="text-burg/30 cursor-pointer hover:text-burg/50"/>
+              </Link>
             </div>
           </div>
           <div className="flex w-full h-full justify-center items-center md:hidden">
             <div className="w-1/2 h-full pt-2 m-1 grid grid-cols-3 gap-3 mt-1">
               <Link 
-                className="grid grid-rows-2 col-span-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/65 cursor-pointer hover:shadow active:bg-olivine/20"
+                className="flex col-span-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/65 cursor-pointer hover:shadow active:bg-olivine/20"
                 href={'/planner/checklist'}
                 key={`${exampleUpNextTask[0].taskName}`}  
               >
-                <h1 className="page-subtitle row-span-2 text-burg text-center">{exampleUpNextTask[0].taskName}</h1>
-                <p className="text-center pb-2">{exampleUpNextTask[0].goalDate.toLocaleDateString()}</p>
+                <ExampleIcon 
+                  className="w-10 h-10 mr-5 text-gold"
+                  strokeWidth={1}
+                />
+                <div className="mt-1">
+                  <h1 className="page-subtitle row-span-2 text-burg text-center">{exampleUpNextTask[0].taskName}</h1>
+                  <p className="text-center pb-2">{exampleUpNextTask[0].goalDate.toLocaleDateString()}</p>
+                </div>
               </Link>
             </div>
             <div className="flex items-center">
-              <CircleArrowRight className="text-burg/30 cursor-pointer hover:text-burg/50"/>
+              <Link 
+                href={'/planner/checklist'}
+              >
+                <CircleArrowRight className="text-burg/30 cursor-pointer hover:text-burg/50"/>
+              </Link>
             </div>
           </div>
         </div>
@@ -116,7 +132,7 @@ export default function Planner() {
             const Icon = icon;
             return (
               <Link 
-                className="grid grid-rows-4 w-full h-full border border-burg/8 rounded-lg bg-olivine/10 cursor-pointer hover:shadow active:bg-olivine/15"
+                className="grid grid-rows-4 w-full h-full border border-burg/8 rounded-lg bg-olivine/15 cursor-pointer hover:shadow active:bg-olivine/15"
                 href={link}
                 key={`tab-${idx}`}
               >
