@@ -27,7 +27,6 @@ model Guest {
   phoneNumber     String?
   email           String?
   isPrimary       Boolean    @default(false)
-  mealChoice      String?
   notes           String?
   createdAt       DateTime   @default(now())
   rsvpId          Int
