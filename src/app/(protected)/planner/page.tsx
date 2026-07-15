@@ -102,7 +102,7 @@ export default function Planner() {
       <div className="flex flex-col w-full h-1/4 justify-center px-10 py-5 text-burg md:px-20">
         <p className="uppercase tracking-[0.16em]">RSVPs</p>
         <Link 
-          href={'/planner'}
+          href={'/planner/rsvp'}
           className="w-full h-full border-2 border-s-0 border-e-0 border-gold/50 hover:shadow cursor-pointer"
         >
           <div className="grid grid-cols-2 h-full md:grid-cols-4">
