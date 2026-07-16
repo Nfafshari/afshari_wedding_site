@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { notifyError, notifySuccess } from "@/lib/toast";
 
 /** Mirrors the ActionResult contract every server action returns. */
 type ActionResult<Field extends string> =
@@ -25,8 +26,13 @@ export function useDialogSubmit<Field extends string>(onSuccess: () => void) {
     setServerErrorField(null);
   }
 
-  /** Runs a server action, tracking loading + error and closing on success. */
-  async function runAction(action: () => Promise<ActionResult<Field>>) {
+  /**
+   * Runs a server action, tracking loading + error, toasting the outcome, and
+   * closing on success.
+   *
+   * @param successMessage - shown in the success toast when the action succeeds
+   */
+  async function runAction(successMessage: string, action: () => Promise<ActionResult<Field>>) {
     setIsLoading(true);
 
     let result: ActionResult<Field>;
@@ -40,6 +46,7 @@ export function useDialogSubmit<Field extends string>(onSuccess: () => void) {
       console.error(`*ERROR - server action failed to complete, see below:\n${error}`);
       setServerError('Something went wrong. Please try again.');
       setServerErrorField(null);
+      notifyError('Something went wrong. Please try again.');
       return;
     } finally {
       setIsLoading(false);
@@ -48,9 +55,11 @@ export function useDialogSubmit<Field extends string>(onSuccess: () => void) {
     if (!result.ok) {
       setServerError(result.error);
       setServerErrorField(result.field ?? null);
+      notifyError(result.error);
       return;
     }
 
+    notifySuccess(successMessage);
     onSuccess();
   }
 

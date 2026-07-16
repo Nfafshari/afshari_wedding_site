@@ -1,7 +1,5 @@
 "use client";
 
-import { useState } from "react";
-
 import { Spinner } from "@/components/ui/spinner";
 import {
   AlertDialogAction,
@@ -13,8 +11,9 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import { deleteTask } from "@/app/(protected)/planner/checklist/action";
+import { deleteTask, type ErrorField } from "@/app/(protected)/planner/checklist/action";
 import type { CategoryWithTasks } from "@/app/(protected)/planner/checklist/page";
+import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 type TaskItem = CategoryWithTasks["tasks"][number];
 
@@ -26,23 +25,13 @@ interface RemoveTaskDialogProps {
 }
 
 export default function RemoveTaskDialog({ taskToRemove, onSuccess }: RemoveTaskDialogProps) {
-  const [isLoading, setIsLoading] = useState(false);
-  const [serverError, setServerError] = useState('');
+  const { isLoading, serverError, runAction } = useDialogSubmit<ErrorField>(onSuccess);
 
   async function removeTask(event: React.MouseEvent) {
     // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
     event.preventDefault();
 
-    setIsLoading(true);
-    const result = await deleteTask(taskToRemove?.id);
-    setIsLoading(false);
-
-    if (!result.ok) {
-      setServerError(result.error);
-      return;
-    }
-
-    onSuccess();
+    await runAction("Task removed", () => deleteTask(taskToRemove?.id));
   }
 
   return (

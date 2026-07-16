@@ -104,7 +104,7 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
     }
 
     // Send it. Server-side field errors surface via serverError / serverErrorField.
-    await runAction(() => updateBudgetSubcategory(subcategory.id, { name: trimmedName }));
+    await runAction("Subcategory updated", () => updateBudgetSubcategory(subcategory.id, { name: trimmedName }));
   }
 
   async function saveEstimatedCost (updatedEstimatedCost: string) {
@@ -126,7 +126,7 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
     }
 
     // Send it. Server-side field errors surface via serverError / serverErrorField.
-    await runAction(() => updateBudgetSubcategory(subcategory.id, { estimatedCost: parsedEstimatedCost }));
+    await runAction("Estimated cost updated", () => updateBudgetSubcategory(subcategory.id, { estimatedCost: parsedEstimatedCost }));
   }
 
   async function savePaidAmount (updatedPaidAmount: string) {
@@ -148,7 +148,7 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
     }
 
     // Send it. Server-side field errors surface via serverError / serverErrorField.
-    await runAction(() => updateBudgetSubcategory(subcategory.id, { paidAmount: parsedPaidAmount }));
+    await runAction("Paid amount updated", () => updateBudgetSubcategory(subcategory.id, { paidAmount: parsedPaidAmount }));
   }
 
   async function saveStatus (updatedStatus: BudgetStatus) {
@@ -160,7 +160,7 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
     }
 
     // Send it. Server-side field errors surface via serverError / serverErrorField.
-    await runAction(() => updateBudgetSubcategory(subcategory.id, { status: updatedStatus }));
+    await runAction("Status updated", () => updateBudgetSubcategory(subcategory.id, { status: updatedStatus }));
   }
 
   return (

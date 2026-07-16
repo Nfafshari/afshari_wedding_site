@@ -5,6 +5,7 @@ import { Circle, CircleCheck, Trash2 } from "lucide-react";
 import { CategoryWithTasks } from "@/app/(protected)/planner/checklist/page";
 import { Button } from "./ui/button";
 import { toggleTaskStatus } from "@/app/(protected)/planner/checklist/action";
+import { notifyError, notifySuccess } from "@/lib/toast";
 
 type TaskItem = CategoryWithTasks["tasks"][number];
 
@@ -20,8 +21,13 @@ export default function Task ({ task, onDelete }: TaskProps) {
     year: 'numeric'
   } as const;
 
-  function toggleTaskDone (status: boolean) {
-    toggleTaskStatus(task?.id, status)
+  async function toggleTaskDone (status: boolean) {
+    const result = await toggleTaskStatus(task?.id, status);
+    if (!result.ok) {
+      notifyError(result.error);
+      return;
+    }
+    notifySuccess("Task updated");
   }
 
   return(

@@ -101,7 +101,7 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
     }
 
     // Send it. Server-side field errors surface via serverError / serverErrorField.
-    await runAction(() => updateBudgetSubcategory(subcategoryToUpdate.id, payload));
+    await runAction("Subcategory updated", () => updateBudgetSubcategory(subcategoryToUpdate.id, payload));
   }
 
   /**
@@ -164,7 +164,7 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
     // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
     event.preventDefault();
 
-    await runAction(() => deleteBudgetSubcategory(subcategoryToUpdate.id));
+    await runAction("Subcategory removed", () => deleteBudgetSubcategory(subcategoryToUpdate.id));
   }
 
   if (!isDeleteSubcategoryActive) {

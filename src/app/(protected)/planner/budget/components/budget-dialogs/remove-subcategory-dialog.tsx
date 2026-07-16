@@ -29,7 +29,7 @@ export default function RemoveSubcategoryDialog({ subcategoryToRemove, onSuccess
     // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
     event.preventDefault();
 
-    await runAction(() => deleteBudgetSubcategory(subcategoryToRemove?.id));
+    await runAction("Subcategory removed", () => deleteBudgetSubcategory(subcategoryToRemove?.id));
   }
 
   return (

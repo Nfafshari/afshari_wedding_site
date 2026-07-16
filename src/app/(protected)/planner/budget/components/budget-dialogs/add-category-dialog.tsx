@@ -53,7 +53,7 @@ export default function AddCategoryDialog({ budgetCategories, onSuccess }: AddCa
       return;
     }
 
-    await runAction(() => createBudgetCategory(categoryName));
+    await runAction("Category added", () => createBudgetCategory(categoryName));
   }
 
   return (

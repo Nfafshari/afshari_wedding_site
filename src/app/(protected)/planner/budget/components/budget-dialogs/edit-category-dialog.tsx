@@ -71,14 +71,14 @@ export default function EditCategoryDialog({ budgetCategories, categoryToUpdate,
       return;
     }
 
-    await runAction(() => updateBudgetCategory(categoryToUpdate?.id, newCategoryName));
+    await runAction("Category updated", () => updateBudgetCategory(categoryToUpdate?.id, newCategoryName));
   }
 
   async function removeCategory(event: React.MouseEvent) {
     // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
     event.preventDefault();
 
-    await runAction(() => deleteBudgetCategory(categoryToUpdate?.id));
+    await runAction("Category removed", () => deleteBudgetCategory(categoryToUpdate?.id));
   }
 
   if (!isDeleteCategoryActive) {
