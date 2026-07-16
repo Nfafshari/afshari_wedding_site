@@ -1,4 +1,4 @@
-import { Calendar, CalendarClock, ChartPie, ChessKing, CircleArrowRight, Gift, LucideIcon, Podium, SendHorizonal } from "lucide-react";
+import { Archive, Calendar, CalendarClock, ChartPie, ChessKing, CircleArrowRight, Gift, LucideIcon, Podium, SendHorizonal } from "lucide-react";
 import Link from "next/link";
 
 import { Progress } from "@/components/ui/progress";
@@ -17,7 +17,7 @@ export default function Planner() {
 
   const tabs: { tabName: string, link: string, icon: LucideIcon }[] = [
     { tabName: 'Budget Breakdown', link: '/planner/budget', icon: ChartPie },
-    { tabName: 'Choice Knockout', link: '/planner', icon: Podium },
+    { tabName: 'Documents Archive', link: '/planner', icon: Archive },
     { tabName: 'Registry Purchases', link: '/planner', icon: Gift },
     { tabName: 'Timeline', link: '/planner', icon: CalendarClock }
   ];
@@ -120,14 +120,14 @@ export default function Planner() {
             </div>
             <div className="flex flex-col w-full h-auto border-s-2 border-s-gold/50 justify-center pl-5">
               <p className="stat-number text-destructive">18</p>
-              <p className="muted-caption pt-2">Not Attending</p>
+              <p className="muted-caption pt-2">Declined</p>
             </div>
           </div>
         </Link>
       </div>
 
       <div className="flex h-2/5 w-full mb-10 px-10 py-5 lg:px-50 xl:px-80 lg:mb-0">
-        <div className="grid grid-cols-2 grid-rows-2 gap-3 w-full justify-center lg:grid-cols-4 lg:grid-rows-none lg:h-1/4">
+        <div className="grid grid-cols-2 grid-rows-2 gap-3 w-full justify-center h-80 lg:grid-cols-4 lg:grid-rows-none lg:h-1/4">
           {tabs.map(({tabName, link, icon}, idx) => {
             const Icon = icon;
             return (
@@ -142,7 +142,7 @@ export default function Planner() {
                     strokeWidth={1}
                   />
                 </div>
-                <div className="flex w-full h-full justify-center items-center text-center text-burg text-lg xl:text-2xl">
+                <div className="flex w-full h-full justify-center items-center text-center text-burg text-lg xl:text-xl">
                   {tabName}
                 </div>
               </Link>
