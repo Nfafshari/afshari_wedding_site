@@ -35,23 +35,32 @@ model Guest {
 }
 
 model RegistryItem {
-  id              Int    @id @default(autoincrement())
-  name            String
+  id              Int       @id @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  name            String    @unique
   link            String
   quantityWanted  Int
+  // `@default` only applies when the field is omitted on create, never when it is
+  // explicitly null — so readers must handle null regardless.
   image           String?   @default("/window.svg")
 
   claimed         RegistryClaim[]
 }
 
 model RegistryClaim {
-  id             Int     @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   claimedBy      String
   quantity       Int
   createdAt      DateTime  @default(now())
   itemId         Int
 
-  item           RegistryItem @relation(fields: [itemId], references: [id])
+  // Restrict, not Cascade: Task and BudgetSubcategory cascade because a child is
+  // meaningless without its parent, but a claim is a record of a real person who
+  // spent real money. Deleting a claimed item is a deliberate two-step chore.
+  item           RegistryItem @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  // Postgres does not index foreign keys automatically, and every read groups by item.
+  @@index([itemId])
 }
 
 model BudgetCategory {

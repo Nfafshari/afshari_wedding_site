@@ -66,6 +66,61 @@ export function parseMoneyString (value: string): number | null {
   if (!numberFormatRegex.test(strippedValue)) {
     return null;
   }
-  
+
   return Number(strippedValue);
+}
+
+/**
+ * Parses a whole-number quantity string, e.g. a registry item's "how many do we want".
+ * Not parseMoneyString: that one allows decimals, and you cannot want 2.5 towels.
+ * @param value - string value to parse
+ * @returns the number, or **null** if it isn't a whole number of 1 or more
+ */
+export function parseQuantityString (value: string): number | null {
+  // 1 to 4 digits keeps the result well inside Postgres' int4 range.
+  const quantityFormatRegex = /^\d{1,4}$/;
+
+  const strippedValue = value.trim().replaceAll(',', '');
+
+  if (!quantityFormatRegex.test(strippedValue)) {
+    return null;
+  }
+
+  const quantity = Number(strippedValue);
+
+  // "0 of this item" is not a wish, it's a deletion.
+  if (quantity < 1) {
+    return null;
+  }
+
+  return quantity;
+}
+
+/**
+ * Parses a web address, rejecting anything that isn't plain http(s).
+ *
+ * Registry links and image URLs are typed in by hand and rendered straight into an
+ * `href`/`src`. Without this, a `javascript:` URL pasted into a link would execute
+ * on click — which matters once the public registry page shows these to guests.
+ *
+ * @param value - string value to parse
+ * @returns the normalized URL, or **null** if it isn't a valid http(s) address
+ */
+export function parseHttpUrl (value: string): string | null {
+  const trimmedValue = value.trim();
+
+  // The URL constructor throws on anything unparseable, so it doubles as the validator.
+  let url: URL;
+  try {
+    url = new URL(trimmedValue);
+  } catch {
+    return null;
+  }
+
+  // Allowlist, not a blocklist: `javascript:`, `data:` and friends all parse fine.
+  if (url.protocol !== 'http:' && url.protocol !== 'https:') {
+    return null;
+  }
+
+  return url.href;
 }
