@@ -102,7 +102,7 @@ export default function Planner() {
       <div className="flex flex-col w-full h-1/4 justify-center px-10 py-5 text-burg md:px-20">
         <p className="uppercase tracking-[0.16em]">RSVPs</p>
         <Link 
-          href={'/planner'}
+          href={'/planner/rsvp'}
           className="w-full h-full border-2 border-s-0 border-e-0 border-gold/50 hover:shadow cursor-pointer"
         >
           <div className="grid grid-cols-2 h-full md:grid-cols-4">
@@ -116,11 +116,11 @@ export default function Planner() {
             </div>
             <div className="flex flex-col w-full h-auto justify-center pl-5">
               <p className="stat-number text-olivine">72</p>
-              <p className="muted-caption pt-2">Accepted</p>
+              <p className="muted-caption pt-2">Attending</p>
             </div>
             <div className="flex flex-col w-full h-auto border-s-2 border-s-gold/50 justify-center pl-5">
               <p className="stat-number text-destructive">18</p>
-              <p className="muted-caption pt-2">Rejected</p>
+              <p className="muted-caption pt-2">Not Attending</p>
             </div>
           </div>
         </Link>

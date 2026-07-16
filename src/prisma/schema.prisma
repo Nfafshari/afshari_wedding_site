@@ -7,18 +7,6 @@ datasource db {
   provider = "postgresql"
 }
 
-enum RsvpStatus {
-  DECLINED
-  SOLO
-  PLUS_ONE
-  FAMILY
-}
-
-enum Attendance {
-  ADULT
-  CHILD
-}
-
 enum BudgetStatus {
   DUE
   DEPOSIT
@@ -27,23 +15,23 @@ enum BudgetStatus {
 
 model Rsvp {
   id              Int       @id @default(autoincrement())
-  name            String
-  rsvpType        RsvpStatus
+  attendance      Boolean   @default(false)
   createdAt       DateTime  @default(now())
 
-  guest           Guest[]
+  guests           Guest[]
 }
 
 model Guest {
-  id              Int      @id @default(autoincrement())
+  id              Int        @id @default(autoincrement())
   name            String
-  attendanceType  Attendance
-  mealChoice      String?
-  dietaryNotes    String?
-  createdAt       DateTime    @default(now())
+  phoneNumber     String?
+  email           String?
+  isPrimary       Boolean    @default(false)
+  notes           String?
+  createdAt       DateTime   @default(now())
   rsvpId          Int
 
-  rsvp            Rsvp  @relation(fields: [rsvpId], references: [id])
+  rsvp            Rsvp       @relation(fields: [rsvpId], references: [id])
 }
 
 model RegistryItem {
