@@ -17,8 +17,8 @@ export default function Planner() {
 
   const tabs: { tabName: string, link: string, icon: LucideIcon }[] = [
     { tabName: 'Budget Breakdown', link: '/planner/budget', icon: ChartPie },
-    { tabName: 'Documents Archive', link: '/planner', icon: Archive },
-    { tabName: 'Registry Purchases', link: '/planner', icon: Gift },
+    { tabName: 'Documents Archive', link: '/planner/doc-archive', icon: Archive },
+    { tabName: 'Registry Manager', link: '/planner', icon: Gift },
     { tabName: 'Timeline', link: '/planner', icon: CalendarClock }
   ];
 
