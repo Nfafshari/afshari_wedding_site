@@ -1,9 +1,24 @@
 import Rsvp from "./client";
-// import { prisma } from "@/lib/prisma";
+import { prisma } from "@/lib/prisma";
+
+export async function getRsvps () {
+  const rsvps = prisma.rsvp.findMany({
+    include: {
+      guests: {
+        orderBy: [{ name: "asc" }, { id: "asc" }]
+      },
+     },
+
+    orderBy: [{ id: "asc" }]
+  });
+
+  return rsvps;
+}
+
+export type Rsvps = Awaited<ReturnType<typeof getRsvps>>[number]
 
 export default async function RsvpPage() {
-  // TODO: fetch data on the server, then pass it to <Rsvp /> as props.
-  // const data = await prisma.model.findMany();
+  const rsvps = await getRsvps();
 
-  return <Rsvp />;
+  return <Rsvp rsvpData={rsvps}/>;
 }

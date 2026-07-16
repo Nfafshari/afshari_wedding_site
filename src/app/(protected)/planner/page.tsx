@@ -116,11 +116,11 @@ export default function Planner() {
             </div>
             <div className="flex flex-col w-full h-auto justify-center pl-5">
               <p className="stat-number text-olivine">72</p>
-              <p className="muted-caption pt-2">Accepted</p>
+              <p className="muted-caption pt-2">Attending</p>
             </div>
             <div className="flex flex-col w-full h-auto border-s-2 border-s-gold/50 justify-center pl-5">
               <p className="stat-number text-destructive">18</p>
-              <p className="muted-caption pt-2">Rejected</p>
+              <p className="muted-caption pt-2">Not Attending</p>
             </div>
           </div>
         </Link>
