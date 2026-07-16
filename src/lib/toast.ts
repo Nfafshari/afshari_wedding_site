@@ -1,4 +1,3 @@
-import { useIsMobile } from "@/hooks/use-mobile";
 import { toast, type ExternalToast } from "sonner";
 
 // Shared toast styling so success/error notifications look and behave identically

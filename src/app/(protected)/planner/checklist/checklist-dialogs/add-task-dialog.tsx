@@ -11,7 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 
 import { createTask, type ErrorField } from "@/app/(protected)/planner/checklist/action";
-import { notifyError, notifySuccess } from "@/lib/toast";
+import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 interface AddTaskDialogProps {
   /** The category the new task belongs to. */
@@ -25,9 +25,8 @@ export default function AddTaskDialog({ categoryId, onSuccess }: AddTaskDialogPr
   const [taskDate, setTaskDate] = useState<Date | undefined>();
   const [isCalendarOpen, setIsCalendarOpen] = useState(false);
   const [isEmptyInput, setIsEmptyInput] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [serverError, setServerError] = useState('');
-  const [serverErrorField, setServerErrorField] = useState<ErrorField | null>(null);
+
+  const { isLoading, serverError, serverErrorField, clearServerError, runAction } = useDialogSubmit<ErrorField>(onSuccess);
 
   // FormDialog has already called preventDefault, so this just runs our logic.
   async function addTask() {
@@ -37,19 +36,7 @@ export default function AddTaskDialog({ categoryId, onSuccess }: AddTaskDialogPr
       return;
     }
 
-    setIsLoading(true);
-    const result = await createTask(taskName, taskDate, categoryId);
-    setIsLoading(false);
-
-    if (!result.ok) {
-      setServerError(result.error);
-      setServerErrorField(result.field ?? null);
-      notifyError(result.error);
-      return;
-    }
-
-    notifySuccess("Task added");
-    onSuccess();
+    await runAction('Task added successfully', () => createTask(taskName, taskDate, categoryId))
   }
 
   return (
@@ -71,8 +58,7 @@ export default function AddTaskDialog({ categoryId, onSuccess }: AddTaskDialogPr
             if (e.target.value !== '') {
               setIsEmptyInput(false);
             }
-            setServerError('');
-            setServerErrorField(null);
+            clearServerError();
           }}
         />
         {isEmptyInput && <p className="text-destructive/80 text-xs">Task name cannot be empty</p>}

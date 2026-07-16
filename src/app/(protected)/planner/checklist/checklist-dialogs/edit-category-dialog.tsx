@@ -20,7 +20,7 @@ import {
 
 import { updateCategory, deleteCategory, type ErrorField } from "@/app/(protected)/planner/checklist/action";
 import type { CategoryWithTasks } from "@/app/(protected)/planner/checklist/page";
-import { notifyError, notifySuccess } from "@/lib/toast";
+import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 const ICON_LIBRARY: LucideIcon[] = [
   Lucide.HandCoins, Lucide.CalendarDays, Lucide.Gift, Lucide.Car,
@@ -42,9 +42,8 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
   const [isEmptyInput, setIsEmptyInput] = useState(false);
   const [isUniqueCategory, setIsUniqueCategory] = useState(true);
   const [isDeleteCategoryActive, setIsDeleteCategoryActive] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [serverError, setServerError] = useState('');
-  const [serverErrorField, setServerErrorField] = useState<ErrorField | null>(null);
+
+  const { isLoading, serverError, serverErrorField, clearServerError, runAction } = useDialogSubmit<ErrorField>(onSuccess);
 
   async function editCategory(event: React.MouseEvent) {
     // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
@@ -66,38 +65,14 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
         }
     }
 
-    setIsLoading(true);
-    const result = await updateCategory(categoryToUpdate?.id, newCategoryName, newIcon);
-    setIsLoading(false);
-
-    if (!result.ok) {
-      setServerError(result.error);
-      setServerErrorField(result.field ?? null);
-      notifyError(result.error);
-      return;
-    }
-
-    notifySuccess("Category updated");
-    onSuccess();
+    await runAction("Category updated", () => updateCategory(categoryToUpdate?.id, newCategoryName, newIcon));
   }
 
   async function removeCategory(event: React.MouseEvent) {
     // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
     event.preventDefault();
 
-    setIsLoading(true);
-    const result = await deleteCategory(categoryToUpdate?.id);
-    setIsLoading(false);
-
-    if (!result.ok) {
-      setServerError(result.error);
-      setServerErrorField(result.field ?? null);
-      notifyError(result.error);
-      return;
-    }
-
-    notifySuccess("Category removed");
-    onSuccess();
+    await runAction("Category removed", () => deleteCategory(categoryToUpdate?.id));
   }
 
   if (!isDeleteCategoryActive) {
@@ -119,8 +94,7 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
                   setIsEmptyInput(false);
                 }
                 setIsUniqueCategory(true);
-                setServerError('');
-                setServerErrorField(null);
+                clearServerError();
               }}
             />
             {isEmptyInput && <p className="text-destructive/80 text-xs">Category name cannot be empty</p>}

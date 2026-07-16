@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 
 import { createCategory, type ErrorField } from "@/app/(protected)/planner/checklist/action";
 import type { CategoryWithTasks } from "@/app/(protected)/planner/checklist/page";
-import { notifyError, notifySuccess } from "@/lib/toast";
+import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 const ICON_LIBRARY: LucideIcon[] = [
   Lucide.HandCoins, Lucide.CalendarDays, Lucide.Gift, Lucide.Car,
@@ -30,9 +30,8 @@ export default function AddCategoryDialog({ categories, onSuccess }: AddCategory
   const [activeIcon, setActiveIcon] = useState('Astroid');
   const [isEmptyInput, setIsEmptyInput] = useState(false);
   const [isUniqueCategory, setIsUniqueCategory] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
-  const [serverError, setServerError] = useState('');
-  const [serverErrorField, setServerErrorField] = useState<ErrorField | null>(null);
+
+  const { isLoading, serverError, serverErrorField, clearServerError, runAction } = useDialogSubmit<ErrorField>(onSuccess);
 
   // FormDialog has already called preventDefault, so this just runs our logic.
   async function addCategory() {
@@ -52,19 +51,7 @@ export default function AddCategoryDialog({ categories, onSuccess }: AddCategory
       return;
     }
 
-    setIsLoading(true);
-    const result = await createCategory(categoryName, activeIcon);
-    setIsLoading(false);
-
-    if (!result.ok) {
-      setServerError(result.error);
-      setServerErrorField(result.field ?? null);
-      notifyError(result.error);
-      return;
-    }
-
-    notifySuccess("Category added");
-    onSuccess();
+    await runAction("Category added", () => createCategory(categoryName, activeIcon));
   }
 
   return (
@@ -88,8 +75,7 @@ export default function AddCategoryDialog({ categories, onSuccess }: AddCategory
               setIsEmptyInput(false);
             }
             setIsUniqueCategory(true);
-            setServerError('');
-            setServerErrorField(null);
+            clearServerError();
           }}
         />
         {isEmptyInput && <p className="text-destructive/80 text-xs">Category name cannot be empty</p>}
