@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pinyon_Script, IM_Fell_Great_Primer, Herr_Von_Muellerhoff } from "next/font/google";
+import { Toaster } from "@/components/ui/sonner";
 
 import Header from "@/components/header";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -59,6 +60,7 @@ export default function RootLayout({
             {children}
             <Footer />
           </main>
+          <Toaster />
         </SidebarProvider>
       </body>
     </html>

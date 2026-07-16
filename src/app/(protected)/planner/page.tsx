@@ -1,4 +1,4 @@
-import { Archive, Calendar, CalendarClock, ChartPie, ChessKing, CircleArrowRight, Gift, LucideIcon, Podium, SendHorizonal } from "lucide-react";
+import { Archive, Calendar, CalendarClock, ChartPie, ChessKing, CircleArrowRight, Gift, LucideIcon, SendHorizonal } from "lucide-react";
 import Link from "next/link";
 
 import { Progress } from "@/components/ui/progress";

@@ -15,6 +15,7 @@ import {
 
 import { deleteTask } from "@/app/(protected)/planner/checklist/action";
 import type { CategoryWithTasks } from "@/app/(protected)/planner/checklist/page";
+import { notifyError, notifySuccess } from "@/lib/toast";
 
 type TaskItem = CategoryWithTasks["tasks"][number];
 
@@ -39,9 +40,11 @@ export default function RemoveTaskDialog({ taskToRemove, onSuccess }: RemoveTask
 
     if (!result.ok) {
       setServerError(result.error);
+      notifyError(result.error);
       return;
     }
 
+    notifySuccess("Task removed");
     onSuccess();
   }
 

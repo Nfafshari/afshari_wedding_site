@@ -123,7 +123,7 @@ export default function AddSubcategoryDialog({ budgetCategories, budgetCategoryI
     const parsedPaid = paidAmount.trim() === '' ? 0 : parseMoneyString(paidAmount);
     if (parsedEstimated === null || parsedPaid === null) return;
 
-    await runAction(() => createBudgetSubcategory(name, parsedEstimated, parsedPaid, budgetCategoryId));
+    await runAction("Subcategory added", () => createBudgetSubcategory(name, parsedEstimated, parsedPaid, budgetCategoryId));
   }
 
   return (

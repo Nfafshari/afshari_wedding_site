@@ -20,6 +20,7 @@ import {
 
 import { updateCategory, deleteCategory, type ErrorField } from "@/app/(protected)/planner/checklist/action";
 import type { CategoryWithTasks } from "@/app/(protected)/planner/checklist/page";
+import { notifyError, notifySuccess } from "@/lib/toast";
 
 const ICON_LIBRARY: LucideIcon[] = [
   Lucide.HandCoins, Lucide.CalendarDays, Lucide.Gift, Lucide.Car,
@@ -72,9 +73,11 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
     if (!result.ok) {
       setServerError(result.error);
       setServerErrorField(result.field ?? null);
+      notifyError(result.error);
       return;
     }
 
+    notifySuccess("Category updated");
     onSuccess();
   }
 
@@ -89,9 +92,11 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
     if (!result.ok) {
       setServerError(result.error);
       setServerErrorField(result.field ?? null);
+      notifyError(result.error);
       return;
     }
 
+    notifySuccess("Category removed");
     onSuccess();
   }
 
@@ -152,7 +157,7 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
             Delete {categoryToUpdate?.name}?
           </Button>
         </AlertDialogHeader>
-        <AlertDialogFooter className="bg-background rounded-sm rounded-t-none">
+        <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
           <AlertDialogCancel variant={'secondary'} className="hover:bg-gold/90">
             Cancel
           </AlertDialogCancel>
@@ -175,7 +180,7 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
           </AlertDialogDescription>
           {serverError && <p className="text-destructive/80 text-xs">{serverError}</p>}
         </AlertDialogHeader>
-        <AlertDialogFooter className="bg-background rounded-sm rounded-t-none">
+        <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
           <AlertDialogCancel
             variant={'secondary'} 
             className="hover:bg-gold/90"

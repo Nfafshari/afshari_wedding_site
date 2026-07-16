@@ -11,6 +11,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { Calendar } from "@/components/ui/calendar";
 
 import { createTask, type ErrorField } from "@/app/(protected)/planner/checklist/action";
+import { notifyError, notifySuccess } from "@/lib/toast";
 
 interface AddTaskDialogProps {
   /** The category the new task belongs to. */
@@ -43,9 +44,11 @@ export default function AddTaskDialog({ categoryId, onSuccess }: AddTaskDialogPr
     if (!result.ok) {
       setServerError(result.error);
       setServerErrorField(result.field ?? null);
+      notifyError(result.error);
       return;
     }
 
+    notifySuccess("Task added");
     onSuccess();
   }
 

@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 
 import { createCategory, type ErrorField } from "@/app/(protected)/planner/checklist/action";
 import type { CategoryWithTasks } from "@/app/(protected)/planner/checklist/page";
+import { notifyError, notifySuccess } from "@/lib/toast";
 
 const ICON_LIBRARY: LucideIcon[] = [
   Lucide.HandCoins, Lucide.CalendarDays, Lucide.Gift, Lucide.Car,
@@ -58,9 +59,11 @@ export default function AddCategoryDialog({ categories, onSuccess }: AddCategory
     if (!result.ok) {
       setServerError(result.error);
       setServerErrorField(result.field ?? null);
+      notifyError(result.error);
       return;
     }
 
+    notifySuccess("Category added");
     onSuccess();
   }
 
