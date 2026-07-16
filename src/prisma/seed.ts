@@ -120,12 +120,86 @@ const PARTIES: SeedParty[] = [
   },
 ];
 
+/**
+ * A registry item plus whoever has called dibs on it.
+ *
+ * Invariants baked into the data below (worth eyeballing when you review):
+ *  - No item is over-claimed: the claim quantities never sum past quantityWanted.
+ *    The app refuses to create that state, so the seed shouldn't fabricate it.
+ *  - The set covers every state the page renders: nothing claimed, partly claimed,
+ *    fully claimed, and an item with no image at all (image: null) so the
+ *    placeholder fallback gets exercised.
+ */
+type SeedClaim = {
+  claimedBy: string;
+  quantity: number;
+  /** When they claimed it. Overrides the `createdAt` default for a realistic spread. */
+  claimedAt: string;
+};
+
+type SeedRegistryItem = {
+  name: string;
+  link: string;
+  quantityWanted: number;
+  /** Stored as-is. null means no image at all, so the client falls back to a placeholder. */
+  image: string | null;
+  claims: SeedClaim[];
+};
+
+const REGISTRY_ITEMS: SeedRegistryItem[] = [
+  // --- Nothing claimed yet ---
+  {
+    name: "Cast Iron Dutch Oven",
+    link: "https://www.example.com/dutch-oven",
+    image: "https://images.unsplash.com/photo-1585515320310-259814833e62?w=400",
+    quantityWanted: 1,
+    claims: [],
+  },
+  // --- Partly claimed, several claimants ---
+  {
+    name: "Linen Bath Towels",
+    link: "https://www.example.com/bath-towels",
+    image: "https://images.unsplash.com/photo-1620912189875-0dcd4d0d0b7e?w=400",
+    quantityWanted: 8,
+    claims: [
+      { claimedBy: "Aunt Sue", quantity: 2, claimedAt: "2026-07-02" },
+      { claimedBy: "The Millers", quantity: 1, claimedAt: "2026-07-09" },
+    ],
+  },
+  // --- Partly claimed, single claimant ---
+  {
+    name: "Stand Mixer",
+    link: "https://www.example.com/stand-mixer",
+    image: "https://images.unsplash.com/photo-1594222082006-6bd7f4b1a4b0?w=400",
+    quantityWanted: 5,
+    claims: [
+      { claimedBy: "Grace Okafor", quantity: 3, claimedAt: "2026-07-11" },
+    ],
+  },
+  // --- Fully claimed, and no image so the placeholder shows ---
+  {
+    name: "Wool Picnic Blanket",
+    link: "https://www.example.com/picnic-blanket",
+    image: null,
+    quantityWanted: 2,
+    claims: [
+      { claimedBy: "Henry Kim", quantity: 1, claimedAt: "2026-06-28" },
+      { claimedBy: "Elena Vasquez", quantity: 1, claimedAt: "2026-07-14" },
+    ],
+  },
+];
+
 async function main() {
   // Wipe existing rows so the seed is repeatable (re-run it any time to reset).
   // Guests first: each Guest holds the rsvpId foreign key, so deleting the Rsvp
   // it points at first would be rejected. Children before parents, always.
   await prisma.guest.deleteMany();
   await prisma.rsvp.deleteMany();
+
+  // Same rule for the registry, and here the DB enforces it: RegistryClaim -> item
+  // is onDelete: Restrict, so deleting a claimed item throws instead of cascading.
+  await prisma.registryClaim.deleteMany();
+  await prisma.registryItem.deleteMany();
 
   // One nested create per party. Passing `guests: { create: [...] }` inserts the
   // Rsvp and all its Guests in a single call, and Prisma wires each Guest's
@@ -149,9 +223,36 @@ async function main() {
     });
   }
 
+  // One nested create per item, same shape as the parties above: passing
+  // `claimed: { create: [...] }` inserts the item and its claims in a single call
+  // and wires each claim's itemId for us.
+  for (const registryItem of REGISTRY_ITEMS) {
+    await prisma.registryItem.create({
+      data: {
+        name: registryItem.name,
+        link: registryItem.link,
+        quantityWanted: registryItem.quantityWanted,
+        // Passed straight through, null included. The column default would win if this
+        // key were absent, but the point of the null row is to prove the client copes
+        // with a genuinely empty image — which a default would paper over.
+        image: registryItem.image,
+        claimed: {
+          create: registryItem.claims.map((claim) => ({
+            claimedBy: claim.claimedBy,
+            quantity: claim.quantity,
+            createdAt: new Date(claim.claimedAt),
+          })),
+        },
+      },
+    });
+  }
+
   const rsvpCount = await prisma.rsvp.count();
   const guestCount = await prisma.guest.count();
+  const registryItemCount = await prisma.registryItem.count();
+  const registryClaimCount = await prisma.registryClaim.count();
   console.log(`Seeded ${rsvpCount} RSVPs and ${guestCount} guests.`);
+  console.log(`Seeded ${registryItemCount} registry items and ${registryClaimCount} claims.`);
 }
 
 main()
