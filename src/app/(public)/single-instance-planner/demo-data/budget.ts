@@ -59,8 +59,8 @@ export const DEMO_BUDGET_CATEGORIES: BudgetCategory[] = [
     name: 'Attire',
     budgetSubcategories: [
       { id: 14, name: 'Alterations', estimatedCost: 400, paidAmount: 400, status: 'PAID', budgetCategoryId: 5 },
-      { id: 15, name: 'Suit', estimatedCost: 900, paidAmount: 0, status: 'DUE', budgetCategoryId: 5 },
-      { id: 16, name: 'Wedding dress', estimatedCost: 1600, paidAmount: 800, status: 'DEPOSIT', budgetCategoryId: 5 },
+      { id: 15, name: 'Suit', estimatedCost: 900, paidAmount: 900, status: 'PAID', budgetCategoryId: 5 },
+      { id: 16, name: 'Wedding dress', estimatedCost: 1600, paidAmount: 1600, status: 'PAID', budgetCategoryId: 5 },
     ],
   },
   // Music and Rentals rank 6th and 7th by estimate — these two are the "Other" slice.
