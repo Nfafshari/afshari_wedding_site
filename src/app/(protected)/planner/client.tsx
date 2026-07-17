@@ -1,6 +1,6 @@
 "use client";
 
-import { Archive, Gift, LucideIcon } from "lucide-react";
+import { LucideIcon } from "lucide-react";
 import * as Lucide from "lucide-react"
 import Link from "next/link";
 
@@ -10,26 +10,32 @@ import { getDaysRemaining } from "@/lib/utils";
 import { CategoryWithTasks } from "./checklist/page";
 import { BudgetCategory } from "./budget/page";
 import { Rsvps } from "./rsvp/page";
+import { RegistryItem } from "./registry-manager/page";
 import BudgetCard from "../../../components/budget-card";
+import PlannerStatCard from "@/components/planner-stat-card";
+import RegistryCard from "@/components/registry-card";
 
 interface PlannerProps {
   rsvps: Rsvps[];
   budgetCategories: BudgetCategory[];
   checklistCategories: CategoryWithTasks[];
+  registryItems: RegistryItem[];
+  /** A count, not rows: the archive's mock docs carry LucideIcons, which don't serialize. */
+  documentCount: number;
 }
 
 const NUMBER_OF_INVITED = 32;
 
-export default function Planner({ rsvps, budgetCategories, checklistCategories }: PlannerProps) {
+export default function Planner({
+  rsvps,
+  budgetCategories,
+  checklistCategories,
+  registryItems,
+  documentCount,
+}: PlannerProps) {
   // days until our wedding date
   const daysTilWedding = getDaysRemaining('2027-09-11');
 
-  // Budget Breakdown is no longer here — it's a BudgetCard below. These two are still
-  // plain tiles until they grow their own dashboard content.
-  const tabs: { tabName: string, link: string, icon: LucideIcon }[] = [
-    { tabName: 'Documents Archive', link: '/planner/doc-archive', icon: Archive },
-    { tabName: 'Registry Manager', link: '/planner/registry-manager', icon: Gift },
-  ];
 
   // Tasks have no icon of their own — they borrow their category's. Same lookup
   // and Astroid fallback the checklist uses, since both read the string the
@@ -178,24 +184,14 @@ export default function Planner({ rsvps, budgetCategories, checklistCategories }
       <div className="w-full mb-10 px-10 py-5 md:px-20 lg:mb-0">
         <div className="grid grid-cols-[repeat(auto-fit,minmax(18rem,30rem))] justify-center gap-4">
           <BudgetCard budgetCategories={budgetCategories} />
-          {tabs.map(({tabName, link, icon}, idx) => {
-            const Icon = icon;
-            return (
-              <Link
-                className="flex flex-col justify-center items-center gap-3 p-4 border border-burg/8 rounded-lg bg-olivine/15 cursor-pointer hover:shadow active:bg-olivine/20"
-                href={link}
-                key={`tab-${idx}`}
-              >
-                <Icon
-                  className="size-10 text-gold md:size-16"
-                  strokeWidth={1}
-                />
-                <div className="text-center text-burg text-base md:text-lg">
-                  {tabName}
-                </div>
-              </Link>
-            )
-          })}
+          <RegistryCard registryItems={registryItems} />
+          <PlannerStatCard
+            title="Documents Archive"
+            href={'/planner/doc-archive'}
+            linkLabel="View documents"
+            value={documentCount}
+            caption={documentCount === 1 ? 'Document' : 'Documents'}
+          />
         </div>
       </div>
     </div>
