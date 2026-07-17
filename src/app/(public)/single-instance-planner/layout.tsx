@@ -1,7 +1,12 @@
 "use client";
 
+import Link from "next/link";
+import { ChevronLeft } from "lucide-react";
+
 import { DemoPlannerProvider } from "./demo-store";
 import DemoBanner from "./components/demo-banner";
+import Footer from "@/components/footer";
+import Header from "@/components/header";
 
 /**
  * Mounts the demo's store around every demo route.
@@ -18,8 +23,11 @@ import DemoBanner from "./components/demo-banner";
 export default function SingleInstancePlannerLayout ({ children }: { children: React.ReactNode }) {
   return (
     <DemoPlannerProvider>
+      <Header />
       <DemoBanner />
+      <Link href={'/planner'} className="flex items-center text-burg underline mx-2 mt-2 text-sm"><ChevronLeft className="w-5 h-5"/> Back to Planner</Link>
       {children}
+      <Footer />
     </DemoPlannerProvider>
   );
 }

@@ -87,7 +87,7 @@ export default function Checklist({ categories }: ChecklistProps) {
         }
       }}
     >
-      <div className="flex flex-col w-full p-5 min-h-full">
+      <div className="flex flex-col w-full px-8 py-2 min-h-full">
         {/** Header */}
         <div className="w-full">
           <div className="flex w-full">

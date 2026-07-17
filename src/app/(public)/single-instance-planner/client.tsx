@@ -128,12 +128,12 @@ export default function Planner() {
                     href={`${DEMO_BASE}/checklist`}
                   >
                     <NextTaskIcon
-                      className="w-10 h-10 mr-5 text-gold"
+                      className="w-8 h-8 ml-2 mr-2 text-gold"
                       strokeWidth={1}
                     />
                     <div className="mt-1 pr-2 overflow-y-scroll">
-                      <h1 className="page-subtitle row-span-2 text-burg text-center">{nextTask.task.name}</h1>
-                      <p className="text-center pb-2">{nextTask.task.goalDate.toLocaleDateString()}</p>
+                      <h1 className="page-subtitle row-span-2 text-sm text-burg text-center">{nextTask.task.name}</h1>
+                      <p className="text-center text-sm pb-2">{nextTask.task.goalDate.toLocaleDateString()}</p>
                     </div>
                   </Link>
                 </div>

@@ -7,10 +7,10 @@ import NavButton from '@/components/nav-button';
 import { useSidebar } from "@/components/ui/sidebar"
 import LogoSvg from './logo-svg';
 
-export default function Header () {
+export default function PlannerHeader () {
   const { toggleSidebar } = useSidebar();
 
-  const [isActive, setIsActive] = useState('/');
+  const [isActive, setIsActive] = useState('planner');
 
   return(
     <header className="z-9999 w-screen h-20 flex tracking-wide items-center bg-foreground md:h-25 md:justify-center">
@@ -29,25 +29,25 @@ export default function Header () {
       <nav className='hidden px-7 w-full flex-row items-center md:flex'>
         <div className='flex w-full gap-3 items-center justify-end'>
           <NavButton 
-            href={'/'}
-            onClick={() => setIsActive('/')}
-            isActive={isActive === '/'}
+            href={'/planner'}
+            onClick={() => setIsActive('planner')}
+            isActive={isActive === 'planner'}
           >
-            Home
+            Planner
           </NavButton>
           <NavButton 
-            href={'/'}
-            onClick={() => setIsActive('our-story')}
-            isActive={isActive === 'our-story'}
+            href={'/planner/checklist'}
+            onClick={() => setIsActive('checklist')}
+            isActive={isActive === 'checklist'}
           >
-            Our Story
+            Checklist
           </NavButton>
           <NavButton 
-            href={'/'}
+            href={'/planner/rsvp'}
             onClick={() => setIsActive('rsvp')}
             isActive={isActive === 'rsvp'}
           >
-            RSVP
+            RSVP Manager
           </NavButton>
         </div>
 
@@ -59,25 +59,25 @@ export default function Header () {
 
         <div className='flex w-full gap-3 mr-10 items-center justify-start'>
           <NavButton 
-            href={'/'}
-            onClick={() => setIsActive('registry')}
-            isActive={isActive === 'registry'}
+            href={'/planner/budget'}
+            onClick={() => setIsActive('budget')}
+            isActive={isActive === 'budget'}
           >
-            Registry
+            Budget
           </NavButton>
           <NavButton 
-            href={'/'}
-            onClick={() => setIsActive('details')}
-            isActive={isActive === 'details'}
+            href={'/planner/registry-manager'}
+            onClick={() => setIsActive('registry-claim')}
+            isActive={isActive === 'registry-claim'}
           >
-            Details
+            Registry Claims
           </NavButton>
           <NavButton 
-            href={'/'}
-            onClick={() => setIsActive('wedding-party')}
-            isActive={isActive === 'wedding-party'}
+            href={'/planner/doc-archive'}
+            onClick={() => setIsActive('documents')}
+            isActive={isActive === 'documents'}
           >
-            Wedding Party
+            Documents
           </NavButton>
         </div>
       </nav>

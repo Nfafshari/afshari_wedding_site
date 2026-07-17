@@ -56,9 +56,7 @@ export default function RootLayout({
         <SidebarProvider>
           <NavSidebar />
           <main className="flex-1 min-w-0">
-            <Header />
             {children}
-            <Footer />
           </main>
           <Toaster />
         </SidebarProvider>
