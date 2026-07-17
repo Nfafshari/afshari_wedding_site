@@ -55,7 +55,7 @@ export default function RootLayout({
       <body className="h-full flex flex-col">
         <SidebarProvider>
           <NavSidebar />
-          <main>
+          <main className="flex-1 min-w-0">
             <Header />
             {children}
             <Footer />
