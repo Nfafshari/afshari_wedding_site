@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from 'react';
 import { Menu } from 'lucide-react';
+import { usePathname } from 'next/navigation';
 
 import NavButton from '@/components/nav-button';
 import { useSidebar } from "@/components/ui/sidebar"
@@ -9,14 +9,13 @@ import LogoSvg from './logo-svg';
 
 export default function PlannerHeader () {
   const { toggleSidebar } = useSidebar();
-
-  const [isActive, setIsActive] = useState('planner');
+  const pathname = usePathname();
 
   return(
     <header className="z-9999 w-screen h-20 flex tracking-wide items-center bg-foreground md:h-25 md:justify-center">
       {/* Mobile menu */}
       <nav className='pl-5 flex w-full flex-row items-center md:hidden'>
-        <Menu 
+        <Menu
           className='w-12 h-12 text-5xl text-cream hover:bg-cream/15 p-2 rounded-full'
           onClick={toggleSidebar}
         />
@@ -26,26 +25,23 @@ export default function PlannerHeader () {
       </nav>
 
       {/* Desktop menu */}
-      <nav className='hidden px-7 w-full flex-row items-center md:flex'>
+      <nav className='hidden px-7 w-full h-35 flex-row items-center md:flex'>
         <div className='flex w-full gap-3 items-center justify-end'>
-          <NavButton 
+          <NavButton
             href={'/planner'}
-            onClick={() => setIsActive('planner')}
-            isActive={isActive === 'planner'}
+            isActive={pathname === '/planner'}
           >
-            Planner
+            Dashboard
           </NavButton>
-          <NavButton 
+          <NavButton
             href={'/planner/checklist'}
-            onClick={() => setIsActive('checklist')}
-            isActive={isActive === 'checklist'}
+            isActive={pathname === '/planner/checklist'}
           >
             Checklist
           </NavButton>
-          <NavButton 
+          <NavButton
             href={'/planner/rsvp'}
-            onClick={() => setIsActive('rsvp')}
-            isActive={isActive === 'rsvp'}
+            isActive={pathname === '/planner/rsvp'}
           >
             RSVP Manager
           </NavButton>
@@ -57,25 +53,22 @@ export default function PlannerHeader () {
           </div>
         </div>
 
-        <div className='flex w-full gap-3 mr-10 items-center justify-start'>
-          <NavButton 
+        <div className='flex w-full gap-3 items-center justify-start'>
+          <NavButton
             href={'/planner/budget'}
-            onClick={() => setIsActive('budget')}
-            isActive={isActive === 'budget'}
+            isActive={pathname === '/planner/budget'}
           >
             Budget
           </NavButton>
-          <NavButton 
+          <NavButton
             href={'/planner/registry-manager'}
-            onClick={() => setIsActive('registry-claim')}
-            isActive={isActive === 'registry-claim'}
+            isActive={pathname === '/planner/registry-manager'}
           >
             Registry Claims
           </NavButton>
-          <NavButton 
+          <NavButton
             href={'/planner/doc-archive'}
-            onClick={() => setIsActive('documents')}
-            isActive={isActive === 'documents'}
+            isActive={pathname === '/planner/doc-archive'}
           >
             Documents
           </NavButton>

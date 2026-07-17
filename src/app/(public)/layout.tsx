@@ -1,66 +1,29 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, Pinyon_Script, IM_Fell_Great_Primer, Herr_Von_Muellerhoff } from "next/font/google";
-import { Toaster } from "@/components/ui/sonner";
-
 import Header from "@/components/header";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { NavSidebar } from "@/components/nav-sidebar";
 import Footer from "@/components/footer";
+import { NavSidebar } from "@/components/nav-sidebar";
 
-import "./globals.css";
+const NAV_ITEMS = [
+  { label: "Home", href: "/" },
+  { label: "Our Story", href: "/our-story" },
+  { label: "Details", href: "/details" },
+  { label: "RSVP", href: "/rsvp" },
+  { label: "Registry", href: "/registry" },
+  { label: "Wedding Party", href: "/wedding-party" },
+];
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-const pinyon = Pinyon_Script({
-  variable: "--font-pinyon",
-  subsets: ["latin"],
-  weight: "400"
-});
-
-const herrVon = Herr_Von_Muellerhoff({
-  variable: "--font-herr-von",
-  subsets: ["latin"],
-  weight: "400"
-});
-
-const imFellGreat = IM_Fell_Great_Primer({
-  variable: "--font-im-fell",
-  subsets: ["latin"],
-  weight: "400"
-});
-
-export const metadata: Metadata = {
-  title: "Piper & Nathen | September 11, 2027",
-  description: "Join us as we celebrate our wedding on September 11, 2027.",
-};
-
-export default function RootLayout({
+export default function PublicLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${pinyon.variable} ${herrVon.variable} ${imFellGreat.variable} h-full antialiased`}
-    >
-      <body className="h-full flex flex-col">
-        <SidebarProvider>
-          <NavSidebar />
-          <main className="flex-1 min-w-0">
-            {children}
-          </main>
-          <Toaster />
-        </SidebarProvider>
-      </body>
-    </html>
+    <>
+      <NavSidebar 
+        navItems={NAV_ITEMS}
+      />
+      <Header />
+      {children}
+      <Footer />
+    </>
   );
 }

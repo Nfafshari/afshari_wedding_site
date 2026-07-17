@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CirclePlus, SquarePen } from "lucide-react";
+import { CirclePlus, ExternalLink, SquarePen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { AlertDialog } from "@/components/ui/alert-dialog";
@@ -51,6 +51,9 @@ export default function DocArchive() {
                     rel='noopener noreferrer'
                     aria-label={`Open ${doc.name} (PDF, opens in a new tab)`}
                   />
+
+                  <ExternalLink className="absolute top-1 right-1 w-5 h-5 text-accent"/>
+
                   
                   {/* Icon area */}
                   <div className="flex flex-col w-full h-3/5 md:h-2/3 mt-2 justify-center items-center ">

@@ -15,16 +15,11 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-const navItems = [
-  { label: "Home", href: "/" },
-  { label: "Our Story", href: "/our-story" },
-  { label: "Details", href: "/details" },
-  { label: "RSVP", href: "/rsvp" },
-  { label: "Registry", href: "/registry" },
-  { label: "Wedding Party", href: "/wedding-party" },
-];
+interface SidebarProps {
+  navItems: { label: string, href: string }[]
+}
 
-export function NavSidebar() {
+export function NavSidebar({ navItems }: SidebarProps) {
   const { isMobile, setOpenMobile } = useSidebar();
 
   if (!isMobile) {
@@ -46,8 +41,8 @@ export function NavSidebar() {
                     asChild
                     className="text-3xl border-b-3 border-burg py-5"
                   >
-                    <Link 
-                      href={item.href} 
+                    <Link
+                      href={item.href}
                       onClick={() => setOpenMobile(false)}
                     >
                       {item.label}

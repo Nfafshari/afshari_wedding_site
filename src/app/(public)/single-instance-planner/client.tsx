@@ -94,8 +94,15 @@ export default function Planner() {
           </Field>
           {nextTask && NextTaskIcon ? (
             <>
-              <div className="flex w-1/2">
-                <p className="section-title hidden mt-3 md:flex">Next Tasks:</p>
+              <div className="hidden w-1/2 mt-3 items-baseline justify-between md:flex">
+                <p className="section-title">Next Tasks:</p>
+                <Link
+                  href={`${DEMO_BASE}/checklist`}
+                  className="inline-flex items-center gap-0.5 text-sm text-burg/60 whitespace-nowrap rounded-sm hover:text-burg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  <span className="underline">View checklist</span>
+                  <Lucide.ChevronRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
               <div className="hidden w-full h-full justify-center items-center md:flex">
                 <div className="w-1/2 h-full pt-2 m-1 grid grid-cols-3 gap-3 mt-1">
@@ -103,7 +110,7 @@ export default function Planner() {
                     const Icon = icon;
                     return (
                       <Link
-                        className="grid grid-rows-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/65 cursor-pointer hover:shadow active:bg-olivine/20"
+                        className="grid grid-rows-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/65 cursor-pointer hover:shadow active:bg-olivine/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                         href={`${DEMO_BASE}/checklist`}
                         key={task.id}
                       >
@@ -124,7 +131,7 @@ export default function Planner() {
                 <p className="section-title mt-3">Next Tasks:</p>
                 <div className="w-1/2 h-full pt-2 m-1 grid grid-cols-3 gap-3 mt-1">
                   <Link
-                    className="flex col-span-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/65 cursor-pointer hover:shadow active:bg-olivine/20"
+                    className="flex col-span-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/65 cursor-pointer hover:shadow active:bg-olivine/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                     href={`${DEMO_BASE}/checklist`}
                   >
                     <NextTaskIcon
@@ -137,12 +144,19 @@ export default function Planner() {
                     </div>
                   </Link>
                 </div>
+                <Link
+                  href={`${DEMO_BASE}/checklist`}
+                  className="inline-flex items-center gap-0.5 mt-2 text-sm text-burg/60 whitespace-nowrap rounded-sm hover:text-burg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  <span className="underline">View checklist</span>
+                  <Lucide.ChevronRight className="w-3.5 h-3.5" />
+                </Link>
               </div>
             </>
           ) : (
             <p className="mt-3 text-center text-burg/60">
               Nothing due yet —{" "}
-              <Link href={`${DEMO_BASE}/checklist`} className="underline hover:text-burg">
+              <Link href={`${DEMO_BASE}/checklist`} className="underline rounded-sm hover:text-burg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                 add a task
               </Link>
               .
@@ -152,10 +166,19 @@ export default function Planner() {
       </div>
 
       <div className="flex flex-col w-full h-1/4 justify-center px-10 py-5 text-burg md:px-20">
-        <p className="uppercase tracking-[0.16em]">RSVPs</p>
-        <Link 
+        <div className="flex items-baseline justify-between gap-2">
+          <p className="uppercase tracking-[0.16em]">RSVPs</p>
+          <Link
+            href={`${DEMO_BASE}/rsvp`}
+            className="inline-flex items-center gap-0.5 text-sm text-burg/60 whitespace-nowrap rounded-sm hover:text-burg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            <span className="underline">Manage RSVPs</span>
+            <Lucide.ChevronRight className="w-3.5 h-3.5" />
+          </Link>
+        </div>
+        <Link
           href={`${DEMO_BASE}/rsvp`}
-          className="w-full h-full border-2 border-s-0 border-e-0 border-gold/50 hover:shadow cursor-pointer"
+          className="w-full h-full border-2 border-s-0 border-e-0 border-gold/50 hover:shadow cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
           <div className="grid grid-cols-2 h-full md:grid-cols-4">
             <div className="hidden flex-col w-full h-auto border-e-2 border-e-gold/50 justify-center pl-5 md:flex">

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { CirclePlus, LucideIcon, SquarePen } from "lucide-react";
+import { ChevronLeft, CirclePlus, LucideIcon, SquarePen } from "lucide-react";
 import * as Lucide from "lucide-react"
+import Link from "next/link";
 
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Progress } from "@/components/ui/progress";
@@ -84,12 +85,13 @@ export default function Checklist() {
           closeDialog();
         }
       }}
-    >
-      <div className="flex flex-col w-full p-5 min-h-full">
+    >      
+      <Link href={'/single-instance-planner'} className="flex items-center text-burg underline mx-2 mt-2 text-sm"><ChevronLeft className="w-5 h-5"/> Back to Planner</Link>
+      <div className="flex flex-col w-full min-h-full px-6 pt-4 md:py-5 md:px-12 lg:px-16">
         {/** Header */}
         <div className="w-full">
           <div className="flex w-full">
-            <h1 className="page-title font-bold text-start">Checklist</h1>
+            <h1 className="page-title text-start">Checklist</h1>
             <h2 className="page-subtitle ml-auto">{totalTasksDone} of {totalTasks} done</h2>
           </div>
           <Field className="w-full">

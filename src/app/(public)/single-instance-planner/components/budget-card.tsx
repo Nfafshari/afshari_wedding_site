@@ -8,6 +8,7 @@
  */
 
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 import { Cell, Pie, PieChart } from "recharts";
 
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
@@ -54,9 +55,10 @@ export default function BudgetCard ({ budgetCategories }: BudgetCardProps) {
         <p className="section-title">Budget Breakdown</p>
         <Link
           href={`${DEMO_BASE}/budget`}
-          className="text-sm text-burg/60 underline whitespace-nowrap hover:text-burg"
+          className="inline-flex items-center gap-0.5 text-sm text-burg/60 whitespace-nowrap rounded-sm hover:text-burg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
-          View budget
+          <span className="underline">View budget</span>
+          <ChevronRight className="w-3.5 h-3.5" />
         </Link>
       </div>
 
@@ -66,7 +68,7 @@ export default function BudgetCard ({ budgetCategories }: BudgetCardProps) {
         <div className="flex flex-col flex-1 gap-3 items-center justify-center py-6">
           <div className="size-24 rounded-full border-8 border-(--budget-slice-other)/40" />
           <p className="text-center text-sm text-burg/60">Nothing budgeted yet.</p>
-          <Link href={`${DEMO_BASE}/budget`} className="text-sm underline text-burg/60 hover:text-burg">
+          <Link href={`${DEMO_BASE}/budget`} className="text-sm underline text-burg/60 rounded-sm hover:text-burg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background">
             Add to your budget
           </Link>
         </div>

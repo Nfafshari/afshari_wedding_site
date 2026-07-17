@@ -1,7 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { CirclePlus, SquarePen } from "lucide-react";
+import { ChevronLeft, CirclePlus, ExternalLink, SquarePen } from "lucide-react";
+import Link from "next/link";
+
 import { Button } from "@/components/ui/button";
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import AddDocDialog from "./dialogs/add-doc-dialog";
@@ -30,6 +32,7 @@ export default function DocArchive() {
         }
       }}
     >
+      <Link href={'/single-instance-planner'} className="flex items-center text-burg underline mx-2 mt-2 text-sm"><ChevronLeft className="w-5 h-5"/> Back to Planner</Link>
       <div className="w-full min-h-full bg-background font-sans text-burg px-6 pb-6 md:py-2 md:px-12 lg:px-16">
         {/** title */}
         <div className="flex flex-col w-full md:flex-row">
@@ -53,6 +56,8 @@ export default function DocArchive() {
                     aria-label={`Open ${doc.name} (PDF, opens in a new tab)`}
                   />
                   
+                  <ExternalLink className="absolute top-1 right-1 w-5 h-5 text-accent"/>
+
                   {/* Icon area */}
                   <div className="flex flex-col w-full h-3/5 md:h-2/3 mt-2 justify-center items-center ">
                     <Icon className="w-20 h-20 md:w-30 md:h-30 lg:w-40 lg:h-40" strokeWidth={0.5}/>
