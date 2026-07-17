@@ -17,6 +17,7 @@ import { Badge } from "@/components/ui/badge";
 import { BudgetStatus } from "@/generated/prisma/enums";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { toCurrency } from "@/lib/utils";
+import { getCategoryTotals } from "@/lib/budget";
 
 import SubcategoryRow from "./subcategory-row";
 import CategoryColumns from "./category-columns";
@@ -152,9 +153,8 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
       </Table>
 
       {sortedCategories.map((budgetCategory) => {
-        const totalEstimated = budgetCategory.budgetSubcategories.reduce((sum, sub) => sum + sub.estimatedCost, 0);
-        const totalPaid = budgetCategory.budgetSubcategories.reduce((sum, sub) => sum + sub.paidAmount, 0);
-        const totalBalance = totalEstimated - totalPaid;
+        const { estimated: totalEstimated, paid: totalPaid, balance: totalBalance } =
+          getCategoryTotals(budgetCategory);
 
         let isCategoryPaid = false;
         if (budgetCategory.budgetSubcategories.length > 0) {

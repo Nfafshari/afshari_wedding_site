@@ -15,7 +15,7 @@ import Budget from "./client";
  */
 export const dynamic = 'force-dynamic';
 
-export async function getCategories () {
+export async function getBudgetCategories () {
   const categories = await prisma.budgetCategory.findMany({
     include: {
       budgetSubcategories: {
@@ -45,11 +45,11 @@ export async function getCategories () {
   }));
 }
 
-export type BudgetCategory = Awaited<ReturnType<typeof getCategories>>[number]
+export type BudgetCategory = Awaited<ReturnType<typeof getBudgetCategories>>[number]
 export type BudgetSubcategory = BudgetCategory["budgetSubcategories"][number]
 
 export default async function BudgetWrapper () {
-  const budgetCategories = await getCategories();
+  const budgetCategories = await getBudgetCategories();
 
   return (
     <Budget budgetCategories={budgetCategories}/>

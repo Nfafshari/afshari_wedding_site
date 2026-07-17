@@ -12,6 +12,7 @@ import RemoveClaimDialog from "./dialogs/remove-claim-dialog";
 
 import type { RegistryClaim, RegistryItem } from "./page";
 import { Button } from "@/components/ui/button";
+import { countFullyClaimedItems, getClaimedQuantity } from "@/lib/registry";
 
 interface RegistryManagerProps {
   registryItems: RegistryItem[]
@@ -34,13 +35,8 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
   // Summary stats. Like the budget page, the server hands over raw rows and the
   // totals are reduced here rather than aggregated in SQL.
   const totalItems = registryItems.length;
-  const fullyClaimedItems = registryItems.filter((item) => {
-    const claimedTotal = item.claimed.reduce((sum, claim) => sum + claim.quantity, 0);
-    return claimedTotal >= item.quantityWanted;
-  }).length;
-  const totalGiftsClaimed = registryItems
-    .flatMap((item) => item.claimed)
-    .reduce((sum, claim) => sum + claim.quantity, 0);
+  const fullyClaimedItems = countFullyClaimedItems(registryItems);
+  const totalGiftsClaimed = registryItems.reduce((sum, item) => sum + getClaimedQuantity(item), 0);
 
   // Close any open dialog. Each dialog owns its own form state, so unmounting it resets that state.
   function closeDialog () {

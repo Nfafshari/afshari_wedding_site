@@ -18,7 +18,7 @@ import {
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 import { updateDocument, deleteDocument, type ErrorField } from "../action";
-import type { ArchivedDoc } from "../client";
+import type { ArchivedDoc } from "../data";
 import IconPicker, { ICON_LIBRARY } from "./icon-picker";
 
 interface EditDocDialogProps {

@@ -31,6 +31,16 @@
   --chart-3: oklch(45.117% 0.04768 121.928);
   --chart-4: oklch(39.189% 0.03953 121.486);
   --chart-5: oklch(28.454% 0.0251 121);
+
+  /* Budget pie slices */
+  --budget-slice-1: #3f5000;
+  --budget-slice-2: #546616;
+  --budget-slice-3: #6a7e31;
+  --budget-slice-4: #81964a;
+  --budget-slice-5: #99af62;
+  /* "Other" is a de-emphasis slot, deliberately outside the ramp. */
+  --budget-slice-other: #898781;
+
   --radius: 0.425rem;
 
   --sidebar: oklch(90.27% 0.01634 95.273);
