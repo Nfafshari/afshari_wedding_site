@@ -1,12 +1,20 @@
 "use client";
 
+/**
+ * Demo fork of `src/components/budget-card.tsx`. Identical rendering; the only
+ * differences are the type source (demo-types, not the real budget page) and the
+ * links, which stay inside the demo tree. Fixes to the real card do not reach
+ * this one — keep the two in step by hand.
+ */
+
 import Link from "next/link";
 import { Cell, Pie, PieChart } from "recharts";
 
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { getTopCategoriesWithOther } from "@/lib/budget";
 import { toCurrency } from "@/lib/utils";
-import type { BudgetCategory } from "../app/(protected)/planner/budget/page";
+import type { BudgetCategory } from "../demo-types";
+import { DEMO_BASE } from "../constants";
 
 interface BudgetCardProps {
   budgetCategories: BudgetCategory[];
@@ -45,7 +53,7 @@ export default function BudgetCard ({ budgetCategories }: BudgetCardProps) {
       <div className="flex items-baseline justify-between gap-2">
         <p className="section-title">Budget Breakdown</p>
         <Link
-          href={'/planner/budget'}
+          href={`${DEMO_BASE}/budget`}
           className="text-sm text-burg/60 underline whitespace-nowrap hover:text-burg"
         >
           View budget
@@ -58,7 +66,7 @@ export default function BudgetCard ({ budgetCategories }: BudgetCardProps) {
         <div className="flex flex-col flex-1 gap-3 items-center justify-center py-6">
           <div className="size-24 rounded-full border-8 border-(--budget-slice-other)/40" />
           <p className="text-center text-sm text-burg/60">Nothing budgeted yet.</p>
-          <Link href={'/planner/budget'} className="text-sm underline text-burg/60 hover:text-burg">
+          <Link href={`${DEMO_BASE}/budget`} className="text-sm underline text-burg/60 hover:text-burg">
             Add to your budget
           </Link>
         </div>

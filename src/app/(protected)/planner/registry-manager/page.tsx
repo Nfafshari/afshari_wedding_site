@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import RegistryManager from "./client";
 
+export const dynamic = 'force-dynamic';
+
 export async function getRegistryItems () {
   const registryItems = await prisma.registryItem.findMany({
     include: {
