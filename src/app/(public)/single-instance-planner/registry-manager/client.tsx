@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { CirclePlus, Gift } from "lucide-react";
+import Link from "next/link";
+import { ChevronLeft, CirclePlus, Gift } from "lucide-react";
 
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import RegistryRow from "./components/registry-row";
@@ -68,6 +69,7 @@ export default function RegistryManager() {
         }
       }}
     >
+      <Link href={'/single-instance-planner'} className="flex items-center text-burg underline mx-2 mt-2 text-sm"><ChevronLeft className="w-5 h-5"/> Back to Planner</Link>
       <div className="w-full min-h-full bg-background font-sans text-burg px-6 pb-10 md:py-2 md:pb-10 md:px-12 lg:px-16">
         {/** title */}
         <div className="flex flex-col w-full md:flex-row">

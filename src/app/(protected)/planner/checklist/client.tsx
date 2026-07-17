@@ -87,11 +87,11 @@ export default function Checklist({ categories }: ChecklistProps) {
         }
       }}
     >
-      <div className="flex flex-col w-full p-5 min-h-full">
+      <div className="flex flex-col w-full min-h-full px-6 pt-4 md:py-5 md:px-12 lg:px-16">
         {/** Header */}
         <div className="w-full">
           <div className="flex w-full">
-            <h1 className="page-title font-bold text-start">Checklist</h1>
+            <h1 className="page-title text-start">Checklist</h1>
             <h2 className="page-subtitle ml-auto">{totalTasksDone} of {totalTasks} done</h2>
           </div>
           <Field className="w-full">

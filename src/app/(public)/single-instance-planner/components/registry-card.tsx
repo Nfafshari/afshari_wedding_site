@@ -8,6 +8,7 @@
  */
 
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 import { Progress } from "@/components/ui/progress";
 import { countFullyClaimedItems, getLatestClaim } from "@/lib/registry";
@@ -32,9 +33,10 @@ export default function RegistryCard ({ registryItems }: RegistryCardProps) {
         <p className="section-title pr-2">Registry Manager</p>
         <Link
           href={`${DEMO_BASE}/registry-manager`}
-          className="text-sm text-burg/60 underline whitespace-nowrap hover:text-burg"
+          className="inline-flex items-center gap-0.5 text-sm text-burg/60 whitespace-nowrap rounded-sm hover:text-burg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
-          View registry
+          <span className="underline">View registry</span>
+          <ChevronRight className="w-3.5 h-3.5" />
         </Link>
       </div>
 
@@ -43,7 +45,7 @@ export default function RegistryCard ({ registryItems }: RegistryCardProps) {
           <p className="text-center text-sm text-burg/60">Nothing on the registry yet.</p>
           <Link
             href={`${DEMO_BASE}/registry-manager`}
-            className="text-sm underline text-burg/60 hover:text-burg"
+            className="text-sm underline text-burg/60 rounded-sm hover:text-burg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             Add your first item
           </Link>

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { CirclePlus } from "lucide-react";
+import Link from "next/link";
+import { ChevronLeft, CirclePlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { StackedProgressBar, type ProgressBarLegend } from "@/components/stacked-progress-bar";
@@ -103,6 +104,7 @@ export default function Budget () {
         }
       }}
     >
+      <Link href={'/single-instance-planner'} className="flex items-center text-burg underline mx-2 mt-2 text-sm"><ChevronLeft className="w-5 h-5"/> Back to Planner</Link>
       <div className="w-full min-h-full bg-background font-sans text-burg px-6 py-2 md:px-12 lg:px-16">
         {/** title */}
         <div className="flex w-full">

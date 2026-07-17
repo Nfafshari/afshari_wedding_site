@@ -1,7 +1,10 @@
 "use client";
 
+import Link from "next/link";
+
 import RsvpTable from "./components/rsvp-table";
 import { useDemoPlanner } from "../demo-store";
+import { ChevronLeft } from "lucide-react";
 
 export default function Rsvp() {
   const { rsvps: rsvpData } = useDemoPlanner();
@@ -19,9 +22,10 @@ export default function Rsvp() {
   const totalResponded = acceptedRsvps.length + rejectedRsvps.length;
 
   return (
-    <div className="w-full min-h-full bg-background font-sans text-burg px-6 pb-6 md:py-2 md:px-12 lg:px-16">
+    <div className="relative w-full min-h-full bg-background font-sans text-burg px-6 pb-6 md:py-2 md:px-12 lg:px-16">
+      <Link href={'/single-instance-planner'} className="absolute left-2 flex items-center text-burg underline mx-2 mt-2 text-sm"><ChevronLeft className="w-5 h-5"/> Back to Planner</Link>
       {/** title */}
-      <div className="flex flex-col w-full md:flex-row">
+      <div className="flex flex-col w-full mt-10 md:flex-row">
         <h1 className="page-title w-full text-center translate-y-3 md:text-start">RSVP Tracker</h1>
         <div className="flex flex-col mt-4 md:w-1/2 md:ml-auto md:mt-0">
           <h2 className="page-title text-xl  text-center md:text-2xl md:text-end">{totalResponded} Responses</h2>

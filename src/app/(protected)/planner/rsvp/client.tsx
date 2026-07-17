@@ -22,7 +22,7 @@ export default function Rsvp({ rsvpData }: RsvpProps) {
   const totalResponded = acceptedRsvps.length + rejectedRsvps.length;
 
   return (
-    <div className="w-full min-h-full bg-background font-sans text-burg px-6 pb-6 md:py-2 md:px-12 lg:px-16">
+    <div className="relative w-full min-h-full bg-background font-sans text-burg px-6 pb-6 md:py-2 md:px-12 lg:px-16">
       {/** title */}
       <div className="flex flex-col w-full md:flex-row">
         <h1 className="page-title w-full text-center translate-y-3 md:text-start">RSVP Tracker</h1>

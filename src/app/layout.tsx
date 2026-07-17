@@ -2,10 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pinyon_Script, IM_Fell_Great_Primer, Herr_Von_Muellerhoff } from "next/font/google";
 import { Toaster } from "@/components/ui/sonner";
 
-import Header from "@/components/header";
 import { SidebarProvider } from "@/components/ui/sidebar";
-import { NavSidebar } from "@/components/nav-sidebar";
-import Footer from "@/components/footer";
 
 import "./globals.css";
 
@@ -54,11 +51,8 @@ export default function RootLayout({
     >
       <body className="h-full flex flex-col">
         <SidebarProvider>
-          <NavSidebar />
           <main className="flex-1 min-w-0">
-            <Header />
             {children}
-            <Footer />
           </main>
           <Toaster />
         </SidebarProvider>

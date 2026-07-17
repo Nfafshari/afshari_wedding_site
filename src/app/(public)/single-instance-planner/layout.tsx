@@ -16,6 +16,7 @@ import DemoBanner from "./components/demo-banner";
  * rendered it.
  */
 export default function SingleInstancePlannerLayout ({ children }: { children: React.ReactNode }) {
+
   return (
     <DemoPlannerProvider>
       <DemoBanner />

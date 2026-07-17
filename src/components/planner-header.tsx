@@ -7,7 +7,7 @@ import NavButton from '@/components/nav-button';
 import { useSidebar } from "@/components/ui/sidebar"
 import LogoSvg from './logo-svg';
 
-export default function Header () {
+export default function PlannerHeader () {
   const { toggleSidebar } = useSidebar();
   const pathname = usePathname();
 
@@ -28,22 +28,22 @@ export default function Header () {
       <nav className='hidden px-7 w-full h-35 flex-row items-center md:flex'>
         <div className='flex w-full gap-3 items-center justify-end'>
           <NavButton
-            href={'/'}
-            isActive={pathname === '/'}
+            href={'/planner'}
+            isActive={pathname === '/planner'}
           >
-            Home
+            Dashboard
           </NavButton>
           <NavButton
-            href={'/'}
-            isActive={pathname === '/our-story'}
+            href={'/planner/checklist'}
+            isActive={pathname === '/planner/checklist'}
           >
-            Our Story
+            Checklist
           </NavButton>
           <NavButton
-            href={'/'}
-            isActive={pathname === '/rsvp'}
+            href={'/planner/rsvp'}
+            isActive={pathname === '/planner/rsvp'}
           >
-            RSVP
+            RSVP Manager
           </NavButton>
         </div>
 
@@ -55,22 +55,22 @@ export default function Header () {
 
         <div className='flex w-full gap-3 items-center justify-start'>
           <NavButton
-            href={'/'}
-            isActive={pathname === '/registry'}
+            href={'/planner/budget'}
+            isActive={pathname === '/planner/budget'}
           >
-            Registry
+            Budget
           </NavButton>
           <NavButton
-            href={'/'}
-            isActive={pathname === '/details'}
+            href={'/planner/registry-manager'}
+            isActive={pathname === '/planner/registry-manager'}
           >
-            Details
+            Registry Claims
           </NavButton>
           <NavButton
-            href={'/'}
-            isActive={pathname === '/wedding-party'}
+            href={'/planner/doc-archive'}
+            isActive={pathname === '/planner/doc-archive'}
           >
-            Wedding Party
+            Documents
           </NavButton>
         </div>
       </nav>

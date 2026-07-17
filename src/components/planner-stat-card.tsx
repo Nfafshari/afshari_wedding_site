@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ChevronRight } from "lucide-react";
 
 interface PlannerStatCardProps {
   title: string;
@@ -30,9 +31,10 @@ export default function PlannerStatCard ({
         <p className="section-title pr-2">{title}</p>
         <Link
           href={href}
-          className="text-sm text-burg/60 underline whitespace-nowrap hover:text-burg"
+          className="inline-flex items-center gap-0.5 text-sm text-burg/60 whitespace-nowrap rounded-sm hover:text-burg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background"
         >
-          {linkLabel}
+          <span className="underline">{linkLabel}</span>
+          <ChevronRight className="w-3.5 h-3.5" />
         </Link>
       </div>
 
