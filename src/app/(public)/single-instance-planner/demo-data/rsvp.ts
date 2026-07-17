@@ -39,7 +39,7 @@ export const DEMO_RSVPS: Rsvps[] = [
     attendance: true,
     createdAt: new Date('2027-06-01'),
     guests: [
-      { id: 4, name: 'Priya Chatterjee', isPrimary: true, email: 'priya.chatterjee@example.com', phoneNumber: '+1 555 218 0210', notes: 'Please seat near the Okafors.', createdAt: new Date('2027-06-01'), rsvpId: 3 },
+      { id: 4, name: 'Priya Chatterjee', isPrimary: true, email: 'priya.chatterjee@example.com', phoneNumber: null, notes: 'Please seat near the Okafors.', createdAt: new Date('2027-06-01'), rsvpId: 3 },
     ],
   },
   {
@@ -48,7 +48,7 @@ export const DEMO_RSVPS: Rsvps[] = [
     createdAt: new Date('2027-06-03'),
     guests: [
       { id: 8, name: 'Emma Whitfield', isPrimary: false, email: 'emma.whitfield@example.com', phoneNumber: '+1 555 218 0225', notes: null, createdAt: new Date('2027-06-03'), rsvpId: 4 },
-      { id: 7, name: 'Lucas Whitfield', isPrimary: false, email: 'lucas.whitfield@example.com', phoneNumber: '+1 555 218 0224', notes: 'Peanut allergy.', createdAt: new Date('2027-06-03'), rsvpId: 4 },
+      { id: 7, name: 'Lucas Whitfield', isPrimary: false, email: null, phoneNumber: null, notes: 'Peanut allergy.', createdAt: new Date('2027-06-03'), rsvpId: 4 },
       { id: 6, name: 'Sarah Whitfield', isPrimary: false, email: 'sarah.whitfield@example.com', phoneNumber: '+1 555 218 0223', notes: null, createdAt: new Date('2027-06-03'), rsvpId: 4 },
       { id: 5, name: 'Tom Whitfield', isPrimary: true, email: 'tom.whitfield@example.com', phoneNumber: '+1 555 218 0199', notes: null, createdAt: new Date('2027-06-03'), rsvpId: 4 },
     ],
@@ -60,7 +60,7 @@ export const DEMO_RSVPS: Rsvps[] = [
     guests: [
       { id: 10, name: 'Daniel Okafor', isPrimary: false, email: 'daniel.okafor@example.com', phoneNumber: '+1 555 218 0231', notes: null, createdAt: new Date('2027-06-10'), rsvpId: 5 },
       { id: 9, name: 'Grace Okafor', isPrimary: true, email: 'grace.okafor@example.com', phoneNumber: '+1 555 218 0121', notes: null, createdAt: new Date('2027-06-10'), rsvpId: 5 },
-      { id: 11, name: 'Nia Okafor', isPrimary: false, email: 'nia.okafor@example.com', phoneNumber: '+1 555 218 0232', notes: null, createdAt: new Date('2027-06-10'), rsvpId: 5 },
+      { id: 11, name: 'Nia Okafor', isPrimary: false, email: null, phoneNumber: '+1 555 218 0232', notes: null, createdAt: new Date('2027-06-10'), rsvpId: 5 },
     ],
   },
   {
@@ -85,8 +85,8 @@ export const DEMO_RSVPS: Rsvps[] = [
     attendance: true,
     createdAt: new Date('2027-07-02'),
     guests: [
-      { id: 17, name: 'Kai Zhang', isPrimary: false, email: 'kai.zhang@example.com', phoneNumber: '+1 555 218 0252', notes: null, createdAt: new Date('2027-07-02'), rsvpId: 8 },
-      { id: 16, name: 'Lin Zhang', isPrimary: false, email: 'lin.zhang@example.com', phoneNumber: '+1 555 218 0251', notes: null, createdAt: new Date('2027-07-02'), rsvpId: 8 },
+      { id: 17, name: 'Kai Zhang', isPrimary: false, email: 'kai.zhang@example.com', phoneNumber: null, notes: null, createdAt: new Date('2027-07-02'), rsvpId: 8 },
+      { id: 16, name: 'Lin Zhang', isPrimary: false, email: null, phoneNumber: '+1 555 218 0251', notes: null, createdAt: new Date('2027-07-02'), rsvpId: 8 },
       { id: 18, name: 'Mei Zhang', isPrimary: false, email: 'mei.zhang@example.com', phoneNumber: '+1 555 218 0253', notes: null, createdAt: new Date('2027-07-02'), rsvpId: 8 },
       { id: 15, name: 'Wei Zhang', isPrimary: true, email: 'wei.zhang@example.com', phoneNumber: '+1 555 218 0164', notes: null, createdAt: new Date('2027-07-02'), rsvpId: 8 },
     ],

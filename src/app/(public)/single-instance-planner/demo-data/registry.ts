@@ -18,8 +18,8 @@ export const DEMO_REGISTRY_ITEMS: RegistryItem[] = [
   {
     id: 1,
     name: 'Cast Iron Dutch Oven',
-    link: 'https://www.example.com/dutch-oven',
-    image: 'https://images.unsplash.com/photo-1585515320310-259814833e62?w=400',
+    link: 'https://www.amazon.com/Lodge-Quart-Enameled-Enamel-Oyster/dp/B00U1OCPWQ?crid=1N048DEWJV3D4&dib=eyJ2IjoiMSJ9.8xHzKb_rBuHmSTTDrpe9zAxWFv5NzSzCA_NgGSRerwSy896XQSUaK8Flm4zseMPmM_4KEDXrxXkhvG37tVxoE-ZfZhA7lz64gPGkUcavtIbdYth1hFBCnkmjWE0ZwYwb71l_OF3M6Uq6PMYWLUy9TuqvYk-RbQc_pk4jH3oDY379tC8vqI47CT-StfLHkhwVGIZbGYPfKXu2QZH_0xUXhL570ndfHeDIWke2OIg4OYL50bjn2SHg0awoBemthaTq5qp6rDGBdk1xyRC3IfBOVGdCGANWoP9tAb_tYvFJw60.Nsa9Ckw-7-vRd_zXF9eiod9_EDF-iWoBzie-N-DFChI&dib_tag=se&keywords=dutch%2Bover&qid=1784315709&sprefix=dutch%2Bover%2Caps%2C192&sr=8-7&ufe=app_do%3Aamzn1.fos.9fe8cbfa-bf43-43d1-a707-3f4e65a4b666&th=1',
+    image: 'https://www.allrecipes.com/thmb/Tv2bnVgeg4c_3buJHVH0gHOCTvE=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/lecreuset-42100fc9e440421288f405a3f9b027d2.png',
     quantityWanted: 1,
     claimed: [],
   },
@@ -27,8 +27,8 @@ export const DEMO_REGISTRY_ITEMS: RegistryItem[] = [
   {
     id: 2,
     name: 'Linen Bath Towels',
-    link: 'https://www.example.com/bath-towels',
-    image: 'https://images.unsplash.com/photo-1620912189875-0d3d4d0d0b7e?w=400',
+    link: 'https://www.amazon.com/COTTON-CRAFT-Waffle-Bath-Towel/dp/B0DHD7482X?crid=282N7QUHEKU0A&dib=eyJ2IjoiMSJ9.kckHkggKFoVIFugaG6G8ARHdBUrC9PtjootucZz8Nm9iQ2QXQ6Ahzx3T5fV9Jjbsm86lra-vYYV2Dkc4kMzKvBOJS0HZE79zS3CYNFea6jszpvjFdcygeFVnyG1NO9wj0XEnOEccF9AtCTNRV1NsCb_0VVgmW4gg3hev1FBdJ234SFrZqXo9gHK4xlX9UZqGYeouAS7HxH_wG8r8VkCA14-dwVpSdiMLqzT8iBxroMnuL0yRyyiFTqw9ragmBkwf4BOGaPjMmHBVr_ehLJ3SkvJpmYpUegy0PwR6gRpDmbw.2Ey9xVavmDqUdA0K4E3VAvWtQs6Uy1g9HqJUxXvbooQ&dib_tag=se&keywords=linen%2Bbath%2Btowels&qid=1784315981&sprefix=linen%2Bbath%2Btowels%2Caps%2C191&sr=8-16&th=1',
+    image: 'https://res.cloudinary.com/companystore/image/upload/b_rgb:FFFFFF,c_pad,dpr_2.0,f_auto,h_400,q_90,w_400/c_pad,h_400,w_400/v1/webimages/59060_texture_g20_alt1?pgw=1',
     quantityWanted: 8,
     claimed: [
       { id: 1, claimedBy: 'Aunt Sue', quantity: 2, createdAt: new Date('2026-07-02'), itemId: 2 },
@@ -39,8 +39,8 @@ export const DEMO_REGISTRY_ITEMS: RegistryItem[] = [
   {
     id: 3,
     name: 'Stand Mixer',
-    link: 'https://www.example.com/stand-mixer',
-    image: 'https://images.unsplash.com/photo-1594222082006-6bd7f4b1a4b0?w=400',
+    link: 'https://www.amazon.com/KitchenAid-KSM150PSPT-Artisan-Pouring-Shield/dp/B0000635XA?crid=DF1O6N70I8AY&dib=eyJ2IjoiMSJ9.GSBa-53tmLlLvnbCj_Yb6hvJ1wvB3p-_9Q-yuhtbPv7mxyJum4dmK43QNMHjL2HpXxepTSZiIvi1g_tVKmXkGCSzXm7_IPg3uJHzlmAz1cKI4DHUQyByNgIOq-9aLWfzp1o9C4_zUqxXdxoGN8warGz_krcyddQD0eS1IZnSqBSF0IMAI8xqcLxtDNrymxemHfPJZFxAZMzo_y74COZiUHZg0b5AMhObAO82SNd5wU0.kDUIV9WgDzQTkn8e992xDGVLX5NmZKWYAY0M45LYoSk&dib_tag=se&keywords=stand%2Bmixer&qid=1784316161&sprefix=stand%2Bmixe%2Caps%2C196&sr=8-3&th=1',
+    image: 'https://i5.walmartimages.com/seo/KitchenAid-Classic-Series-4-5-Quart-Tilt-Head-Stand-Mixer-Onyx-Black-K45SS_c684367a-f3de-436a-86bf-0f572e0f40dd.c65e4d7b7da28b63c9b0d466b2e5c293.jpeg',
     quantityWanted: 1,
     claimed: [
       { id: 3, claimedBy: 'Grace Okafor', quantity: 1, createdAt: new Date('2026-07-11'), itemId: 3 },
@@ -50,7 +50,7 @@ export const DEMO_REGISTRY_ITEMS: RegistryItem[] = [
   {
     id: 4,
     name: 'Wool Picnic Blanket',
-    link: 'https://www.example.com/picnic-blanket',
+    link: 'https://i5.walmartimages.com/seo/KitchenAid-Classic-Series-4-5-Quart-Tilt-Head-Stand-Mixer-Onyx-Black-K45SS_c684367a-f3de-436a-86bf-0f572e0f40dd.c65e4d7b7da28b63c9b0d466b2e5c293.jpeg',
     image: null,
     quantityWanted: 2,
     claimed: [

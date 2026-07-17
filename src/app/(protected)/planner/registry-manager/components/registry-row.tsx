@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, CirclePlus, ExternalLink, SquarePen, Trash2 } from "lucide-react";
+import { ChevronDown, CirclePlus, ExternalLink, SquarePen, Trash2, ZoomIn } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -9,6 +9,7 @@ import { Progress } from "@/components/ui/progress";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { cn } from "@/lib/utils";
 
+import ImageLightbox from "@/components/image-lightbox";
 import type { RegistryClaim, RegistryItem } from "../page";
 import Link from "next/link";
 
@@ -79,25 +80,48 @@ export default function RegistryRow({ item, onEdit, onAddClaim, onRemoveClaim }:
   const hasUsableImage = item.image !== null && item.image !== brokenImageSource;
   const imageSource = hasUsableImage ? item.image! : FALLBACK_IMAGE;
 
+  /*
+    A plain <img>, not next/image: registry pictures come from whatever CDN the
+    couple happened to shop at, so images.remotePatterns would have to be '**' —
+    which turns /_next/image into an open resizing proxy anyone can aim anywhere.
+  */
+  const thumbnail = (
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={imageSource}
+      alt={item.name}
+      loading="lazy"
+      // Some retailers block hotlinking when they see a foreign referrer.
+      referrerPolicy="no-referrer"
+      onError={() => setBrokenImageSource(item.image)}
+      className="w-14 h-14 shrink-0 rounded-sm border border-border bg-muted/10 object-contain p-1 md:w-20 md:h-20"
+    />
+  );
+
   return (
     <Collapsible className="w-full border-b border-border last:border-b-0">
       {/** Collapsed: everything needed to answer "how many are left, and who claimed them?" */}
       <div className="flex w-full items-center gap-3 py-3 md:gap-4 md:py-4">
         {/*
-          A plain <img>, not next/image: registry pictures come from whatever CDN the
-          couple happened to shop at, so images.remotePatterns would have to be '**' —
-          which turns /_next/image into an open resizing proxy anyone can aim anywhere.
+          Only offer to expand a real picture — blowing up the fallback
+          placeholder tells the couple nothing, so it stays a plain thumbnail.
         */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={imageSource}
-          alt={item.name}
-          loading="lazy"
-          // Some retailers block hotlinking when they see a foreign referrer.
-          referrerPolicy="no-referrer"
-          onError={() => setBrokenImageSource(item.image)}
-          className="w-14 h-14 shrink-0 rounded-sm border border-border bg-muted/10 object-contain p-1 md:w-20 md:h-20"
-        />
+        {hasUsableImage ? (
+          <ImageLightbox src={imageSource} alt={item.name}>
+            <button
+              type="button"
+              aria-label={`Expand image of ${item.name}`}
+              className="group relative shrink-0 cursor-zoom-in rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+            >
+              {thumbnail}
+              <span className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-sm bg-black/0 opacity-0 transition group-hover:bg-black/30 group-hover:opacity-100">
+                <ZoomIn className="w-5 h-5 text-white" />
+              </span>
+            </button>
+          </ImageLightbox>
+        ) : (
+          thumbnail
+        )}
 
         {/** Name, link and claimants */}
         <div className="flex flex-col min-w-0 flex-1 gap-1">
