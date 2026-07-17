@@ -9,8 +9,9 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 
-import { createCategory, type ErrorField } from "@/app/(protected)/planner/checklist/action";
-import type { CategoryWithTasks } from "@/app/(protected)/planner/checklist/page";
+import { type ErrorField } from "../action";
+import { useDemoPlanner } from "../../demo-store";
+import type { CategoryWithTasks } from "../page";
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 const ICON_LIBRARY: LucideIcon[] = [
@@ -29,6 +30,7 @@ interface AddCategoryDialogProps {
 }
 
 export default function AddCategoryDialog({ categories, onSuccess }: AddCategoryDialogProps) {
+  const { createCategory } = useDemoPlanner();
   const [categoryName, setCategoryName] = useState('');
   const [activeIcon, setActiveIcon] = useState('Astroid');
   const [isEmptyInput, setIsEmptyInput] = useState(false);

@@ -18,13 +18,17 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-import { updateCategory, deleteCategory, type ErrorField } from "@/app/(protected)/planner/checklist/action";
-import type { CategoryWithTasks } from "@/app/(protected)/planner/checklist/page";
+import { type ErrorField } from "../action";
+import { useDemoPlanner } from "../../demo-store";
+import type { CategoryWithTasks } from "../page";
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 const ICON_LIBRARY: LucideIcon[] = [
-  Lucide.HandCoins, Lucide.CalendarDays, Lucide.Gift, Lucide.Car,
-  Lucide.Store, Lucide.Timer, Lucide.Utensils, Lucide.Cake, Lucide.Astroid,
+  Lucide.Astroid, Lucide.HandCoins, Lucide.CalendarDays, Lucide.Gift,
+  Lucide.Car, Lucide.Store, Lucide.Timer, Lucide.Utensils, Lucide.Cake,
+  Lucide.Landmark, Lucide.Flower2, Lucide.Gem,
+  Lucide.Camera, Lucide.Music, Lucide.Shirt, Lucide.Mail,
+  Lucide.Church, Lucide.Plane,
 ];
 
 interface AddCategoryDialogProps {
@@ -37,6 +41,7 @@ interface AddCategoryDialogProps {
 }
 
 export default function EditCategoryDialog({ categories, categoryToUpdate, onSuccess }: AddCategoryDialogProps) {
+  const { updateCategory, deleteCategory } = useDemoPlanner();
   const [newCategoryName, setNewCategoryName] = useState('');
   const [newIcon, setNewIcon] = useState('Astroid');
   const [isEmptyInput, setIsEmptyInput] = useState(false);
@@ -102,24 +107,26 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
             {serverError && <p className="text-destructive/80 text-xs">{serverError}</p>}
           </Field>
           <div className="flex flex-col w-full items-start mt-2 text-burg">
-            Icon:
-            <div className="h-30 w-full overflow-y overflow-y-scroll">
-              <div className="grid grid-cols-3 grid-rows-3 gap-1 w-full">
-                {ICON_LIBRARY.map((icon, idx) => {
-                  const Icon = icon;
-                  return (
-                    <Button
-                      variant={'outline'}
-                      className={`bg-popover border-olivine text-olivine hover:bg-olivine hover:text-background ${newIcon === icon.displayName ? 'bg-olivine text-background' : 'bg-popover'}`}
-                      key={idx}
-                      onClick={() => {
-                        setNewIcon(icon.displayName ?? '')
-                      }}
-                    >
-                      <Icon />
-                    </Button>
-                  )
-                })}
+            <div className="flex flex-col w-full items-start mt-2 text-burg">
+              Icon:
+              <div className="h-30 w-full overflow-y overflow-y-scroll">
+                <div className="grid grid-cols-3 grid-rows-3 gap-1 w-full">
+                  {ICON_LIBRARY.map((icon, idx) => {
+                    const Icon = icon;
+                    return (
+                      <Button
+                        variant={'outline'}
+                        className={`bg-popover border-olivine text-olivine hover:bg-olivine hover:text-background ${newIcon === icon.displayName ? 'bg-olivine text-background' : 'bg-popover'}`}
+                        key={idx}
+                        onClick={() => {
+                          setNewIcon(icon.displayName ?? '')
+                        }}
+                      >
+                        <Icon />
+                      </Button>
+                    )
+                  })}
+                </div>
               </div>
             </div>
           </div>

@@ -1,6 +1,8 @@
 import Rsvp from "./client";
 import { prisma } from "@/lib/prisma";
 
+export const dynamic = 'force-dynamic';
+
 export async function getRsvps () {
   const rsvps = prisma.rsvp.findMany({
     include: {
