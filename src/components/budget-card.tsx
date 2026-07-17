@@ -101,7 +101,7 @@ export default function BudgetCard ({ budgetCategories }: BudgetCardProps) {
             {slices.map((slice) => (
               <li key={slice.name} className="flex items-center gap-1.5 text-xs">
                 <span
-                  className="size-2.5 shrink-0 rounded-[2px]"
+                  className="size-2.5 shrink-0 rounded-xs"
                   style={{ background: slice.fill }}
                 />
                 <span className="truncate text-burg/70">{slice.name}</span>
