@@ -1,4 +1,4 @@
-import { Blocks, Construction, Hammer, Wrench } from "lucide-react";
+import { Hammer, Wrench } from "lucide-react";
 import Link from "next/link";
 
 export default function Home() {
