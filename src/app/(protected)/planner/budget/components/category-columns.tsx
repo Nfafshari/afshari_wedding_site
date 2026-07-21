@@ -22,7 +22,7 @@ export default function CategoryColumns ({ heading = false }: CategoryColumnsPro
         {/* estimated (desktop) / balance (mobile) */}
         <col className="w-[40%] md:w-[30%]" />
         {/* paid (desktop) / status (mobile) */}
-        <col className="w-[25%] md:w-[22%]" />
+        <col className="w-[25%] md:w-[21.5%]" />
         {/* balance (desktop) / collapsed (mobile) */}
         <col className="w-0 md:w-[17%]" />
         {/* status (desktop) / collapsed (mobile) */}
@@ -37,9 +37,9 @@ export default function CategoryColumns ({ heading = false }: CategoryColumnsPro
         {/* category (wider on mobile, since est/paid fold into its subline) */}
         <col className="w-[45%] md:w-[50%]" />
         {/* estimated (desktop) / balance (mobile) */}
-        <col className="w-[30%] md:w-20%]" />
+        <col className="w-[30%] md:w-[31%]" />
         {/* paid (desktop) / status (mobile) */}
-        <col className="w-[25%] md:w-[20%]" />
+        <col className="w-[25%] md:w-[21%]" />
         {/* balance (desktop) / collapsed (mobile) */}
         <col className="w-0 md:w-[17%]" />
         {/* status (desktop) / collapsed (mobile) */}

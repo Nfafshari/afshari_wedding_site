@@ -106,12 +106,12 @@ export default function RsvpTable ({ rsvpData }: RsvpTableProps) {
                     {plusOnes.map((guest, idx) => (
                       <TableRow key={guest.id}>
                         <TableCell/>
-                        <TableCell className="font-bold text-lg pb-1 md:pb-0">
+                        <TableCell className="font-bold text-lg pb-1">
                           <div className="flex items-center">
                             {idx === plusOnes.length - 1 ? (
-                              <LineDotRightHorizontal strokeWidth={2} className="h-5 mb-2 rotate-90 text-muted" />
+                              <LineDotRightHorizontal strokeWidth={2} className="h-5 mb-2 rotate-90 text-muted shrink-0" />
                             ) : (
-                              <GitCommitVertical strokeWidth={2} className="h-5 text-muted" />
+                              <GitCommitVertical strokeWidth={2} className="h-5 text-muted shrink-0" />
                             )}
                             <div className="flex flex-col">
                               {guest.name}

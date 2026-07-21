@@ -29,7 +29,7 @@ export enum DialogType {
 export default function Budget () {
   const { budgetCategories } = useDemoPlanner();
 
-  const LIMITS = { target: 15000, cap: 20000 };
+  const LIMITS = { target: 32000, cap: 40000 };
 
   const [activeDialog, setActiveDialog] = useState(DialogType.None);
   // Which category a new subcategory attaches to, and which subcategory a delete targets.

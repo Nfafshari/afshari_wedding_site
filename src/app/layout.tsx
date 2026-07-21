@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pinyon_Script, IM_Fell_Great_Primer, Herr_Von_Muellerhoff } from "next/font/google";
-import { Toaster } from "@/components/ui/sonner";
+import { Viewport } from "next";
 
+import { Toaster } from "@/components/ui/sonner";
 import { SidebarProvider } from "@/components/ui/sidebar";
 
 import "./globals.css";
@@ -37,7 +38,15 @@ const imFellGreat = IM_Fell_Great_Primer({
 export const metadata: Metadata = {
   title: "Piper & Nathen | September 11, 2027",
   description: "Join us as we celebrate our wedding on September 11, 2027.",
+  formatDetection: { telephone: false } // prevent iOS from detecting telephone to stop safari from wrapping it in an a tag
 };
+
+// adjust viewport for dialogs on mobile
+export const viewport: Viewport = {
+  interactiveWidget: 'resizes-content',
+  width: 'device-width',
+  initialScale: 1
+}
 
 export default function RootLayout({
   children,

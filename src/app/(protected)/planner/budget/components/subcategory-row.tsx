@@ -279,34 +279,39 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
       </TableCell>
       <TableCell className="text-right text-lg">{toCurrency(subcategory.estimatedCost - subcategory.paidAmount)}</TableCell>
       <TableCell className="flex flex-col items-end text-right">
-        <Select
-          value={subcategory.status}
-          onValueChange={(val: BudgetStatus) => {
-            saveStatus(val)
-          }}
-        >
-          <SelectTrigger
-            align="left"
-            className="border-transparent [&_svg]:text-transparent hover:[&_svg]:text-muted-foreground focus:ring-0! hover:border-border"
+        <div className="hidden md:flex">
+          <Select
+            value={subcategory.status}
+            onValueChange={(val: BudgetStatus) => {
+              saveStatus(val)
+            }}
           >
-            <SelectValue />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              {BADGE_VARIANT.map((badge) => (
-                <SelectItem
-                  key={badge} value={badge}
-                  className="focus:bg-muted/20"
-                >
-                  <Badge variant={badge}>{badge}</Badge>
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        {/* The Select can't hold a client-side error (its values are enum-constrained),
-            so only a server rejection can surface here. */}
-        {(serverError && serverErrorField === 'status') && <p className="overflow-x-scroll text-destructive/80 text-xs">{serverError}</p>}
+            <SelectTrigger
+              align="left"
+              className="border-transparent [&_svg]:text-transparent hover:[&_svg]:text-muted-foreground focus:ring-0! hover:border-border"
+            >
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                {BADGE_VARIANT.map((badge) => (
+                  <SelectItem
+                    key={badge} value={badge}
+                    className="focus:bg-muted/20"
+                  >
+                    <Badge variant={badge}>{badge}</Badge>
+                  </SelectItem>
+                ))}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          {/* The Select can't hold a client-side error (its values are enum-constrained),
+              so only a server rejection can surface here. */}
+          {(serverError && serverErrorField === 'status') && <p className="overflow-x-scroll text-destructive/80 text-xs">{serverError}</p>}
+        </div>
+        <div className="mt-3.5 md:hidden">
+          <Badge variant={subcategory.status}>{subcategory.status}</Badge>
+        </div>
       </TableCell>
     </TableRow>
   );
