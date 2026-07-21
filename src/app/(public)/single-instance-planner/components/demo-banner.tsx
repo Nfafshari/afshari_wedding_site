@@ -16,19 +16,21 @@ export default function DemoBanner () {
   const { reset } = useDemoPlanner();
 
   return (
-    <div className="flex w-full flex-wrap gap-x-3 gap-y-1 items-center justify-center px-4 py-2 bg-olivine/50 border-t-3 border-b-3 border-olivine text-burg text-sm animate-pulse hover:animate-none">
-      <p className="text-center">
-        <span className="font-bold tracking-[0.16em] text-burg/80">DEMO:</span>
-        {' This is a demo of our planner! It uses sample data and it lives only in your browser. You can edit anything and refresh to put it back.'}
-      </p>
-      <Button
-        variant={'ghost'}
-        className="h-7 px-2 text-burg/70 underline hover:bg-olivine/30 hover:text-burg"
-        onClick={() => reset()}
-      >
-        <RotateCcw className="w-3.5 h-3.5" />
-        Reset
-      </Button>
+    <div className="sticky top-0 flex bg-background z-40">
+      <div className="flex w-full flex-wrap gap-x-3 gap-y-1 items-center justify-center px-4 py-2 bg-olivine/50 border-t-3 border-b-3 border-olivine text-burg text-sm animate-pulse hover:animate-none">
+        <p className="text-center">
+          <span className="font-bold tracking-[0.16em] text-burg/80">DEMO:</span>
+          {' This is a demo of our planner! It uses sample data and it lives only in your browser. You can edit anything and refresh to put it back.'}
+        </p>
+        <Button
+          variant={'ghost'}
+          className="h-7 px-2 text-burg/70 underline hover:bg-olivine/30 hover:text-burg"
+          onClick={() => reset()}
+        >
+          <RotateCcw className="w-3.5 h-3.5" />
+          Reset
+        </Button>
+      </div>
     </div>
   );
 }

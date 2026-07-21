@@ -105,7 +105,7 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
         }
       }}
     >
-      <div className="w-full min-h-full bg-background font-sans text-burg px-6 py-2 md:px-12 lg:px-16">
+      <div className="flex flex-col min-h-dvh w-full bg-background font-sans text-burg px-6 py-2 md:px-12 lg:px-16">
         {/** title */}
         <div className="flex w-full">
           <h1 className="page-title w-full text-center translate-y-3 md:text-start">Budget Tracker</h1>

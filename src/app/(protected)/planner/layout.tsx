@@ -17,7 +17,7 @@ export default async function PlannerLayout ({ children }: { children: React.Rea
   await requireUser();
 
   return (
-    <div>
+    <div className="min-h-dvh flex flex-col">
       <NavSidebar 
         navItems={NAV_ITEMS}
       />
@@ -30,7 +30,9 @@ export default async function PlannerLayout ({ children }: { children: React.Rea
           Sign Out?
         </Link>
       </div>
-      {children}
+      <div className="flex-1">
+        {children}
+      </div>
       <Footer />
     </div>
   );
