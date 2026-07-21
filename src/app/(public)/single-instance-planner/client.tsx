@@ -189,13 +189,13 @@ export default function Planner() {
               <p className="stat-number">{respondedGuests}</p>
               <p className="muted-caption pt-2">Responded</p>
             </div>
-            <div className="flex flex-col w-full h-auto justify-center pl-5">
+            <div className="flex flex-col w-full h-auto justify-center items-center md:items-baseline md:pl-5">
               <p className="stat-number text-olivine">{attendingGuests}</p>
-              <p className="muted-caption pt-2">Attending</p>
+              <p className="muted-caption text-base pt-2 md:text-lg">Attending</p>
             </div>
-            <div className="flex flex-col w-full h-auto border-s-2 border-s-gold/50 justify-center pl-5">
+            <div className="flex flex-col w-full h-auto border-s-2 border-s-gold/50 justify-center items-center md:items-baseline md:pl-5">
               <p className="stat-number text-destructive">{declinedGuests}</p>
-              <p className="muted-caption pt-2">Declined</p>
+              <p className="muted-caption text-base pt-2 md:text-lg">Declined</p>
             </div>
           </div>
         </Link>

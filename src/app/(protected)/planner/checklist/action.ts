@@ -2,6 +2,7 @@
 import { prisma } from '@/lib/prisma';
 import { Prisma } from '@/generated/prisma/client';
 import { revalidatePath } from 'next/cache';
+import { requireUserAction } from '@/lib/require-user';
 
 /**
  * Which input a failure relates to, so the client can highlight the right field.
@@ -16,7 +17,7 @@ export type ErrorField = 'name' | 'date' | 'category';
  */
 export type ActionResult =
   | { ok: true }
-  | { ok: false; error: string; field?: ErrorField };
+  | { ok: false; error: string; field?: ErrorField; authRequired?: true };
 
 /**
  * Creates a new category in the DB.
@@ -25,6 +26,12 @@ export type ActionResult =
  * @returns an ActionResult the client can react to
  */
 export async function createCategory (name: string, icon: string): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   // Validate on the server
   const trimmedName = name.trim();
   if (trimmedName === '') {
@@ -62,6 +69,12 @@ export async function createCategory (name: string, icon: string): Promise<Actio
  * @returns an ActionResult the client can react to
  */
 export async function updateCategory (categoryId: number | undefined, newName: string, newIcon: string): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   // Validate on the server
   const trimmedName = newName.trim();
   if (trimmedName === '') {
@@ -107,6 +120,12 @@ export async function updateCategory (categoryId: number | undefined, newName: s
  * @returns an ActionResult the client can react to
  */
 export async function deleteCategory (categoryId: number | undefined): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   // check if category id is undefined
   if (categoryId === undefined) {
     return { ok: false, error: 'Category could not be found.', field: 'category' };
@@ -138,6 +157,12 @@ export async function deleteCategory (categoryId: number | undefined): Promise<A
  * @returns an ActionResult the client can react to
  */
 export async function deleteTask (taskId: number | undefined): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   // check if task id is undefined
   if (taskId === undefined) {
     return { ok: false, error: 'Task could not be found.' };
@@ -171,6 +196,12 @@ export async function deleteTask (taskId: number | undefined): Promise<ActionRes
  * @returns an error response whether the action completed or not see: {@link ActionResult}
  */
 export async function createTask (taskName: string, date: Date | undefined, categoryId: number | null): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   // Validate on the server
   const trimmedName = taskName.trim();
   if (trimmedName === '') {
@@ -211,6 +242,12 @@ export async function createTask (taskName: string, date: Date | undefined, cate
  * @returns an error response whether the action completed or not see: {@link ActionResult}
  */
 export async function toggleTaskStatus (taskId: number | undefined, status: boolean): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   // Validate on the server
   if (taskId === undefined) {
     return { ok: false, error: 'Task not selected.', field: 'name' };

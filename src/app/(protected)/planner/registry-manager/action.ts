@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { Prisma } from '@/generated/prisma/client';
 import { revalidatePath } from 'next/cache';
 import { parseHttpUrl } from '@/lib/utils';
+import { requireUserAction } from '@/lib/require-user';
 
 /**
  * Which input a failure relates to, so the client can highlight the right field.
@@ -30,7 +31,7 @@ const MAX_QUANTITY = 9999;
  */
 export type ActionResult =
   | { ok: true }
-  | { ok: false; error: string; field?: ErrorField };
+  | { ok: false; error: string; field?: ErrorField; authRequired?: true };
 
 /**
  * Bounds a quantity once, so create and update can't drift apart on what counts as valid.
@@ -92,6 +93,12 @@ async function getClaimedTotal (itemId: number): Promise<{ claimedTotal: number,
  * @returns an ActionResult the client can react to
  */
 export async function createRegistryItem (name: string, link: string, quantityWanted: number, image: string): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   // Validate on the server (the client re-checks these too, for instant feedback).
   const trimmedName = name.trim();
   if (trimmedName === '') {
@@ -157,6 +164,12 @@ export async function createRegistryItem (name: string, link: string, quantityWa
  * @returns an ActionResult the client can react to
  */
 export async function updateRegistryItem (registryItemId: number | undefined, data: RegistryItemInput): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   if (registryItemId === undefined) {
     return { ok: false, error: 'Item could not be found.', field: 'item' };
   }
@@ -252,6 +265,12 @@ export async function updateRegistryItem (registryItemId: number | undefined, da
  * @returns an ActionResult the client can react to
  */
 export async function deleteRegistryItem (registryItemId: number | undefined): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   if (registryItemId === undefined) {
     return { ok: false, error: 'Item could not be found.', field: 'item' };
   }
@@ -301,6 +320,12 @@ export async function deleteRegistryItem (registryItemId: number | undefined): P
  * @returns an ActionResult the client can react to
  */
 export async function createRegistryClaim (itemId: number | undefined, claimedBy: string, quantity: number): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   if (itemId === undefined) {
     return { ok: false, error: 'Item could not be found.', field: 'item' };
   }
@@ -366,6 +391,12 @@ export async function createRegistryClaim (itemId: number | undefined, claimedBy
  * @returns an ActionResult the client can react to
  */
 export async function deleteRegistryClaim (registryClaimId: number | undefined): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   if (registryClaimId === undefined) {
     return { ok: false, error: 'Claim could not be found.' };
   }

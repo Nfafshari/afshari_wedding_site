@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import { requireUser } from '@/lib/require-user';
 
 import Checklist from "./client";
 
@@ -10,6 +11,10 @@ import Checklist from "./client";
 export const dynamic = 'force-dynamic';
 
 export async function getCategories () {
+  // Guarded here rather than only in the layout: Next renders layouts and pages in
+  // parallel, so this query would otherwise fire before the layout's redirect wins.
+  await requireUser();
+
   const categories = prisma.taskCategory.findMany({
     include: {
       tasks: {
