@@ -220,7 +220,7 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                 </TableRow>
               </TableHeader>
               <CollapsibleContent asChild>
-                <TableBody className="last:border-b border-burg">
+                <TableBody>
                   {budgetCategory.budgetSubcategories.map((budgetSubcategory) => (
                     <SubcategoryRow
                       key={budgetSubcategory.id}
@@ -229,8 +229,8 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                       onEditSubcategory={onEditSubcategory}
                     />
                   ))}
-                  <TableRow className="hover:bg-background">
-                    <TableCell>
+                  <TableRow className="border-b! border-burg! hover:bg-transparent">
+                    <TableCell colSpan={6}>
                       <Button
                         variant={'ghost'}
                         className="text-burg/40 text-xs ml-5 hover:bg-burg hover:text-background"
