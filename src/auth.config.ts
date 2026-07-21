@@ -44,9 +44,6 @@ const authConfig: NextAuthConfig = {
         return false;
       }
     },
-    authorized({ auth }) {
-      return isApprovedEmail(auth?.user?.email);
-    },
     jwt({ token }) {
       if (!isApprovedEmail(token.email)) {
         return null;
