@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pinyon_Script, IM_Fell_Great_Primer, Herr_Von_Muellerhoff } from "next/font/google";
 import { Viewport } from "next";
 import { Analytics } from '@vercel/analytics/next';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 import { Toaster } from "@/components/ui/sonner";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -66,6 +67,7 @@ export default function RootLayout({
           </main>
           <Toaster />
           <Analytics />
+          <SpeedInsights />
         </SidebarProvider>
       </body>
     </html>
