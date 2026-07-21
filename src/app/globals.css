@@ -1,0 +1,155 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+  --gold: oklch(0.7278 0.1063 85.69);
+  --olivine: oklch(0.7139 0.0792 122.14);
+
+  --background: oklch(0.9869 0.0214 95.28);
+  --foreground: oklch(0.276 0.0713 11.1);
+  --card: oklch(0.684 0.0467 122.14 / 20%);
+  --card-foreground: oklch(0.276 0.073 11.1);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.276 0.059 11.1);
+  --primary: oklch(0.276 0.059 11.1);
+  --primary-foreground: oklch(0.9869 0.0214 95.28);
+  --secondary: oklch(0.7278 0.1063 85.69);
+  --secondary-foreground: oklch(18.686% 0.03479 8.24);
+  --muted: oklch(81.29% 0.02652 94.812);
+  --muted-foreground: oklch(30.251% 0.07073 7.321 / 0.705);
+  --accent: oklch(62.97% 0.10207 85.421 / 0.493);
+  --accent-foreground: oklch(30.251% 0.07073 7.321 / 0.705);
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: oklch(0.684 0.0467 122.14 / 25%);
+  --input: oklch(0.684 0.0467 122.14 / 25%);
+  --ring: oklch(68.49% 0.04704 123.111 / 0.603);
+  --chart-1: oklch(87.156% 0.10299 122.113);
+  --chart-2: oklch(77.268% 0.08446 121.79);
+  --chart-3: oklch(45.117% 0.04768 121.928);
+  --chart-4: oklch(39.189% 0.03953 121.486);
+  --chart-5: oklch(28.454% 0.0251 121);
+
+  /* Budget pie slices */
+  --budget-slice-1: #3f5000;
+  --budget-slice-2: #546616;
+  --budget-slice-3: #6a7e31;
+  --budget-slice-4: #81964a;
+  --budget-slice-5: #99af62;
+  /* "Other" is a de-emphasis slot, deliberately outside the ramp. */
+  --budget-slice-other: #898781;
+
+  --radius: 0.425rem;
+
+  --sidebar: oklch(90.27% 0.01634 95.273);
+  --sidebar-foreground: oklch(0.276 0.0713 11.1);
+  --sidebar-accent: oklch(0.7278 0.1063 85.69);
+  --sidebar-accent-foreground: oklch(0.276 0.0713 11.1);
+  --sidebar-border: oklch(0.8442 0.0489 122.14);
+  --sidebar-ring: oklch(0.7278 0.1063 85.69 / 75%);
+}
+
+@theme inline {
+  --color-gold: var(--gold);
+  --color-olivine: var(--olivine);
+  --color-burg: var(--foreground);
+  --color-cream: var(--background);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-geist-mono);
+  --font-pinyon: var(--font-pinyon);
+  --font-heading: var(--font-sans);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar: var(--sidebar);
+  --color-chart-5: var(--chart-5);
+  --color-chart-4: var(--chart-4);
+  --color-chart-3: var(--chart-3);
+  --color-chart-2: var(--chart-2);
+  --color-chart-1: var(--chart-1);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  html {
+    @apply font-sans;
+  }
+}
+
+/* ---------------------------------------------------------------
+   Reusable typography
+   Each is a real Tailwind utility (via @utility), so you can use it
+   on its own  ->  className="page-title"
+   or add inline utilities to override per use:
+                  className="page-title text-5xl text-olivine"
+   The inline utility wins, because @utility classes sort in the
+   cascade alongside every other Tailwind utility.
+   --------------------------------------------------------------- */
+
+/* The couple's names, Pinyon script in gold. Scales up on wider screens. */
+@utility script-title {
+  @apply font-pinyon text-gold text-center text-4xl lg:text-5xl xl:text-6xl;
+}
+
+/* Main heading of a page/section (e.g. the wedding date). */
+@utility page-title {
+  @apply font-serif text-burg text-center text-4xl;
+}
+
+/* Supporting line beneath a page-title (e.g. "440 Days to I Do"). */
+@utility page-subtitle {
+  @apply font-serif text-burg/50 text-center text-2xl;
+}
+
+/* Smaller section heading / label (e.g. "Checklist Progress"). */
+@utility section-title {
+  @apply font-serif font-bold text-burg/70 text-lg tracking-wide;
+}
+
+/* Large emphasized number (e.g. RSVP counts). Override color per use.
+   One size smaller on mobile, full size from md up. */
+@utility stat-number {
+  @apply font-bold text-burg text-5xl md:text-6xl;
+}
+
+/* Muted caption under a stat or field (e.g. "Invited", "Responded"). */
+@utility muted-caption {
+  @apply text-burg/60 text-lg uppercase tracking-widest;
+}
+

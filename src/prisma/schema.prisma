@@ -1,0 +1,105 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum BudgetStatus {
+  DUE
+  DEPOSIT
+  PAID
+}
+
+model Rsvp {
+  id              Int       @id @default(autoincrement())
+  attendance      Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+
+  guests           Guest[]
+}
+
+model Guest {
+  id              Int        @id @default(autoincrement())
+  name            String
+  phoneNumber     String?
+  email           String?
+  isPrimary       Boolean    @default(false)
+  notes           String?
+  createdAt       DateTime   @default(now())
+  rsvpId          Int
+
+  rsvp            Rsvp       @relation(fields: [rsvpId], references: [id])
+}
+
+model RegistryItem {
+  id              Int       @id @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  name            String    @unique
+  link            String
+  quantityWanted  Int
+  // `@default` only applies when the field is omitted on create, never when it is
+  // explicitly null — so readers must handle null regardless.
+  image           String?   @default("/window.svg")
+
+  claimed         RegistryClaim[]
+}
+
+model RegistryClaim {
+  id             Int       @id @default(autoincrement())
+  claimedBy      String
+  quantity       Int
+  createdAt      DateTime  @default(now())
+  itemId         Int
+
+  // Restrict, not Cascade: Task and BudgetSubcategory cascade because a child is
+  // meaningless without its parent, but a claim is a record of a real person who
+  // spent real money. Deleting a claimed item is a deliberate two-step chore.
+  item           RegistryItem @relation(fields: [itemId], references: [id], onDelete: Restrict)
+
+  // Postgres does not index foreign keys automatically, and every read groups by item.
+  @@index([itemId])
+}
+
+model BudgetCategory {
+  id          Int          @id @default(autoincrement())
+  createdAt   DateTime     @default(now())
+  order       Int          @default(0)
+  name        String       @unique
+
+  budgetSubcategories     BudgetSubcategory[]
+}
+
+model BudgetSubcategory {
+  id                Int          @id @default(autoincrement())
+  createdAt         DateTime     @default(now())
+  name              String       
+  estimatedCost     Decimal      @db.Decimal(10, 2)
+  paidAmount        Decimal      @db.Decimal(10, 2) @default(0)
+  status            BudgetStatus @default(DUE)
+  budgetCategoryId  Int
+
+  category    BudgetCategory @relation(fields: [budgetCategoryId], references: [id], onDelete: Cascade)
+  @@unique([budgetCategoryId, name])
+}
+
+model TaskCategory {
+  id          Int         @id @default(autoincrement())
+  name        String      @unique
+  order       Int         @default(0)
+  icon        String?    @default("Astroid")
+  tasks       Task[]
+}
+
+model Task {
+  id          Int        @id @default(autoincrement())
+  name        String
+  createdAt   DateTime   @default(now())
+  goalDate    DateTime
+  status      Boolean    @default(false)
+  categoryId  Int
+
+  category    TaskCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+}
