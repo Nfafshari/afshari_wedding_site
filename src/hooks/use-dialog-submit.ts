@@ -1,10 +1,11 @@
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import { notifyError, notifySuccess } from "@/lib/toast";
 
 /** Mirrors the ActionResult contract every server action returns. */
 type ActionResult<Field extends string> =
   | { ok: true }
-  | { ok: false; error: string; field?: Field };
+  | { ok: false; error: string; field?: Field; authRequired?: true };
 
 /**
  * Shared submit lifecycle for the form dialogs. Tracks the in-flight state and
@@ -16,6 +17,7 @@ type ActionResult<Field extends string> =
  * @param onSuccess - called after the action succeeds (usually closes the dialog)
  */
 export function useDialogSubmit<Field extends string>(onSuccess: () => void) {
+  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState('');
   const [serverErrorField, setServerErrorField] = useState<Field | null>(null);
@@ -53,6 +55,15 @@ export function useDialogSubmit<Field extends string>(onSuccess: () => void) {
     }
 
     if (!result.ok) {
+      // The session expired or was revoked while the dialog sat open. Flagging an
+      // input would be nonsense — nothing the user typed is wrong — and retrying
+      // fails identically forever, so send them to sign in and bring them back.
+      if (result.authRequired) {
+        notifyError(result.error);
+        router.push(`/sign-in?callbackUrl=${encodeURIComponent(window.location.pathname)}`);
+        return;
+      }
+
       setServerError(result.error);
       setServerErrorField(result.field ?? null);
       notifyError(result.error);

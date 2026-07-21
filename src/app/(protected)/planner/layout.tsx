@@ -1,6 +1,8 @@
 import Footer from "@/components/footer";
 import PlannerHeader from "@/components/planner-header";
 import { NavSidebar } from "@/components/nav-sidebar";
+import Link from "next/link";
+import { requireUser } from "@/lib/require-user";
 
 const NAV_ITEMS = [
   { label: "Dashboard", href: "/planner" },
@@ -11,13 +13,23 @@ const NAV_ITEMS = [
   { label: "Documents", href: "/planner/doc-archive" },
 ];
 
-export default function PlannerLayout ({ children }: { children: React.ReactNode }) {
+export default async function PlannerLayout ({ children }: { children: React.ReactNode }) {
+  await requireUser();
+
   return (
     <div>
       <NavSidebar 
         navItems={NAV_ITEMS}
       />
       <PlannerHeader />
+      <div className="w-full px-3 pt-0.5">
+        <Link
+          className="flex justify-end text-destructive underline hover:text-red-800 md:flex"
+          href={'/sign-out'}
+        >
+          Sign Out?
+        </Link>
+      </div>
       {children}
       <Footer />
     </div>

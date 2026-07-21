@@ -2,6 +2,7 @@
 import { prisma } from '@/lib/prisma';
 import { BudgetStatus, Prisma } from '@/generated/prisma/client';
 import { revalidatePath } from 'next/cache';
+import { requireUserAction } from '@/lib/require-user';
 
 /**
  * Which input a failure relates to, so the client can highlight the right field.
@@ -28,7 +29,7 @@ const MAX_MONEY = 100_000_000;
  */
 export type ActionResult =
   | { ok: true }
-  | { ok: false; error: string; field?: ErrorField };
+  | { ok: false; error: string; field?: ErrorField; authRequired?: true };
 
 /**
  * Bounds a money value once, so create and update can't drift apart on what counts
@@ -55,6 +56,12 @@ function validateMoney (value: number, field: 'estimatedCost' | 'paidAmount', la
  * @returns an ActionResult the client can react to
  */
 export async function createBudgetCategory (name: string): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   // Validate on the server
   const trimmedName = name.trim();
   if (trimmedName === '') {
@@ -90,6 +97,12 @@ export async function createBudgetCategory (name: string): Promise<ActionResult>
  * @returns an ActionResult the client can react to
  */
 export async function updateBudgetCategory (budgetCategoryId: number | undefined, newName: string): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   // Validate on the server
   const trimmedName = newName.trim();
   if (trimmedName === '') {
@@ -132,6 +145,12 @@ export async function updateBudgetCategory (budgetCategoryId: number | undefined
  * @returns an ActionResult the client can react to
  */
 export async function deleteBudgetCategory (budgetCategoryId: number | undefined): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   if (budgetCategoryId === undefined) {
     return { ok: false, error: 'Category could not be found.', field: 'budgetCategory' };
   }
@@ -165,6 +184,12 @@ export async function deleteBudgetCategory (budgetCategoryId: number | undefined
  * @returns an ActionResult the client can react to
  */
 export async function createBudgetSubcategory (name: string, estimatedCost: number, paidAmount: number, budgetCategoryId: number | null): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   // Validate on the server (the client re-checks these too, for instant feedback).
   const trimmedName = name.trim();
   if (trimmedName === '') {
@@ -220,6 +245,12 @@ export async function createBudgetSubcategory (name: string, estimatedCost: numb
  * @returns an ActionResult the client can react to
  */
 export async function deleteBudgetSubcategory (subcategoryId: number | undefined): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   // check if the id is undefined
   if (subcategoryId === undefined) {
     return { ok: false, error: 'Subcategory could not be found.' };
@@ -259,6 +290,12 @@ export async function deleteBudgetSubcategory (subcategoryId: number | undefined
  * @returns an ActionResult the client can react to
  */
 export async function updateBudgetSubcategory (budgetSubcategoryId: number | undefined, data: BudgetSubcategoryInput): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   if (budgetSubcategoryId === undefined) {
     return { ok: false, error: 'Subcategory could not be found.', field: 'budgetCategory' };
   }

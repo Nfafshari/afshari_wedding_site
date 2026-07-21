@@ -1,6 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
+import { requireUserAction } from "@/lib/require-user";
 // import { prisma } from "@/lib/prisma";
 // import { Prisma } from "@/generated/prisma/client";
 
@@ -15,7 +16,7 @@ export type ErrorField = 'name';
  */
 export type ActionResult =
   | { ok: true }
-  | { ok: false; error: string; field?: ErrorField };
+  | { ok: false; error: string; field?: ErrorField; authRequired?: true };
 
 /** The route these writes invalidate. `(protected)` is a route group, so it is not in the URL. */
 const DOC_ARCHIVE_PATH = '/planner/doc-archive';
@@ -24,6 +25,12 @@ const DOC_ARCHIVE_PATH = '/planner/doc-archive';
  * Example action — rename it, add params, and wire up Prisma.
  */
 export async function exampleAction(name: string): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   // Validate on the server.
   const trimmedName = name.trim();
   if (trimmedName === '') {
@@ -53,6 +60,12 @@ export async function exampleAction(name: string): Promise<ActionResult> {
  * @param icon - displayName of a lucide icon, e.g. "Receipt"
  */
 export async function updateDocument(id: number | undefined, name: string, icon: string): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   if (id === undefined) {
     return { ok: false, error: 'No document selected.' };
   }
@@ -81,6 +94,12 @@ export async function updateDocument(id: number | undefined, name: string, icon:
  * @param id - the document being deleted
  */
 export async function deleteDocument(id: number | undefined): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
   if (id === undefined) {
     return { ok: false, error: 'No document selected.' };
   }

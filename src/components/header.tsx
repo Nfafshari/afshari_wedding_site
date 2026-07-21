@@ -19,8 +19,8 @@ export default function Header () {
           className='w-12 h-12 text-5xl text-cream hover:bg-cream/15 p-2 rounded-full'
           onClick={toggleSidebar}
         />
-        <div className='flex w-full justify-center'>
-          <h1 className='script-title text-gold text-5xl pt-2'>Piper & Nathen</h1>
+        <div className='flex w-full justify-center md:justify-start'>
+          <h1 className='script-title text-gold text-4xl pt-2'>Piper & Nathen</h1>
         </div>
       </nav>
 
