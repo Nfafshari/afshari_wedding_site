@@ -1,28 +1,31 @@
-import { Columns2, FileChartColumn, FilePenLine, Receipt } from "lucide-react";
-import type { LucideIcon } from "lucide-react";
-
 /**
- * A document in the archive. Mocked for now — this moves to page.tsx and gets
- * derived from the Prisma model once the Document table exists.
+ * A document in the archive, as page.tsx hands it to the client.
  *
- * This lives apart from client.tsx so the planner's dashboard card can count the
- * archive without importing the page itself. Note `icon` is a component, which is
- * why the array cannot be handed across a server boundary: read what you need from
- * it in the server page (a length, say) and pass that, not the rows.
+ * `icon` is the lucide displayName (e.g. "Receipt"), not the component: a component
+ * cannot cross from a server component into a client one, a string can. The client
+ * turns it back into a component with `resolveDocIcon`. `link` is a signed URL that
+ * expires, minted fresh on every render.
  */
 export type ArchivedDoc = {
   id: number;
   name: string;
   createdAt: Date;
   companyName: string;
-  icon: LucideIcon;
+  icon: string;
   link: string;
 };
 
-export const EXAMPLE_DOCS_DATA: ArchivedDoc[] = [
-  { id: 1, name: 'Catering Quote', createdAt: new Date('2026-07-10'), companyName: 'Sage & Salt Catering', icon: FileChartColumn, link: '/example-documents/catering-quote.pdf' },
-  { id: 2, name: 'Florist Brochure', createdAt: new Date('2026-06-02'), companyName: 'Willow & Bloom Florals', icon: Columns2, link: '/example-documents/florist-brochure.pdf' },
-  { id: 3, name: 'Photography Contract', createdAt: new Date('2026-07-12'), companyName: 'Hart & Lane Photos', icon: FilePenLine, link: '/example-documents/photography-contract.pdf' },
-  { id: 4, name: 'Rental Receipt', createdAt: new Date('2026-07-05'), companyName: 'Timeless Event Rentals', icon: Receipt, link: '/example-documents/rental-receipt.pdf' },
-  { id: 5, name: 'Venue Quote', createdAt: new Date('2026-06-30'), companyName: 'Foxglove Hill Estate', icon: FileChartColumn, link: '/example-documents/venue-quote.pdf' }
-];
+/**
+ * Upload limits, shared by the dropzone and the server action so the two can't drift.
+ * Kept under Vercel's 4.5 MB request-body cap, which is next.config's bodySizeLimit.
+ * These live here, not in action.ts, because a "use server" file may only export
+ * async functions.
+ */
+export const MAX_DOC_SIZE_BYTES = 4 * 1024 * 1024;
+
+/** MIME types the archive accepts, mapped to the extensions react-dropzone checks. */
+export const ACCEPTED_DOC_TYPES: Record<string, string[]> = {
+  'application/pdf': ['.pdf'],
+  'image/png': ['.png'],
+  'image/jpeg': ['.jpg', '.jpeg'],
+};

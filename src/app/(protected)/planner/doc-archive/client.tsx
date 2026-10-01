@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { AlertDialog } from "@/components/ui/alert-dialog";
 import AddDocDialog from "./dialogs/add-doc-dialog";
 import EditDocDialog from "./dialogs/edit-doc-dialog";
-import { EXAMPLE_DOCS_DATA, type ArchivedDoc } from "./data";
+import { resolveDocIcon } from "./dialogs/icon-picker";
+import { type ArchivedDoc } from "./data";
 
 enum DialogType {
   None = 'none',
@@ -15,7 +16,12 @@ enum DialogType {
   Edit = 'edit'
 }
 
-export default function DocArchive() {
+interface DocArchiveProps {
+  /** Every archived document, oldest first, with a freshly signed link. */
+  docs: ArchivedDoc[];
+}
+
+export default function DocArchive({ docs }: DocArchiveProps) {
   const [activeDialog, setActiveDialog] = useState<DialogType>(DialogType.None);
   const [docToEdit, setDocToEdit] = useState<ArchivedDoc | undefined>(undefined);
 
@@ -38,11 +44,11 @@ export default function DocArchive() {
 
         <div className="flex w-full md:px-10">
           <div className="grid grid-cols-2 gap-4 w-full h-full md:grid-cols-2 lg:grid-cols-3 lg:gap-10">
-            {EXAMPLE_DOCS_DATA.map((doc, idx) => {
-              const Icon = doc.icon;
+            {docs.map((doc) => {
+              const Icon = resolveDocIcon(doc.icon);
 
               return (
-                <div key={`${doc.name}-${idx}`} className="relative flex flex-col w-full h-45 rounded-lg bg-muted/20 border border-border hover:shadow-sm has-[a:active]:translate-y-px has-[a:active]:-translate-x-px md:h-60 lg:h-80">
+                <div key={doc.id} className="relative flex flex-col w-full h-45 rounded-lg bg-muted/20 border border-border hover:shadow-sm has-[a:active]:translate-y-px has-[a:active]:-translate-x-px md:h-60 lg:h-80">
                   {/* Cover div with link underneath edit button so that the edit button does not trigger opening the pdf */}
                   <a
                     className="absolute inset-0 z-10"
@@ -98,12 +104,15 @@ export default function DocArchive() {
       </div>
 
       {activeDialog === DialogType.Add &&
-        <AddDocDialog />
+        <AddDocDialog
+          docs={docs}
+          onSuccess={() => setActiveDialog(DialogType.None)}
+        />
       }
 
       {activeDialog === DialogType.Edit &&
         <EditDocDialog
-          docs={EXAMPLE_DOCS_DATA}
+          docs={docs}
           docToUpdate={docToEdit}
           onSuccess={() => setActiveDialog(DialogType.None)}
         />

@@ -103,3 +103,14 @@ model Task {
 
   category    TaskCategory @relation(fields: [categoryId], references: [id], onDelete: Cascade)
 }
+
+model Document {
+  id          Int        @id @default(autoincrement())
+  createdAt   DateTime   @default(now())
+  name        String     @unique
+  companyName String
+  icon        String     @default("FileChartColumn")
+  // The object's key inside the private Storage bucket, not a URL: links to a
+  // private bucket are signed and expire, so they are minted per render instead.
+  filePath    String     @unique
+}
