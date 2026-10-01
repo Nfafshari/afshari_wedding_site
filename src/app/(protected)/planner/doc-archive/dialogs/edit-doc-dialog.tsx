@@ -32,7 +32,7 @@ interface EditDocDialogProps {
 
 export default function EditDocDialog({ docs, docToUpdate, onSuccess }: EditDocDialogProps) {
   const [newDocName, setNewDocName] = useState('');
-  const [newIcon, setNewIcon] = useState(docToUpdate?.icon.displayName ?? 'FileChartColumn');
+  const [newIcon, setNewIcon] = useState(docToUpdate?.icon ?? 'FileChartColumn');
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<ErrorField, string>>>({});
   // Flips this dialog between the "edit" view and the "confirm delete" view.
   const [isDeleteDocActive, setIsDeleteDocActive] = useState(false);

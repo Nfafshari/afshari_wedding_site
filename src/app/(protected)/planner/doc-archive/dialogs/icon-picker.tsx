@@ -8,6 +8,20 @@ export const ICON_LIBRARY: LucideIcon[] = [
   Lucide.Columns2, Lucide.FileChartColumn, Lucide.FilePenLine, Lucide.Receipt, Lucide.SquarePen
 ];
 
+/** The icon used when a name doesn't resolve — matches the add dialog's initial pick and the DB default. */
+export const DEFAULT_DOC_ICON = Lucide.FileChartColumn;
+
+/**
+ * Turns a stored displayName back into its component.
+ *
+ * Documents come from the DB with `icon` as a string (a component can't cross the
+ * server/client boundary). Lives beside ICON_LIBRARY so the pickable set and the
+ * resolvable set cannot drift apart.
+ */
+export function resolveDocIcon(iconName: string): LucideIcon {
+  return ICON_LIBRARY.find((icon) => icon.displayName === iconName) ?? DEFAULT_DOC_ICON;
+}
+
 interface IconPickerProps {
   /** The icons a document can be tagged with. */
   icons: LucideIcon[];

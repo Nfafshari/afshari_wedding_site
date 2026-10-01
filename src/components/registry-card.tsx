@@ -5,12 +5,13 @@ import Link from "next/link";
 import { Progress } from "@/components/ui/progress";
 import { countFullyClaimedItems, getLatestClaim } from "@/lib/registry";
 import type { RegistryItem } from "../app/(protected)/planner/registry-manager/page";
+import { ChevronRight } from "lucide-react";
 
 interface RegistryCardProps {
   registryItems: RegistryItem[];
 }
 
-export default function RegistryCard ({ registryItems }: RegistryCardProps) {
+export default function RegistryCard({ registryItems }: RegistryCardProps) {
   const totalItems = registryItems.length;
   // Partly claimed is not claimed — someone still has to buy the rest. Same definition
   // the registry manager's own "Fully Claimed" stat uses.
@@ -23,10 +24,11 @@ export default function RegistryCard ({ registryItems }: RegistryCardProps) {
       <div className="flex items-baseline justify-between gap-2">
         <p className="section-title pr-2">Registry Manager</p>
         <Link
-          href={'/planner/registry-manager'}
-          className="text-sm text-burg/60 underline whitespace-nowrap hover:text-burg"
+          href={'/planner/budget'}
+          className="flex items-center text-sm text-burg/60 whitespace-nowrap hover:text-burg"
         >
-          View registry
+          <span className="underline">View Registry</span>
+          <ChevronRight className="w-3.5 h-3.5" />
         </Link>
       </div>
 

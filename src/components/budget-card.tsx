@@ -7,6 +7,7 @@ import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } f
 import { getTopCategoriesWithOther } from "@/lib/budget";
 import { toCurrency } from "@/lib/utils";
 import type { BudgetCategory } from "../app/(protected)/planner/budget/page";
+import { ChevronRight } from "lucide-react";
 
 interface BudgetCardProps {
   budgetCategories: BudgetCategory[];
@@ -32,7 +33,7 @@ const chartConfig = {
   estimated: { label: 'Estimated' },
 } satisfies ChartConfig;
 
-export default function BudgetCard ({ budgetCategories }: BudgetCardProps) {
+export default function BudgetCard({ budgetCategories }: BudgetCardProps) {
   const slices = getTopCategoriesWithOther(budgetCategories).map((slice, idx) => ({
     ...slice,
     fill: slice.isOther ? OTHER_COLOR : SLICE_COLORS[idx],
@@ -46,9 +47,10 @@ export default function BudgetCard ({ budgetCategories }: BudgetCardProps) {
         <p className="section-title">Budget Breakdown</p>
         <Link
           href={'/planner/budget'}
-          className="text-sm text-burg/60 underline whitespace-nowrap hover:text-burg"
+          className="flex items-center text-sm text-burg/60 whitespace-nowrap hover:text-burg"
         >
-          View budget
+          <span className="underline">View Budget</span>
+          <ChevronRight className="w-3.5 h-3.5" />
         </Link>
       </div>
 
