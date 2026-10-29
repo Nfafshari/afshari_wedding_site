@@ -98,4 +98,7 @@ The Linear MCP lets the agent read and write issues directly, so the issue is th
 
 ## Housekeeping
 
-- `master` is the only long-lived branch. Stale branches (`develop`, `22-finalize-rsvp-structure`, `24-hookup-budget-page-to-db`, `checklist__page`) should be merged or deleted as a separate chore.
+- `master` is the only long-lived branch. Every other branch is a short-lived `feature/NFA-<number>-...` branch for one open issue.
+- The repo setting **"Automatically delete head branches"** is on, so a PR's branch disappears when it is merged. If you need it back, use the **Restore branch** button on the merged PR.
+- If a branch is left behind anyway, delete it only when it has nothing that is not already in `master` (`git rev-list --count origin/master..origin/<branch>` prints `0`). Use `git branch -d` locally, which refuses unmerged work.
+- One branch is deliberately kept for now: `22-finalize-rsvp-structure`, the finished RSVP guest-list work, which is being landed in two PRs (NFA-31, then NFA-32). Delete it once both are merged.
