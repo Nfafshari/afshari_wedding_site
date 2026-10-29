@@ -44,9 +44,8 @@ export type LatestClaim = {
  * claimed anything.
  *
  * getRegistryItems orders claims oldest-first *within* each item, so flattening
- * across items throws that order away — hence the sort. createdAt ties are real
- * rather than theoretical here (the seed writes several in the same millisecond),
- * so break on id.
+ * across items throws that order away — hence the sort. createdAt ties are
+ * possible, so break on id.
  */
 export function getLatestClaim (items: ItemWithClaims[]): LatestClaim | undefined {
   return items

@@ -12,11 +12,11 @@ import ts from "typescript";
 
 // ---------------------------------------------------------------------------------
 // Files allowed to build their own PrismaClient. Adding one is a deliberate decision:
-// give the reason on the line and justify it in the PR. A stale entry fails below.
+// give the reason on the line and justify it in the PR (for example, a standalone
+// script that runs outside Next). A stale entry fails below.
 // ---------------------------------------------------------------------------------
 const CLIENT_ALLOWLIST = [
   "src/lib/prisma.ts", // the singleton every page and action imports
-  "src/prisma/seed.ts", // standalone `tsx` process (see prisma.config.ts), can't use the Next singleton
 ];
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));

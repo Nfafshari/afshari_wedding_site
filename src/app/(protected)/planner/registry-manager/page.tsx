@@ -13,8 +13,8 @@ export async function getRegistryItems () {
     include: {
       claimed: {
         // Oldest claim first, so the list reads in the order people called dibs.
-        // createdAt ties are possible (the seed writes several in the same ms), so
-        // break on id — otherwise Postgres is free to reorder them between queries.
+        // createdAt ties are possible, so break on id — otherwise Postgres is free
+        // to reorder them between queries.
         orderBy: [{ createdAt: "asc" }, { id: "asc" }]
       },
     },
