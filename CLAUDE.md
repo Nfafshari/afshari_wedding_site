@@ -10,7 +10,7 @@ The owner designs; the agent implements. Do not write code until a plan for the 
 
 1. Work comes from a Linear issue (problem, scope in/out, acceptance criteria). No issue, no build: ask for one or draft one.
 2. Interview first. Ask questions, propose a design with trade-offs, wait for approval.
-3. One issue = one branch = one small PR. Branch off `master`, named `feature/NFA-<number>-short-slug`.
+3. One issue = one branch = one small PR. Branch off `master`, named `feature/NFA-<number>-short-slug`. Build the PR body from `.github/pull_request_template.md` and open it with `gh pr create --body-file`.
 4. Smallest change that meets the acceptance criteria. Do not refactor, add abstractions, or add dependencies that the issue did not ask for. Ask first.
 5. Never say "done" without running the checks below and reporting their real output, including failures.
 
