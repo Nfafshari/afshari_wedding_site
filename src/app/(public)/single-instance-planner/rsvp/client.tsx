@@ -1,25 +1,26 @@
 "use client";
 
 import Link from "next/link";
-
-import RsvpTable from "./components/rsvp-table";
-import { useDemoPlanner } from "../demo-store";
 import { ChevronLeft } from "lucide-react";
 
+import RsvpTable from "@/components/rsvp/rsvp-table";
+import RsvpStats from "@/components/rsvp/rsvp-stats";
+import PendingPlusOnes from "@/components/rsvp/pending-plus-ones";
+import { getPartyGroup, getRsvpStats } from "@/lib/rsvp";
+import { useDemoPlanner } from "../demo-store";
+
+/**
+ * Read-only mirror of the real RSVP tracker. The shared components render without
+ * edit controls when no handlers are passed, and the demo store has no RSVP actions
+ * to pass yet.
+ */
 export default function Rsvp() {
-  const { rsvps: rsvpData } = useDemoPlanner();
-  const NUMBER_OF_INVITED = 12;
+  const { invitations } = useDemoPlanner();
 
-  // get number of accepted rsvps
-  const acceptedRsvps = rsvpData.filter((rsvp) => rsvp.attendance === true);
-
-  // get number of rejected rsvps
-  const rejectedRsvps = rsvpData.filter((rsvp) => rsvp.attendance === false);
-
-  // get number of responses of rejected, accepted, and total
-  const totalAccepted  = acceptedRsvps.reduce((sum, rsvp) => sum += rsvp.guests.length, 0)
-  const totalRejected  = rejectedRsvps.reduce((sum, rsvp) => sum += rsvp.guests.length, 0)
-  const totalResponded = acceptedRsvps.length + rejectedRsvps.length;
+  const stats = getRsvpStats(invitations);
+  const attending = invitations.filter((invitation) => getPartyGroup(invitation) === 'attending');
+  const declined = invitations.filter((invitation) => getPartyGroup(invitation) === 'declined');
+  const awaiting = invitations.filter((invitation) => getPartyGroup(invitation) === 'awaiting');
 
   return (
     <div>
@@ -29,45 +30,25 @@ export default function Rsvp() {
         <div className="flex flex-col w-full md:flex-row">
           <h1 className="page-title w-full text-center translate-y-3 md:text-start">RSVP Tracker</h1>
           <div className="flex flex-col mt-4 md:w-1/2 md:ml-auto md:mt-0">
-            <h2 className="page-title text-xl  text-center md:text-2xl md:text-end">{totalResponded} Responses</h2>
-            <h3 className="section-title text-sm text-center md:text-end">{NUMBER_OF_INVITED} Sent</h3>
+            <h2 className="page-title text-xl text-center md:text-2xl md:text-end">{stats.respondedParties} of {invitations.length} Parties Responded</h2>
+            <h3 className="section-title text-sm text-center md:text-end">{stats.invited} Guests Invited</h3>
           </div>
         </div>
         <hr className="mb-5 mt-2 bg-accent md:my-5"/>
 
-        <div className="flex w-full justify-center">
-          <div className="grid grid-cols-2 w-full h-full md:grid-cols-4">
-            <div className="hidden flex-col w-full h-auto border-e-2 border-e-accent items-center pl-5 md:flex">
-              <p className="stat-number">{NUMBER_OF_INVITED}</p>
-              <p className="muted-caption pt-2">Invited</p>
-            </div>
-            <div className="hidden flex-col w-full h-auto items-center pl-5 md:border-e-2 md:border-e-accent md:flex">
-              <p className="stat-number">{totalResponded}</p>
-              <p className="muted-caption pt-2">Responded</p>
-            </div>
-            <div className="flex flex-col w-full h-auto items-center pl-5">
-              <p className="stat-number text-olivine">{totalAccepted}</p>
-              <p className="muted-caption pt-2">Attending</p>
-            </div>
-            <div className="flex flex-col w-full h-auto border-s-2 border-s-accent items-center pl-5">
-              <p className="stat-number text-destructive">{totalRejected}</p>
-              <p className="muted-caption pt-2">Declined</p>
-            </div>
-          </div>
-        </div>
+        <RsvpStats stats={stats} />
         <hr className="mb-5 mt-2 bg-accent md:my-5"/>
 
-        {/* Accepted Table */}
-        <h3 className="text-xl font-bold text-left text-olivine">ATTENDING RESPONSES</h3>
-        <RsvpTable 
-          rsvpData={acceptedRsvps}
-        />
+        <PendingPlusOnes parties={invitations} />
 
-        {/* Rejected Table */}
-        <h3 className="text-xl font-bold text-left text-destructive mt-10">DECLINED RESPONSES</h3>
-        <RsvpTable 
-          rsvpData={rejectedRsvps}
-        />
+        <h3 className="text-xl font-bold text-left text-olivine">ATTENDING</h3>
+        <RsvpTable parties={attending} emptyMessage="No one has said yes yet." />
+
+        <h3 className="text-xl font-bold text-left text-destructive mt-10">DECLINED</h3>
+        <RsvpTable parties={declined} emptyMessage="No one has declined." />
+
+        <h3 className="text-xl font-bold text-left text-burg/70 mt-10">AWAITING RESPONSE</h3>
+        <RsvpTable parties={awaiting} emptyMessage="Everyone has responded!" />
       </div>
     </div>
   );

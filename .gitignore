@@ -46,3 +46,6 @@ next-env.d.ts
 
 # prisma generated client (regenerated via `prisma generate` on install/build)
 /src/generated
+
+# real guest list for `pnpm import-guests` (names are personal data)
+guests*.csv

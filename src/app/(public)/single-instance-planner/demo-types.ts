@@ -1,4 +1,4 @@
-import type { BudgetStatus } from "@/generated/prisma/enums";
+import type { Attendance, BudgetStatus, PlusOneStatus } from "@/generated/prisma/enums";
 
 /**
  * The demo's data shapes, hand-written.
@@ -39,24 +39,33 @@ export type CategoryWithTasks = {
 };
 
 // -- RSVP ----------------------------------------------------------------------
-// Also passed through raw, so these mirror `Rsvp` / `Guest`.
+// Also passed through raw, so these mirror `Invitation` / `Guest`.
 
 export type Guest = {
   id: number;
-  name: string;
-  phoneNumber: string | null;
-  email: string | null;
-  isPrimary: boolean;
-  notes: string | null;
   createdAt: Date;
-  rsvpId: number;
+  name: string;
+  nameKey: string;
+  attendance: Attendance;
+  dietary: string | null;
+  isPlusOne: boolean;
+  plusOneStatus: PlusOneStatus | null;
+  invitationId: number;
 };
 
-/** Singular shape, plural name — matches the real page's `Rsvps` export. */
-export type Rsvps = {
+/** Singular shape, plural name — matches the real page's `Invitations` export. */
+export type Invitations = {
   id: number;
-  attendance: boolean;
   createdAt: Date;
+  updatedAt: Date;
+  partyName: string;
+  plusOnesAllowed: number;
+  respondedAt: Date | null;
+  respondedByName: string | null;
+  email: string | null;
+  phoneNumber: string | null;
+  noteToCouple: string | null;
+  songRequest: string | null;
   guests: Guest[];
 };
 

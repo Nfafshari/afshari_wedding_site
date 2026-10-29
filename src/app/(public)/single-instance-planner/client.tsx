@@ -7,17 +7,16 @@ import Link from "next/link";
 import { Progress } from "@/components/ui/progress";
 import { Field, FieldLabel } from "@/components/ui/field"
 import { getDaysRemaining } from "@/lib/utils";
+import { getRsvpStats } from "@/lib/rsvp";
 import { DEMO_BASE } from "./constants";
 import BudgetCard from "./components/budget-card";
 import PlannerStatCard from "@/components/planner-stat-card";
 import RegistryCard from "./components/registry-card";
 import { useDemoPlanner } from "./demo-store";
 
-const NUMBER_OF_INVITED = 32;
-
 export default function Planner() {
   const {
-    rsvps,
+    invitations,
     budgetCategories,
     taskCategories: checklistCategories,
     registryItems,
@@ -63,16 +62,7 @@ export default function Planner() {
   const nextTask = upNextTasks[0];
   const NextTaskIcon = nextTask?.icon;
 
-  // Every Rsvp row is a reply, so these count guests across the rows we have rather
-  // than filtering for some "responded" flag — there isn't one, and doesn't need to
-  // be. A party that hasn't answered simply has no row yet.
-  const attendingGuests = rsvps
-    .filter((rsvp) => rsvp.attendance)
-    .reduce((sum, rsvp) => sum + rsvp.guests.length, 0);
-  const declinedGuests = rsvps
-    .filter((rsvp) => !rsvp.attendance)
-    .reduce((sum, rsvp) => sum + rsvp.guests.length, 0);
-  const respondedGuests = attendingGuests + declinedGuests;
+  const rsvpStats = getRsvpStats(invitations);
 
 
 
@@ -182,19 +172,19 @@ export default function Planner() {
         >
           <div className="grid grid-cols-2 h-full md:grid-cols-4">
             <div className="hidden flex-col w-full h-auto border-e-2 border-e-gold/50 justify-center pl-5 md:flex">
-              <p className="stat-number">{NUMBER_OF_INVITED}</p>
+              <p className="stat-number">{rsvpStats.invited}</p>
               <p className="muted-caption pt-2">Invited</p>
             </div>
             <div className="hidden flex-col w-full h-auto justify-center pl-5 md:border-e-2 md:border-e-gold/50 md:flex">
-              <p className="stat-number">{respondedGuests}</p>
-              <p className="muted-caption pt-2">Responded</p>
+              <p className="stat-number">{rsvpStats.respondedParties}</p>
+              <p className="muted-caption pt-2">Parties Responded</p>
             </div>
             <div className="flex flex-col w-full h-auto justify-center items-center md:items-baseline md:pl-5">
-              <p className="stat-number text-olivine">{attendingGuests}</p>
+              <p className="stat-number text-olivine">{rsvpStats.attending}</p>
               <p className="muted-caption text-base pt-2 md:text-lg">Attending</p>
             </div>
             <div className="flex flex-col w-full h-auto border-s-2 border-s-gold/50 justify-center items-center md:items-baseline md:pl-5">
-              <p className="stat-number text-destructive">{declinedGuests}</p>
+              <p className="stat-number text-destructive">{rsvpStats.declined}</p>
               <p className="muted-caption text-base pt-2 md:text-lg">Declined</p>
             </div>
           </div>

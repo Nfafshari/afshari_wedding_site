@@ -1,10 +1,10 @@
 import type { ArchivedDoc } from "../doc-archive/data";
 import { EXAMPLE_DOCS_DATA } from "../doc-archive/data";
-import type { BudgetCategory, CategoryWithTasks, RegistryItem, Rsvps } from "../demo-types";
+import type { BudgetCategory, CategoryWithTasks, Invitations, RegistryItem } from "../demo-types";
 import { DEMO_BUDGET_CATEGORIES } from "./budget";
 import { DEMO_TASK_CATEGORIES } from "./checklist";
 import { DEMO_REGISTRY_ITEMS } from "./registry";
-import { DEMO_RSVPS } from "./rsvp";
+import { DEMO_INVITATIONS } from "./rsvp";
 
 /**
  * Everything the demo planner knows. One field per query the real planner runs.
@@ -17,7 +17,7 @@ export type DemoState = {
   taskCategories: CategoryWithTasks[];
   budgetCategories: BudgetCategory[];
   registryItems: RegistryItem[];
-  rsvps: Rsvps[];
+  invitations: Invitations[];
   docs: ArchivedDoc[];
 };
 
@@ -44,9 +44,9 @@ export function createInitialDemoState (): DemoState {
       ...item,
       claimed: item.claimed.map((claim) => ({ ...claim })),
     })),
-    rsvps: DEMO_RSVPS.map((rsvp) => ({
-      ...rsvp,
-      guests: rsvp.guests.map((guest) => ({ ...guest })),
+    invitations: DEMO_INVITATIONS.map((invitation) => ({
+      ...invitation,
+      guests: invitation.guests.map((guest) => ({ ...guest })),
     })),
     docs: EXAMPLE_DOCS_DATA.map((doc) => ({ ...doc })),
   };
@@ -65,7 +65,7 @@ export function getMaxSeededId (state: DemoState): number {
     ...state.taskCategories.flatMap((category) => [category.id, ...category.tasks.map((task) => task.id)]),
     ...state.budgetCategories.flatMap((category) => [category.id, ...category.budgetSubcategories.map((sub) => sub.id)]),
     ...state.registryItems.flatMap((item) => [item.id, ...item.claimed.map((claim) => claim.id)]),
-    ...state.rsvps.flatMap((rsvp) => [rsvp.id, ...rsvp.guests.map((guest) => guest.id)]),
+    ...state.invitations.flatMap((invitation) => [invitation.id, ...invitation.guests.map((guest) => guest.id)]),
     ...state.docs.map((doc) => doc.id),
   );
 }

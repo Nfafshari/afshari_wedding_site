@@ -2,6 +2,7 @@ import "dotenv/config";
 
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/prisma/client";
+import { normalizeName } from "../lib/rsvp";
 
 // This script runs as a standalone Node process (via `tsx`), not through Next.js,
 // so it can't use the `@/lib/prisma` singleton. We build our own client the same
@@ -10,113 +11,128 @@ const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
 const prisma = new PrismaClient({ adapter });
 
 /**
- * A "party" is one Rsvp row plus its Guest rows.
+ * One Invitation row plus its Guest rows.
  *
  * Invariants baked into the data below (worth eyeballing when you review):
- *  - Exactly ONE guest per party has `isPrimary: true` — the person who scanned
- *    the invite and responded. Everyone else is a plus-one (`false`).
- *  - Every guest carries their own email and phone.
- *  - Declined parties (`attendance: false`) still have their single primary guest
- *    so we know who said no, but no plus-ones.
+ *  - Every party has at least one invited member (`isPlusOne` false).
+ *  - Plus-ones never outnumber `plusOnesAllowed`, rejected ones aside. The app
+ *    refuses to create that state, so the seed shouldn't fabricate it.
+ *  - Unresponded parties have no response fields and every member PENDING.
+ *  - A party where nobody is attending has no plus-ones. Submitting the form
+ *    deletes them in that case.
+ *  - The set covers every state the planner renders: awaiting, fully attending,
+ *    mixed, declined, and a plus-one in each of PENDING / APPROVED / REJECTED.
  */
-type SeedGuest = {
+type SeedAttendance = "PENDING" | "ATTENDING" | "DECLINED";
+
+type SeedMember = {
   name: string;
-  isPrimary: boolean;
-  email?: string;
-  phoneNumber?: string;
-  notes?: string;
+  attendance?: SeedAttendance;
+  dietary?: string;
+};
+
+type SeedPlusOne = {
+  name: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  dietary?: string;
 };
 
 type SeedParty = {
-  attendance: boolean;
-  /** When the party responded. Overrides the `createdAt` default so the data has a realistic spread. */
-  respondedAt: string;
-  guests: SeedGuest[];
+  partyName: string;
+  plusOnesAllowed: number;
+  members: SeedMember[];
+  plusOnes?: SeedPlusOne[];
+  /** Absent for parties that have not responded yet. */
+  response?: {
+    /** Overrides `createdAt` too, so the data has a realistic spread. */
+    respondedAt: string;
+    respondedByName: string;
+    email?: string;
+    phoneNumber?: string;
+    noteToCouple?: string;
+    songRequest?: string;
+  };
 };
 
 const PARTIES: SeedParty[] = [
-  // --- Accepted, various party sizes ---
+  // --- Attending, with each plus-one state ---
   {
-    attendance: true,
-    respondedAt: "2027-05-12",
-    guests: [
-      { name: "Marcus Bennett", isPrimary: true, email: "marcus.bennett@example.com", phoneNumber: "+1 555 218 0142" },
-    ],
+    partyName: "Marcus Bennett",
+    plusOnesAllowed: 1,
+    members: [{ name: "Marcus Bennett", attendance: "ATTENDING" }],
+    plusOnes: [{ name: "Jordan Lee", status: "APPROVED" }],
+    response: { respondedAt: "2027-05-12", respondedByName: "Marcus Bennett", email: "marcus.bennett@example.com", phoneNumber: "+1 555 218 0142", songRequest: "September — Earth, Wind & Fire" },
   },
   {
-    attendance: true,
-    respondedAt: "2027-05-18",
-    guests: [
-      { name: "Elena Vasquez", isPrimary: true, email: "elena.vasquez@example.com", phoneNumber: "+1 555 218 0177" },
-      { name: "Diego Vasquez", isPrimary: false, email: "diego.vasquez@example.com", phoneNumber: "+1 555 218 0201" },
+    partyName: "The Vasquezes",
+    plusOnesAllowed: 0,
+    members: [
+      { name: "Elena Vasquez", attendance: "ATTENDING" },
+      { name: "Diego Vasquez", attendance: "ATTENDING", dietary: "Vegetarian" },
     ],
+    response: { respondedAt: "2027-05-18", respondedByName: "Elena Vasquez", email: "elena.vasquez@example.com", phoneNumber: "+1 555 218 0177" },
   },
   {
-    attendance: true,
-    respondedAt: "2027-06-01",
-    guests: [
-      { name: "Priya Chatterjee", isPrimary: true, email: "priya.chatterjee@example.com", phoneNumber: "+1 555 218 0210", notes: "Please seat near the Okafors." },
-    ],
+    partyName: "Priya Chatterjee",
+    plusOnesAllowed: 1,
+    members: [{ name: "Priya Chatterjee", attendance: "ATTENDING" }],
+    plusOnes: [{ name: "Sam Patel", status: "PENDING", dietary: "Gluten free" }],
+    response: { respondedAt: "2027-06-01", respondedByName: "Priya Chatterjee", email: "priya.chatterjee@example.com", noteToCouple: "Please seat near the Okafors." },
   },
   {
-    attendance: true,
-    respondedAt: "2027-06-03",
-    guests: [
-      { name: "Tom Whitfield", isPrimary: true, email: "tom.whitfield@example.com", phoneNumber: "+1 555 218 0199" },
-      { name: "Sarah Whitfield", isPrimary: false, email: "sarah.whitfield@example.com", phoneNumber: "+1 555 218 0223" },
-      { name: "Lucas Whitfield", isPrimary: false, email: "lucas.whitfield@example.com", phoneNumber: "+1 555 218 0224", notes: "Peanut allergy." },
-      { name: "Emma Whitfield", isPrimary: false, email: "emma.whitfield@example.com", phoneNumber: "+1 555 218 0225" },
+    partyName: "The Whitfields",
+    plusOnesAllowed: 0,
+    members: [
+      { name: "Tom Whitfield", attendance: "ATTENDING" },
+      { name: "Sarah Whitfield", attendance: "ATTENDING" },
+      { name: "Lucas Whitfield", attendance: "ATTENDING", dietary: "Peanut allergy" },
+      { name: "Emma Whitfield", attendance: "ATTENDING" },
     ],
+    response: { respondedAt: "2027-06-03", respondedByName: "Tom Whitfield", email: "tom.whitfield@example.com", phoneNumber: "+1 555 218 0199" },
+  },
+  // --- Mixed: one member coming, one not ---
+  {
+    partyName: "The Okafors",
+    plusOnesAllowed: 0,
+    members: [
+      { name: "Grace Okafor", attendance: "ATTENDING" },
+      { name: "Daniel Okafor", attendance: "ATTENDING" },
+      { name: "Nia Okafor", attendance: "DECLINED" },
+    ],
+    response: { respondedAt: "2027-06-10", respondedByName: "Grace Okafor", phoneNumber: "+1 555 218 0121", noteToCouple: "Nia is away at school, sends her love!" },
   },
   {
-    attendance: true,
-    respondedAt: "2027-06-10",
-    guests: [
-      { name: "Grace Okafor", isPrimary: true, email: "grace.okafor@example.com", phoneNumber: "+1 555 218 0121" },
-      { name: "Daniel Okafor", isPrimary: false, email: "daniel.okafor@example.com", phoneNumber: "+1 555 218 0231" },
-      { name: "Nia Okafor", isPrimary: false, email: "nia.okafor@example.com", phoneNumber: "+1 555 218 0232" },
-    ],
-  },
-  {
-    attendance: true,
-    respondedAt: "2027-06-15",
-    guests: [
-      { name: "Henry Kim", isPrimary: true, email: "henry.kim@example.com", phoneNumber: "+1 555 218 0188" },
-    ],
-  },
-  {
-    attendance: true,
-    respondedAt: "2027-06-20",
-    guests: [
-      { name: "Isabella Romano", isPrimary: true, email: "isabella.romano@example.com", phoneNumber: "+1 555 218 0240" },
-      { name: "Marco Romano", isPrimary: false, email: "marco.romano@example.com", phoneNumber: "+1 555 218 0241" },
-    ],
-  },
-  {
-    attendance: true,
-    respondedAt: "2027-07-02",
-    guests: [
-      { name: "Wei Zhang", isPrimary: true, email: "wei.zhang@example.com", phoneNumber: "+1 555 218 0164" },
-      { name: "Lin Zhang", isPrimary: false, email: "lin.zhang@example.com", phoneNumber: "+1 555 218 0251" },
-      { name: "Kai Zhang", isPrimary: false, email: "kai.zhang@example.com", phoneNumber: "+1 555 218 0252" },
-      { name: "Mei Zhang", isPrimary: false, email: "mei.zhang@example.com", phoneNumber: "+1 555 218 0253" },
-    ],
+    partyName: "Henry Kim",
+    plusOnesAllowed: 1,
+    members: [{ name: "Henry Kim", attendance: "ATTENDING" }],
+    plusOnes: [{ name: "Chris Doe", status: "REJECTED" }],
+    response: { respondedAt: "2027-06-15", respondedByName: "Henry Kim", email: "henry.kim@example.com" },
   },
 
-  // --- Declined: single primary guest, no plus-ones ---
+  // --- Declined ---
   {
-    attendance: false,
-    respondedAt: "2027-05-25",
-    guests: [
-      { name: "Robert Fields", isPrimary: true, email: "robert.fields@example.com", phoneNumber: "+1 555 218 0260", notes: "So sorry to miss it — congratulations!" },
-    ],
+    partyName: "Robert Fields",
+    plusOnesAllowed: 1,
+    members: [{ name: "Robert Fields", attendance: "DECLINED" }],
+    response: { respondedAt: "2027-05-25", respondedByName: "Robert Fields", email: "robert.fields@example.com", noteToCouple: "So sorry to miss it — congratulations!" },
   },
   {
-    attendance: false,
-    respondedAt: "2027-06-08",
-    guests: [
-      { name: "Amelia Turner", isPrimary: true, email: "amelia.turner@example.com", phoneNumber: "+1 555 218 0133" },
-    ],
+    partyName: "Amelia Turner",
+    plusOnesAllowed: 0,
+    members: [{ name: "Amelia Turner", attendance: "DECLINED" }],
+    response: { respondedAt: "2027-06-08", respondedByName: "Amelia Turner", phoneNumber: "+1 555 218 0133" },
+  },
+
+  // --- Awaiting a response ---
+  {
+    partyName: "The Romanos",
+    plusOnesAllowed: 0,
+    members: [{ name: "Isabella Romano" }, { name: "Marco Romano" }],
+  },
+  {
+    partyName: "The Zhangs",
+    plusOnesAllowed: 2,
+    members: [{ name: "Wei Zhang" }, { name: "Lin Zhang" }],
   },
 ];
 
@@ -191,10 +207,10 @@ const REGISTRY_ITEMS: SeedRegistryItem[] = [
 
 async function main() {
   // Wipe existing rows so the seed is repeatable (re-run it any time to reset).
-  // Guests first: each Guest holds the rsvpId foreign key, so deleting the Rsvp
-  // it points at first would be rejected. Children before parents, always.
+  // Guest -> Invitation cascades, but children before parents is the habit that
+  // keeps working when a relation is later switched to Restrict.
   await prisma.guest.deleteMany();
-  await prisma.rsvp.deleteMany();
+  await prisma.invitation.deleteMany();
 
   // Same rule for the registry, and here the DB enforces it: RegistryClaim -> item
   // is onDelete: Restrict, so deleting a claimed item throws instead of cascading.
@@ -202,22 +218,40 @@ async function main() {
   await prisma.registryItem.deleteMany();
 
   // One nested create per party. Passing `guests: { create: [...] }` inserts the
-  // Rsvp and all its Guests in a single call, and Prisma wires each Guest's
-  // rsvpId for us — notice we never set the foreign key by hand.
+  // Invitation and all its Guests in a single call, and Prisma wires each Guest's
+  // invitationId for us — notice we never set the foreign key by hand.
   for (const party of PARTIES) {
-    await prisma.rsvp.create({
+    const respondedAt = party.response ? new Date(party.response.respondedAt) : null;
+
+    await prisma.invitation.create({
       data: {
-        attendance: party.attendance,
-        createdAt: new Date(party.respondedAt),
+        partyName: party.partyName,
+        plusOnesAllowed: party.plusOnesAllowed,
+        respondedAt,
+        respondedByName: party.response?.respondedByName,
+        email: party.response?.email,
+        phoneNumber: party.response?.phoneNumber,
+        noteToCouple: party.response?.noteToCouple,
+        songRequest: party.response?.songRequest,
         guests: {
-          create: party.guests.map((guest) => ({
-            name: guest.name,
-            isPrimary: guest.isPrimary,
-            email: guest.email,
-            phoneNumber: guest.phoneNumber,
-            notes: guest.notes,
-            createdAt: new Date(party.respondedAt),
-          })),
+          create: [
+            ...party.members.map((member) => ({
+              name: member.name,
+              nameKey: normalizeName(member.name),
+              attendance: member.attendance ?? "PENDING",
+              dietary: member.dietary,
+            })),
+            ...(party.plusOnes ?? []).map((plusOne) => ({
+              name: plusOne.name,
+              nameKey: normalizeName(plusOne.name),
+              // A plus-one only exists because their host is coming.
+              attendance: "ATTENDING" as const,
+              dietary: plusOne.dietary,
+              isPlusOne: true,
+              plusOneStatus: plusOne.status,
+              createdAt: respondedAt ?? undefined,
+            })),
+          ],
         },
       },
     });
@@ -247,11 +281,11 @@ async function main() {
     });
   }
 
-  const rsvpCount = await prisma.rsvp.count();
+  const invitationCount = await prisma.invitation.count();
   const guestCount = await prisma.guest.count();
   const registryItemCount = await prisma.registryItem.count();
   const registryClaimCount = await prisma.registryClaim.count();
-  console.log(`Seeded ${rsvpCount} RSVPs and ${guestCount} guests.`);
+  console.log(`Seeded ${invitationCount} invitations and ${guestCount} guests.`);
   console.log(`Seeded ${registryItemCount} registry items and ${registryClaimCount} claims.`);
 }
 
