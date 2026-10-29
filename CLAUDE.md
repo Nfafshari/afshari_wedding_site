@@ -34,5 +34,5 @@ CI (`.github/workflows/ci.yml`) runs lint, `tsc --noEmit`, `pnpm test`, and buil
 - Every Server Action starts with `requireUserAction()` and returns an `ActionResult`. Every protected data fetcher starts with `requireUser()`. Never skip either.
 - The demo sandbox must never import `prisma` or touch the database. It receives a store by injection.
 - A change to a planner feature must be mirrored in `single-instance-planner/` (or the PR says why not) until the duplication is removed.
-- Import Prisma only from `@/lib/prisma`. `src/generated/` is machine-generated; never edit it.
+- Import Prisma only from `@/lib/prisma` (the seed script is the one exception; see `docs/standards.md`). `src/generated/` is machine-generated; never edit or commit it.
 - Never commit `.env*`. Never hand-edit applied migrations; add a new one.
