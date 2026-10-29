@@ -37,12 +37,18 @@ Before any code, the agent interviews you: it asks questions, proposes a design 
 
 ## 4. Pull request
 
-The description contains:
+The description follows [`.github/pull_request_template.md`](../.github/pull_request_template.md). Its six headings, in order:
 
-1. **Link** to the Linear issue.
+1. **Summary**: what changed and why, plus the Linear issue (`Linear issue: NFA-<n>`), which is also what attaches the PR to the issue.
 2. **Walkthrough**: a short, ordered tour of the change ("start in `action.ts`: new validation; then `client.tsx`: new field; ...") with the *why* for each step.
-3. **By-hand checklist**: the acceptance criteria as checkboxes, plus anything risky the diff touches (auth, migrations).
-4. **Out of scope / follow-ups**: anything noticed but deliberately not changed.
+3. **Verified**: only the commands that were actually run, with their real results.
+4. **Calls I made (please check)**: decisions the issue didn't make for you.
+5. **By-hand checklist**: the acceptance criteria as checkboxes, plus anything risky the diff touches (auth, migrations).
+6. **Out of scope / follow-ups**: anything noticed but deliberately not changed.
+
+Write "None" under a heading that doesn't apply instead of deleting it, and delete the template's `<!-- -->` prompts when filling it in. These six names are a contract: the `/pr-review` skill (Track 3) generates the same shape, so rename one only together with the skill.
+
+GitHub pre-fills the template in the web UI, but `gh pr create --body "..."` does **not**. When opening a PR from the command line, fill in the template file and pass it with `--body-file`.
 
 *Why:* it turns "review a diff" into "follow a guided tour, then verify behavior."
 
