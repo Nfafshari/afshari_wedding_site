@@ -32,5 +32,5 @@ CI (`.github/workflows/ci.yml`) runs lint, `tsc --noEmit`, `pnpm test`, and buil
 ## Hard rules
 
 - Every Server Action starts with `requireUserAction()` and returns an `ActionResult`. Every protected data fetcher starts with `requireUser()`. Never skip either.
-- Import Prisma only from `@/lib/prisma` (the seed script is the one exception; see `docs/standards.md`). `src/generated/` is machine-generated; never edit or commit it.
+- Import Prisma only from `@/lib/prisma`. `src/generated/` is machine-generated; never edit or commit it.
 - Never commit `.env*`. Never hand-edit applied migrations; add a new one.

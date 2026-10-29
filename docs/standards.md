@@ -37,7 +37,7 @@ These are enforced by `tests/auth-guards.test.ts`. A Server Action must start wi
 ## Database
 
 - Prisma client only via `@/lib/prisma`. Generated client in `src/generated/` is never hand-edited, and never committed (it is gitignored and regenerated on install and build).
-- The one exception is `src/prisma/seed.ts`, which runs as its own `tsx` process outside Next and builds its own client. `tests/standards.test.ts` enforces all of this: any other file that does `new PrismaClient(...)` fails the test unless it is added to `CLIENT_ALLOWLIST` there, with a reason on the line and a justification in the PR.
+- `tests/standards.test.ts` enforces this: any file other than `src/lib/prisma.ts` that does `new PrismaClient(...)` fails the test unless it is added to `CLIENT_ALLOWLIST` there, with a reason on the line and a justification in the PR. The legitimate case is a standalone script that runs outside Next and can't use the singleton.
 - Schema changes need a migration: `pnpm prisma migrate dev --name <name>`. Never edit an applied migration.
 - Choose `onDelete` deliberately (Cascade for children meaningless without a parent; Restrict for records of real activity). Index foreign keys.
 

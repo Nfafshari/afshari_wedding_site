@@ -33,11 +33,10 @@ pnpm install          # also runs `prisma generate` via postinstall
 pnpm dev              # http://localhost:3000
 ```
 
-Then apply the schema and seed:
+Then apply the schema:
 
 ```bash
 pnpm prisma migrate dev
-pnpm prisma db seed
 ```
 
 ## Scripts
@@ -86,7 +85,7 @@ src/
 ├── components/                       # shared components; ui/ is shadcn
 ├── hooks/                            # use-mobile, use-dialog-submit, use-query-params
 ├── lib/                              # prisma singleton, require-user guards, helpers
-└── prisma/                           # schema.prisma, migrations, seed.ts
+└── prisma/                           # schema.prisma, migrations
 ```
 
 ### Conventions
