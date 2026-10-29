@@ -48,7 +48,7 @@ The description contains:
 
 ## 5. Review
 
-- **CI** (coming in Track 2): lint, types, build. Deterministic; it can't talk itself into "looks fine."
+- **CI** (`.github/workflows/ci.yml`): on every PR to `master`, a clean install then lint, type-check, and build, using placeholder env vars. Deterministic; it can't talk itself into "looks fine." Tests join it in Track 2 (NFA-20).
 - **pr-review skill** (coming in Track 3): run before opening the PR and while it is open. Checks judgment items: matches the plan, anything out of scope, bloat, demo parity, auth rules. Its output feeds the walkthrough and checklist.
 - **You**: hand-test against the checklist on the Vercel preview deployment, then read the walkthrough for design fit.
 
