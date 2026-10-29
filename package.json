@@ -11,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "postinstall": "prisma generate",
-    "generate": "node scripts/generate.mjs"
+    "generate": "node scripts/generate.mjs",
+    "import-guests": "tsx src/prisma/import-guests.ts"
   },
   "dependencies": {
     "@prisma/adapter-pg": "^7.8.0",

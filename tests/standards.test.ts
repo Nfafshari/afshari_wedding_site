@@ -17,6 +17,7 @@ import ts from "typescript";
 // ---------------------------------------------------------------------------------
 const CLIENT_ALLOWLIST = [
   "src/lib/prisma.ts", // the singleton every page and action imports
+  "src/prisma/import-guests.ts", // standalone `tsx` script (`pnpm import-guests`) that runs outside Next
 ];
 
 const ROOT = fileURLToPath(new URL("..", import.meta.url));
