@@ -21,12 +21,13 @@ Full process: [docs/workflow.md](docs/workflow.md). Code rules and definition of
 ```bash
 pnpm dev                                # dev server, http://localhost:3000
 pnpm lint                               # eslint
+pnpm test                               # vitest, single run (pnpm test:watch to watch)
 pnpm build                              # prisma generate && next build (also type-checks)
 pnpm prisma migrate dev --name <name>   # create + apply a migration
 pnpm generate page <name> --protected   # scaffold page/client/action trio
 ```
 
-There is no automated test suite yet. CI (`.github/workflows/ci.yml`) runs lint, `tsc --noEmit`, and build on every PR; run the same three locally, then the relevant steps of the smoke test. Local `node_modules` or `.next/` can go stale and give false type errors: trust a clean `pnpm install --frozen-lockfile` and CI over a long-lived working tree.
+The test suite is just starting (Vitest is wired up; the auth and standards tests are still to come). CI (`.github/workflows/ci.yml`) runs lint, `tsc --noEmit`, and build on every PR but does not run `pnpm test` yet; run those three plus `pnpm test` locally, then the relevant steps of the smoke test. Local `node_modules` or `.next/` can go stale and give false type errors: trust a clean `pnpm install --frozen-lockfile` and CI over a long-lived working tree.
 
 ## Hard rules
 
