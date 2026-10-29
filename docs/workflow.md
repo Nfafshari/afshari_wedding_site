@@ -28,7 +28,7 @@ Before any code, the agent interviews you: it asks questions, proposes a design 
 
 ## 3. Branch and implement
 
-- Branch off `master`: `<issue-id>-short-slug` (for example `PIP-12-guest-csv-export`).
+- Branch off `master`: `feature/NFA-<number>-short-slug` (for example `feature/NFA-13-record-linear-setup`). See [standards.md](standards.md#git).
 - One issue = one PR. If the plan grows, split it into more issues instead of a bigger PR.
 - Follow [standards.md](standards.md). Commit in small steps with messages that say why.
 - Before opening the PR: `pnpm lint` and `pnpm build` pass, with real output reported.

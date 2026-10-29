@@ -42,6 +42,12 @@ Three layers, all required: `src/proxy.ts` matcher on `/planner/:path*`, `requir
 
 Theme colors are defined in `src/app/globals.css` and exposed as Tailwind color tokens: `burg` (= foreground), `cream` (= background), `gold`, `olivine`. Use them as `text-burg`, `bg-cream`, etc. Mobile-first with `md:`/`lg:`. Use existing utility classes (`page-title`, `section-title`, `stat-number`). (The README still describes the older `bg-(--burg)` form; treat the code as correct.)
 
+## Git
+
+- Branch off `master` as `feature/NFA-<number>-short-slug` (for example `feature/NFA-13-record-linear-setup`). The `NFA-<number>` is the Linear issue ID, which is what links the branch and PR to the issue. Use the same slug as the issue title, lowercase, hyphenated.
+- One issue = one branch = one PR.
+- Linear's own "copy branch name" gives a different format (`nathenafshari/nfa-13-...`). Don't use it; use the format above.
+
 ## Demo sandbox parity
 
 `src/app/(public)/single-instance-planner/` mirrors the planner with in-memory state. Rules:
