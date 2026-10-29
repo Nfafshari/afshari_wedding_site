@@ -1,0 +1,53 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [master]
+
+permissions:
+  contents: read
+
+# A new push to the same PR supersedes the previous run.
+concurrency:
+  group: ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+# PLACEHOLDERS ONLY. They exist so the build can import modules that read env at load
+# time (src/lib/supabase.ts throws if its vars are missing). They are not real
+# credentials and nothing here connects to a database, Supabase, or Google.
+env:
+  DATABASE_URL: postgresql://user:pass@localhost:5432/ci
+  SUPABASE_URL: https://ci.invalid
+  SUPABASE_SERVICE_ROLE_KEY: ci-dummy
+  PLANNER_ALLOW_LIST: ci@example.com
+  AUTH_SECRET: ci-dummy-secret
+  AUTH_GOOGLE_ID: ci-dummy
+  AUTH_GOOGLE_SECRET: ci-dummy
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      # Reads the pnpm version from "packageManager" in package.json.
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      # postinstall runs `prisma generate`, which creates the gitignored client.
+      - name: Install
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      - name: Type-check
+        run: pnpm exec tsc --noEmit
+
+      - name: Build
+        run: pnpm build

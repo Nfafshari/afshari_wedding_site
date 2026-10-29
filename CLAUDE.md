@@ -26,7 +26,7 @@ pnpm prisma migrate dev --name <name>   # create + apply a migration
 pnpm generate page <name> --protected   # scaffold page/client/action trio
 ```
 
-There is no automated test suite yet. Verify with lint + build, then the relevant steps of the smoke test.
+There is no automated test suite yet. CI (`.github/workflows/ci.yml`) runs lint, `tsc --noEmit`, and build on every PR; run the same three locally, then the relevant steps of the smoke test. Local `node_modules` or `.next/` can go stale and give false type errors: trust a clean `pnpm install --frozen-lockfile` and CI over a long-lived working tree.
 
 ## Hard rules
 
