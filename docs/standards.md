@@ -49,6 +49,7 @@ Theme colors are defined in `src/app/globals.css` and exposed as Tailwind color 
 - Vitest. Run with `pnpm test`.
 - Unit tests are colocated and named `<file>.test.ts` (for example `src/lib/utils.test.ts`). Whole-codebase structural tests (for example "every Server Action is guarded") live in `tests/`.
 - Import `describe`, `it`, `expect` explicitly from `vitest`; don't enable globals.
+- A module that reads env vars when it loads (like `src/auth.config.ts`) needs `vi.stubEnv(...)`, then `vi.resetModules()`, then a dynamic `import(...)` in each test; restore with `vi.unstubAllEnvs()` in `afterEach`.
 - A new test must be seen failing once: break the thing it guards, confirm the test fails, then revert.
 
 ## Git
