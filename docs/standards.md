@@ -32,6 +32,8 @@ Canonical example of a well-formed action: [checklist/action.ts](../src/app/(pro
 
 Three layers, all required: `src/proxy.ts` matcher on `/planner/:path*`, `requireUser()` in Server Components and fetchers, `requireUserAction()` in Server Actions. See [README.md](../README.md#auth) for why.
 
+These are enforced by `tests/auth-guards.test.ts`. A Server Action must start with `const guard = await requireUserAction();` followed by `if (!guard.ok) { return guard; }`. An action or route handler that is meant to be public must be added to the allowlist at the top of that test, with the reason in the PR.
+
 ## Database
 
 - Prisma client only via `@/lib/prisma`. Generated client in `src/generated/` is never hand-edited.
