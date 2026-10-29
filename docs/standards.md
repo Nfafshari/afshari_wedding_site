@@ -71,10 +71,14 @@ Theme colors are defined in `src/app/globals.css` and exposed as Tailwind color 
 A change is done only when all of these are true and reported with real output:
 
 1. `pnpm lint` passes.
-2. `pnpm build` passes (includes type-checking).
-3. Every acceptance criterion in the issue is demonstrably met.
-4. Nothing outside the issue's scope was changed.
-5. Demo parity and auth rules above are respected.
-6. For anything touching production behavior, the relevant smoke-test steps are listed in the PR checklist.
+2. `pnpm exec tsc --noEmit` passes (type-check).
+3. `pnpm test` passes.
+4. `pnpm build` passes.
+5. Every acceptance criterion in the issue is demonstrably met.
+6. Nothing outside the issue's scope was changed.
+7. Demo parity and auth rules above are respected.
+8. For anything touching production behavior, the relevant smoke-test steps are listed in the PR checklist.
+
+CI runs checks 1 to 4 on every PR and they must be green to merge. A new test also has to be seen failing once (see Tests).
 
 If any check fails or was skipped, say so plainly. Do not claim done.

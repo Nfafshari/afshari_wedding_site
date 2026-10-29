@@ -31,7 +31,7 @@ Before any code, the agent interviews you: it asks questions, proposes a design 
 - Branch off `master`: `feature/NFA-<number>-short-slug` (for example `feature/NFA-13-record-linear-setup`). See [standards.md](standards.md#git).
 - One issue = one PR. If the plan grows, split it into more issues instead of a bigger PR.
 - Follow [standards.md](standards.md). Commit in small steps with messages that say why.
-- Before opening the PR: `pnpm lint` and `pnpm build` pass, with real output reported.
+- Before opening the PR: `pnpm lint`, `pnpm exec tsc --noEmit`, `pnpm test`, and `pnpm build` all pass, with real output reported. These are the same four checks CI runs.
 
 *Why:* small, single-purpose diffs are the only kind a human can actually follow.
 
@@ -48,13 +48,25 @@ The description contains:
 
 ## 5. Review
 
-- **CI** (`.github/workflows/ci.yml`): on every PR to `master`, a clean install then lint, type-check, and build, using placeholder env vars. Deterministic; it can't talk itself into "looks fine." Tests join it in Track 2 (NFA-20).
+- **CI** (`.github/workflows/ci.yml`): on every PR to `master`, a clean install then lint, type-check, tests (`pnpm test`), and build, using placeholder env vars. Deterministic; it can't talk itself into "looks fine." The tests include structural checks that fail if a Server Action, planner fetcher, route handler, or the proxy matcher loses its auth protection.
 - **pr-review skill** (coming in Track 3): run before opening the PR and while it is open. Checks judgment items: matches the plan, anything out of scope, bloat, demo parity, auth rules. Its output feeds the walkthrough and checklist.
 - **You**: hand-test against the checklist on the Vercel preview deployment, then read the walkthrough for design fit.
 
 ## 6. Merge and verify
 
 Merge to `master` (Vercel deploys). Run the relevant part of [release-smoke-test.md](release-smoke-test.md) against production. Mark the issue done only after that.
+
+### Merge protection
+
+A GitHub ruleset on `master` enforces the process:
+
+- Changes must come in through a pull request (no direct pushes).
+- The `checks` status (lint, type-check, tests, build) must pass.
+- No approvals are required (a solo repo can't approve its own PR).
+- Force-push and branch deletion are blocked.
+- Repository admins can bypass. That is for emergencies only; if you use it, say why in the PR or issue.
+
+Red means don't merge. If the `checks` job id in `.github/workflows/ci.yml` is ever renamed, update the ruleset in the same change.
 
 ## Linear integration
 
