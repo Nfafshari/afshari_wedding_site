@@ -27,7 +27,7 @@ pnpm prisma migrate dev --name <name>   # create + apply a migration
 pnpm generate page <name> --protected   # scaffold page/client/action trio
 ```
 
-The test suite is just starting (Vitest is wired up; the auth and standards tests are still to come). CI (`.github/workflows/ci.yml`) runs lint, `tsc --noEmit`, and build on every PR but does not run `pnpm test` yet; run those three plus `pnpm test` locally, then the relevant steps of the smoke test. Local `node_modules` or `.next/` can go stale and give false type errors: trust a clean `pnpm install --frozen-lockfile` and CI over a long-lived working tree.
+CI (`.github/workflows/ci.yml`) runs lint, `tsc --noEmit`, `pnpm test`, and build on every PR, and all four must be green to merge. Run the same four locally before opening a PR, then do the relevant steps of the smoke test. The tests include auth checks (`tests/auth-guards.test.ts`); read a failure before touching the test. Local `node_modules` or `.next/` can go stale and give false type errors: trust a clean `pnpm install --frozen-lockfile` and CI over a long-lived working tree.
 
 ## Hard rules
 

@@ -127,7 +127,9 @@ Because sessions are JWTs, a session outlives removal from `PLANNER_ALLOW_LIST` 
 
 ## Testing
 
-There is no automated test suite yet. Releases are verified with the manual [release smoke test](docs/release-smoke-test.md) — run against the deployed production URL, not localhost. When a step in it fails in production, it's earmarked for Playwright and removed from the checklist.
+Tests run with [Vitest](https://vitest.dev): `pnpm test` (or `pnpm test:watch`). CI runs them, plus lint, type-check, and build, on every pull request, and they must pass to merge. They cover the auth allow list and guards, plus structural checks that fail if a Server Action, planner data fetcher, route handler, or the proxy matcher loses its protection. See [docs/standards.md](docs/standards.md#tests) for conventions.
+
+Automation doesn't replace looking at the real thing. Releases are also verified with the manual [release smoke test](docs/release-smoke-test.md) — run against the deployed production URL, not localhost. When a step in it fails in production, it's earmarked for Playwright and removed from the checklist.
 
 ## License
 

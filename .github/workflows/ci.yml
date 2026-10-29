@@ -25,6 +25,9 @@ env:
   AUTH_GOOGLE_SECRET: ci-dummy
 
 jobs:
+  # The job id `checks` is the status name the master ruleset requires (see
+  # "Merge protection" in docs/workflow.md). Renaming it would leave that rule waiting
+  # on a check that never reports, so change both together.
   checks:
     runs-on: ubuntu-latest
     timeout-minutes: 15
@@ -48,6 +51,9 @@ jobs:
 
       - name: Type-check
         run: pnpm exec tsc --noEmit
+
+      - name: Test
+        run: pnpm test
 
       - name: Build
         run: pnpm build
