@@ -28,7 +28,7 @@ Before any code, the agent interviews you: it asks questions, proposes a design 
 
 ## 3. Branch and implement
 
-- Branch off `master`: `<issue-id>-short-slug` (for example `PIP-12-guest-csv-export`).
+- Branch off `master`: `feature/NFA-<number>-short-slug` (for example `feature/NFA-13-record-linear-setup`). See [standards.md](standards.md#git).
 - One issue = one PR. If the plan grows, split it into more issues instead of a bigger PR.
 - Follow [standards.md](standards.md). Commit in small steps with messages that say why.
 - Before opening the PR: `pnpm lint` and `pnpm build` pass, with real output reported.
@@ -58,7 +58,15 @@ Merge to `master` (Vercel deploys). Run the relevant part of [release-smoke-test
 
 ## Linear integration
 
-The Linear MCP lets the agent read and update issues directly. Setup status and the exact tool names are recorded here once connected.
+The Linear MCP lets the agent read and write issues directly, so the issue is the contract in both directions.
+
+- **Workspace:** team `NFA` (Nfafshari-personal), project **Workflow and small app refactor**.
+- **Connect:** run `/plugin` in Claude Code and authenticate `linear`. Tools load on demand (deferred), so ask the agent to load them if a session doesn't see them.
+- **Tools:** `list_issues` (filter by `project`, `state`, `parentId`) and `get_issue` to read; `save_issue` to create or update (with `id` it updates; `parentId` makes a sub-issue); `list_projects`, `list_teams`, `list_issue_labels` to look things up.
+- **Labels:** `Feature`, `Improvement`, `Bug`.
+- **Statuses seen so far:** Backlog, In Review, Done. Set a sub-issue to In Review when its PR opens; set Done after the smoke test passes.
+- **Structure:** a big goal is a parent issue; the decided steps are sub-issues. Don't create sub-issues for work that hasn't been planned yet.
+- **Branch and PR linking:** the `NFA-<number>` in the branch name (see [standards.md](standards.md#git)) and in the PR description is what attaches the PR to the issue. Always put the issue ID in the PR body.
 
 ## Housekeeping
 
