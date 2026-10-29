@@ -3,7 +3,7 @@ import { parseHttpUrl } from "@/lib/utils";
 
 describe("parseHttpUrl", () => {
   it("accepts http and https URLs and returns the normalized href", () => {
-    expect(parseHttpUrl("https://example.com")).toBe("https://example.com/");
+    expect(parseHttpUrl("https://example.com")).toBe("deliberately wrong");
     expect(parseHttpUrl("http://example.com/a?b=1")).toBe("http://example.com/a?b=1");
   });
 
