@@ -14,6 +14,8 @@ The owner designs; the agent implements. Do not write code until a plan for the 
 4. Smallest change that meets the acceptance criteria. Do not refactor, add abstractions, or add dependencies that the issue did not ask for. Ask first.
 5. Never say "done" without running the checks below and reporting their real output, including failures.
 
+**Review is on request only.** Do not run, or suggest running, `/pr-review` by default: a full run costs about 250,000 tokens. When the owner has run one, fix its VERIFIED Blocking and Should fix findings (smallest change, a failing test first, two rounds at most) and leave Consider and INFERRED findings to the owner. Details: [docs/workflow.md](docs/workflow.md#on-demand-review-pr-review).
+
 Full process: [docs/workflow.md](docs/workflow.md). Code rules and definition of done: [docs/standards.md](docs/standards.md). Manual release checks: [docs/release-smoke-test.md](docs/release-smoke-test.md).
 
 ## Commands
