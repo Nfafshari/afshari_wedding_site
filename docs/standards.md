@@ -42,6 +42,13 @@ Three layers, all required: `src/proxy.ts` matcher on `/planner/:path*`, `requir
 
 Theme colors are defined in `src/app/globals.css` and exposed as Tailwind color tokens: `burg` (= foreground), `cream` (= background), `gold`, `olivine`. Use them as `text-burg`, `bg-cream`, etc. Mobile-first with `md:`/`lg:`. Use existing utility classes (`page-title`, `section-title`, `stat-number`). (The README still describes the older `bg-(--burg)` form; treat the code as correct.)
 
+## Tests
+
+- Vitest. Run with `pnpm test`.
+- Unit tests are colocated and named `<file>.test.ts` (for example `src/lib/utils.test.ts`). Whole-codebase structural tests (for example "every Server Action is guarded") live in `tests/`.
+- Import `describe`, `it`, `expect` explicitly from `vitest`; don't enable globals.
+- A new test must be seen failing once: break the thing it guards, confirm the test fails, then revert.
+
 ## Git
 
 - Branch off `master` as `feature/NFA-<number>-short-slug` (for example `feature/NFA-13-record-linear-setup`). The `NFA-<number>` is the Linear issue ID, which is what links the branch and PR to the issue. Use the same slug as the issue title, lowercase, hyphenated.

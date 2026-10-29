@@ -33,7 +33,7 @@ A public, signed-out mirror of the planner so the project can be shown off witho
 
 ## Getting started
 
-Requires **Node 20+**, **pnpm**, and a PostgreSQL database.
+Requires **Node 22.12+**, **pnpm**, and a PostgreSQL database.
 
 ```bash
 pnpm install          # also runs `prisma generate` via postinstall
