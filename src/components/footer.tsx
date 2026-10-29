@@ -25,9 +25,6 @@ export default function Footer () {
           <Link href={'/planner'} className="underline">
             Planner
           </Link>
-          <Link href={'/single-instance-planner'} className="underline">
-            Planner (DEMO)
-          </Link>
         </div>
       </div>
     </div>

@@ -6,12 +6,11 @@ Built with Next.js 16 (App Router), React 19 Server Components + Server Actions,
 
 ## What's in here
 
-The app is split into three surfaces:
+The app is split into two surfaces:
 
 | Surface | Route | Auth | Data |
 |---|---|---|---|
 | **Public site** | `/` | none | — (placeholder page while the guest-facing site is built) |
-| **Demo sandbox** | `/single-instance-planner` | none | in-memory React state, seeded per visitor |
 | **Planner** | `/planner/*` | Google sign-in + allow list | PostgreSQL via Prisma |
 
 ### Planner (`src/app/(protected)/planner`)
@@ -24,12 +23,6 @@ The couple's private tools. Every page follows the same shape — a Server Compo
 - **RSVP Manager** (`/planner/rsvp`) — read-only guest table
 - **Registry Claims** (`/planner/registry-manager`) — registry items and who claimed what
 - **Documents** (`/planner/doc-archive`) — vendor quotes, contracts, receipts
-
-### Demo sandbox (`src/app/(public)/single-instance-planner`)
-
-A public, signed-out mirror of the planner so the project can be shown off without exposing real wedding data. It is a near-copy of the planner's components, but the Prisma calls are swapped for a React context store (`demo-store.tsx`) seeded from `demo-data/`. Edits are real within the session and vanish on refresh.
-
-> The demo **must never touch the database**. Its actions take the store as an argument (dependency injection) rather than importing `prisma` at module scope — a DB connection is legitimately one shared thing, a React store is not. If you extend the demo, keep that boundary.
 
 ## Getting started
 
@@ -82,8 +75,7 @@ pnpm generate page <kebab-name> [--protected] [--layout] [--force]
 src/
 ├── app/
 │   ├── (public)/                     # no auth
-│   │   ├── page.tsx                  # landing page
-│   │   └── single-instance-planner/  # state-only demo
+│   │   └── page.tsx                  # landing page
 │   ├── (protected)/planner/          # the real planner, DB-backed
 │   ├── api/auth/[...nextauth]/       # Auth.js route handler
 │   ├── sign-in/ sign-out/ access-denied/

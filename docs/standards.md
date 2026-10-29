@@ -59,14 +59,6 @@ Theme colors are defined in `src/app/globals.css` and exposed as Tailwind color 
 - One issue = one branch = one PR.
 - Linear's own "copy branch name" gives a different format (`nathenafshari/nfa-13-...`). Don't use it; use the format above.
 
-## Demo sandbox parity
-
-`src/app/(public)/single-instance-planner/` mirrors the planner with in-memory state. Rules:
-
-- It must never import `prisma` or touch the DB. Its actions take the store as an argument.
-- A planner behavior change is mirrored there with the same validation and error strings, or the PR explains why not.
-- This duplication is planned for removal; don't deepen it.
-
 ## Definition of done
 
 A change is done only when all of these are true and reported with real output:
@@ -77,7 +69,7 @@ A change is done only when all of these are true and reported with real output:
 4. `pnpm build` passes.
 5. Every acceptance criterion in the issue is demonstrably met.
 6. Nothing outside the issue's scope was changed.
-7. Demo parity and auth rules above are respected.
+7. The auth rules above are respected.
 8. For anything touching production behavior, the relevant smoke-test steps are listed in the PR checklist.
 
 CI runs checks 1 to 4 on every PR and they must be green to merge. A new test also has to be seen failing once (see Tests).

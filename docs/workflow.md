@@ -41,7 +41,7 @@ The description contains:
 
 1. **Link** to the Linear issue.
 2. **Walkthrough**: a short, ordered tour of the change ("start in `action.ts`: new validation; then `client.tsx`: new field; ...") with the *why* for each step.
-3. **By-hand checklist**: the acceptance criteria as checkboxes, plus anything risky the diff touches (auth, migrations, demo parity).
+3. **By-hand checklist**: the acceptance criteria as checkboxes, plus anything risky the diff touches (auth, migrations).
 4. **Out of scope / follow-ups**: anything noticed but deliberately not changed.
 
 *Why:* it turns "review a diff" into "follow a guided tour, then verify behavior."
@@ -49,7 +49,7 @@ The description contains:
 ## 5. Review
 
 - **CI** (`.github/workflows/ci.yml`): on every PR to `master`, a clean install then lint, type-check, tests (`pnpm test`), and build, using placeholder env vars. Deterministic; it can't talk itself into "looks fine." The tests include structural checks that fail if a Server Action, planner fetcher, route handler, or the proxy matcher loses its auth protection.
-- **pr-review skill** (coming in Track 3): run before opening the PR and while it is open. Checks judgment items: matches the plan, anything out of scope, bloat, demo parity, auth rules. Its output feeds the walkthrough and checklist.
+- **pr-review skill** (coming in Track 3): run before opening the PR and while it is open. Checks judgment items: matches the plan, anything out of scope, bloat, auth rules. Its output feeds the walkthrough and checklist.
 - **You**: hand-test against the checklist on the Vercel preview deployment, then read the walkthrough for design fit.
 
 ## 6. Merge and verify

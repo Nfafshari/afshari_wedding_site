@@ -2,7 +2,7 @@
 
 Wedding site and private planning dashboard for Piper & Nathen (Sept 11, 2027). Next.js 16 (App Router), React 19, Prisma 7 on Postgres, Auth.js (Google + allow list), Tailwind v4 + shadcn/ui, Supabase Storage, deployed on Vercel.
 
-Three surfaces: public site (`/`), a no-DB demo sandbox (`/single-instance-planner`), and the private planner (`/planner/*`). See [README.md](README.md) for the full picture.
+Two surfaces: the public site (`/`) and the private planner (`/planner/*`). See [README.md](README.md) for the full picture.
 
 ## Working agreement
 
@@ -32,7 +32,5 @@ CI (`.github/workflows/ci.yml`) runs lint, `tsc --noEmit`, `pnpm test`, and buil
 ## Hard rules
 
 - Every Server Action starts with `requireUserAction()` and returns an `ActionResult`. Every protected data fetcher starts with `requireUser()`. Never skip either.
-- The demo sandbox must never import `prisma` or touch the database. It receives a store by injection.
-- A change to a planner feature must be mirrored in `single-instance-planner/` (or the PR says why not) until the duplication is removed.
 - Import Prisma only from `@/lib/prisma` (the seed script is the one exception; see `docs/standards.md`). `src/generated/` is machine-generated; never edit or commit it.
 - Never commit `.env*`. Never hand-edit applied migrations; add a new one.
