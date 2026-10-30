@@ -127,7 +127,7 @@ export default function Rsvp({ invitations }: RsvpProps) {
         <div className="flex w-full justify-start gap-2 mt-4">
           <Button
             variant={'ghost'}
-            className="text-burg/70 ml-5 hover:bg-burg hover:text-background"
+            className="ml-5"
             onClick={() => {
               setActiveDialog(DialogType.AddParty);
             }}
@@ -137,7 +137,6 @@ export default function Rsvp({ invitations }: RsvpProps) {
           </Button>
           <Button
             variant={'ghost'}
-            className="text-burg/70 hover:bg-burg hover:text-background"
             onClick={() => {
               setActiveDialog(DialogType.ImportGuests);
             }}

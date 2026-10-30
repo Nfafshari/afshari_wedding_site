@@ -53,12 +53,11 @@ export default function FormDialog({
         {children}
       </AlertDialogHeader>
       <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
-        <AlertDialogCancel variant={"secondary"} className="hover:bg-gold/90">
+        <AlertDialogCancel variant={"secondary"}>
           Cancel
         </AlertDialogCancel>
         <AlertDialogAction
           disabled={isLoading}
-          className={isLoading ? "bg-primary/30" : "bg-primary text-primary-foreground hover:bg-primary/90"}
           onClick={(event) => {
             // AlertDialogAction auto-closes the dialog on click. Stop that here so
             // the dialog only closes on a successful submit (via the caller's onSuccess).

@@ -158,7 +158,7 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
           />
           <Button
             variant={'ghost'}
-            className="text-burg/70 ml-5 hover:bg-burg hover:text-background"
+            className="ml-5"
             onClick={() => {
               setActiveDialog(DialogType.Category)
             }}

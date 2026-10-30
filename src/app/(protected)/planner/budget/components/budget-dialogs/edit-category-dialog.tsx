@@ -114,8 +114,8 @@ export default function EditCategoryDialog({ budgetCategories, categoryToUpdate,
             {(serverError && serverErrorField === 'name') && <p className="text-destructive/80 text-xs">{serverError}</p>}
           </Field>
           <Button
-            variant={'destructive'}
-            className="w-full mt-4 border border-destructive hover:bg-destructive hover:text-destructive-foreground"
+            variant={'ghost-destructive'}
+            className="w-full mt-4"
             onClick={() => {
               setIsDeleteCategoryActive(true)
             }}
@@ -124,11 +124,11 @@ export default function EditCategoryDialog({ budgetCategories, categoryToUpdate,
           </Button>
         </AlertDialogHeader>
         <AlertDialogFooter className="bg-background rounded-sm rounded-t-none">
-          <AlertDialogCancel variant={'secondary'} className="hover:bg-gold/90">
+          <AlertDialogCancel variant={'secondary'}>
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            className={isLoading ? 'bg-primary/30' : 'bg-primary text-primary-foreground hover:bg-primary/90'}
+            disabled={isLoading}
             onClick={editCategory}
           >
             {isLoading ? <Spinner /> : 'Confirm'}
@@ -150,7 +150,6 @@ export default function EditCategoryDialog({ budgetCategories, categoryToUpdate,
       <AlertDialogFooter className="bg-background rounded-sm rounded-t-none">
         <AlertDialogCancel
           variant={'secondary'}
-          className="hover:bg-gold/90"
           onClick={(e) => {
             // Go back to the edit view instead of closing the whole dialog.
             e.preventDefault();
@@ -160,7 +159,8 @@ export default function EditCategoryDialog({ budgetCategories, categoryToUpdate,
           Cancel
         </AlertDialogCancel>
         <AlertDialogAction
-          className={isLoading ? 'bg-destructive/30!' : 'bg-destructive! text-destructive-foreground hover:bg-destructive/80!'}
+          variant="destructive"
+          disabled={isLoading}
           onClick={removeCategory}
         >
           {isLoading ? <Spinner /> : 'Confirm'}

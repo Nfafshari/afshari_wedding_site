@@ -14,6 +14,7 @@
      below. See /planner/ui-kit for contrast.
      --------------------------------------------------------------- */
   --cream-50: oklch(0.992 0.004 95);        /* canvas: off-white, faint warm tint */
+  --stone-100: oklch(0.93 0.005 95);        /* neutral badge */
   --stone-300: oklch(0.84 0.007 95);        /* muted surfaces: neutral warm grey */
 
   --olivine-50: oklch(0.968 0.016 115);       /* input fields, sidebar */
@@ -23,6 +24,7 @@
   --olivine-600: oklch(0.606 0.075 122.14);   /* input borders, focus ring (3:1 on cream) */
   --olivine-700: oklch(0.472 0.085 122.14);   /* "ink": olivine text and icons (4.5:1) */
 
+  --gold-100: oklch(0.93 0.05 88);          /* warning badge */
   --gold-500: oklch(0.7278 0.1063 85.69);   /* brand gold: fills, never small text */
   --gold-700: oklch(0.48 0.097 85.69);      /* "ink": gold text and icons (4.5:1) */
 
@@ -58,6 +60,12 @@
   --success-foreground: var(--cream-50);
   --warning: var(--gold-700);
   --warning-foreground: var(--cream-50);
+  /* Soft tones: badge backgrounds and the delete hover. Text on each is the matching ink:
+     muted-foreground, olivine-ink, gold-ink, destructive. */
+  --neutral-soft: var(--stone-100);
+  --success-soft: var(--olivine-200);
+  --warning-soft: var(--gold-100);
+  --destructive-soft: oklch(0.94 0.03 25);
   --border: var(--olivine-200);
   --field: var(--olivine-50);
   --input: var(--olivine-600);
@@ -114,6 +122,12 @@
   --color-warning: var(--warning);
   --color-warning-foreground: var(--warning-foreground);
   --color-destructive-foreground: var(--destructive-foreground);
+  --color-neutral-soft: var(--neutral-soft);
+  --color-success-soft: var(--success-soft);
+  --color-warning-soft: var(--warning-soft);
+  --color-destructive-soft: var(--destructive-soft);
+  --color-stone-100: var(--stone-100);
+  --color-gold-100: var(--gold-100);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-field: var(--field);

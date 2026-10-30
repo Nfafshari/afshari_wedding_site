@@ -1,4 +1,14 @@
+import { Plus, SquarePen, Trash2 } from "lucide-react";
+
 import { requireUser } from "@/lib/require-user";
+
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
+import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Spinner } from "@/components/ui/spinner";
+import { Textarea } from "@/components/ui/textarea";
 
 import ColorSwatch from "@/components/ui-kit/color-swatch";
 import ContrastTable, { type ContrastPair } from "@/components/ui-kit/contrast-table";
@@ -90,6 +100,10 @@ const PAIRS: ContrastPair[] = [
   { label: "Input border on card", foreground: "--input", background: "--card", kind: "ui" },
   { label: "Input border on field", foreground: "--input", background: "--field", kind: "ui" },
   { label: "Focus ring on page", foreground: "--ring", background: "--background", kind: "ui" },
+  { label: "Badge: neutral", foreground: "--muted-foreground", background: "--neutral-soft", kind: "text" },
+  { label: "Badge: success", foreground: "--olivine-ink", background: "--success-soft", kind: "text" },
+  { label: "Badge: warning", foreground: "--gold-ink", background: "--warning-soft", kind: "text" },
+  { label: "Badge: danger, and delete hover", foreground: "--destructive", background: "--destructive-soft", kind: "text" },
   {
     label: "Brand gold on page (script title, logo)",
     foreground: "--gold",
@@ -128,6 +142,23 @@ const SHADOWS = [
   { name: "shadow-lg", className: "shadow-lg rounded-lg bg-popover", note: "Dialogs" },
   { name: "shadow-xl", className: "shadow-xl rounded-lg bg-popover", note: "Reserved" },
 ];
+
+const BUTTON_VARIANTS = [
+  { variant: "default", label: "Save changes", usage: "The main action. One per view." },
+  { variant: "secondary", label: "Cancel", usage: "Supporting actions next to a main one." },
+  { variant: "outline", label: "Pick a date", usage: "Choices, pickers and toggles (with aria-pressed)." },
+  { variant: "ghost", label: "Add task", usage: "Quiet actions and edit icons. Olivine on hover." },
+  { variant: "ghost-destructive", label: "Delete", usage: "Trash icons and Delete entry points. Red only on hover." },
+  { variant: "destructive", label: "Delete", usage: "Confirms a delete, inside the confirm dialog." },
+  { variant: "link", label: "Start over", usage: "Inline text actions." },
+] as const;
+
+const BADGE_TONES = [
+  { variant: "neutral", label: "Due", usage: "No reply, not started, nothing paid" },
+  { variant: "success", label: "Paid", usage: "Done, attending, approved" },
+  { variant: "warning", label: "Deposit", usage: "In between, needs approval" },
+  { variant: "danger", label: "Declined", usage: "Declined, rejected, failed" },
+] as const;
 
 export default async function UiKitPage() {
   await requireUser();
@@ -206,6 +237,92 @@ export default async function UiKitPage() {
           {SHADOWS.map((tile) => (
             <TokenTile key={tile.name} {...tile} />
           ))}
+        </div>
+      </KitSection>
+
+      <KitSection
+        id="primitives"
+        title="Primitives"
+        description="Pick a variant by purpose and leave colors to the component. Every control shows a solid focus ring when reached by keyboard (press Tab), and small buttons get a 44px tap area on touch screens."
+      >
+        <div className="flex flex-col gap-10">
+          <div>
+            <h3 className="mb-3 font-bold">Buttons</h3>
+            <div className="flex flex-col">
+              {BUTTON_VARIANTS.map(({ variant, label, usage }) => (
+                <div key={variant} className="grid gap-3 border-b py-3 md:grid-cols-[14rem_1fr] md:items-center">
+                  <div className="text-sm leading-tight">
+                    <p className="font-mono text-xs font-bold">{variant}</p>
+                    <p className="mt-1 text-burg/70">{usage}</p>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-3">
+                    <Button variant={variant} size="sm">{label}</Button>
+                    <Button variant={variant}>{label}</Button>
+                    <Button variant={variant} size="lg">{label}</Button>
+                    <Button variant={variant} disabled>Disabled</Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="mt-6 flex flex-wrap items-center gap-3">
+              <Button disabled><Spinner /> Saving</Button>
+              <Button variant="ghost"><Plus /> Add task</Button>
+              <Button variant="ghost" size="icon-sm" aria-label="Edit (example)"><SquarePen /></Button>
+              <Button variant="ghost-destructive" size="icon-sm" aria-label="Delete (example)"><Trash2 /></Button>
+              <Button variant="outline" aria-pressed={false}>Not selected</Button>
+              <Button variant="outline" aria-pressed>Selected</Button>
+            </div>
+            <p className="mt-2 text-xs text-burg/70">Loading, icon with label, icon-only (always with an aria-label), and a toggle off and on.</p>
+          </div>
+
+          <div>
+            <h3 className="mb-3 font-bold">Fields</h3>
+            <div className="grid gap-5 sm:grid-cols-2">
+              <label className="flex flex-col gap-1.5 text-sm font-medium">Default
+                <Input placeholder="Party name" />
+              </label>
+              <label className="flex flex-col gap-1.5 text-sm font-medium">Filled
+                <Input defaultValue="The Okafor family" />
+              </label>
+              <label className="flex flex-col gap-1.5 text-sm font-medium">Disabled
+                <Input defaultValue="Can't edit this" disabled />
+              </label>
+              <label className="flex flex-col gap-1.5 text-sm font-medium">Invalid
+                <Input defaultValue="not-an-email" aria-invalid />
+                <span className="text-xs font-normal text-destructive">Enter an email like name@example.com.</span>
+              </label>
+              <label className="flex flex-col gap-1.5 text-sm font-medium">With an addon
+                <InputGroup>
+                  <InputGroupAddon><InputGroupText>$</InputGroupText></InputGroupAddon>
+                  <InputGroupInput placeholder="0.00" />
+                </InputGroup>
+              </label>
+              <div className="flex flex-col gap-1.5 text-sm font-medium">Select
+                <Select>
+                  <SelectTrigger className="w-full" aria-label="Status (example)">
+                    <SelectValue placeholder="Choose a status" />
+                  </SelectTrigger>
+                </Select>
+              </div>
+              <label className="flex flex-col gap-1.5 text-sm font-medium sm:col-span-2">Text area
+                <Textarea placeholder="Dietary notes" />
+              </label>
+            </div>
+            <p className="mt-2 text-xs text-burg/70">Fields get their olivine fill from the component; focus turns the border burgundy. Mark errors with aria-invalid.</p>
+          </div>
+
+          <div>
+            <h3 className="mb-3 font-bold">Badges</h3>
+            <div className="flex flex-wrap gap-6">
+              {BADGE_TONES.map(({ variant, label, usage }) => (
+                <div key={variant} className="flex flex-col gap-1.5">
+                  <Badge variant={variant}>{label}</Badge>
+                  <p className="font-mono text-xs font-bold">{variant}</p>
+                  <p className="max-w-40 text-xs text-burg/70">{usage}</p>
+                </div>
+              ))}
+            </div>
+          </div>
         </div>
       </KitSection>
 

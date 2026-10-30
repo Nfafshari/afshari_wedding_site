@@ -22,7 +22,7 @@ import type { BudgetSubcategory } from "../../page";
 import { BudgetStatus } from "@/generated/prisma/enums";
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+import BudgetStatusBadge from "@/components/budget-status-badge";
 import { parseMoneyString, toAmount } from "@/lib/utils";
 
 interface EditSubcategoryDialogProps {
@@ -292,7 +292,7 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
                       key={`badge-${badge}-${idx}`} value={badge} 
                       className="focus:bg-muted/20"
                     >
-                      <Badge variant={badge}>{badge}</Badge>
+                      <BudgetStatusBadge status={badge} />
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -301,8 +301,8 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
           </Field>
 
           <Button
-            variant={'destructive'}
-            className="w-full mt-4 border border-destructive hover:bg-destructive hover:text-destructive-foreground"
+            variant={'ghost-destructive'}
+            className="w-full mt-4"
             onClick={() => {
               setIsDeleteSubcategoryActive(true)
             }}
@@ -311,11 +311,11 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
           </Button>
         </AlertDialogHeader>
         <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
-          <AlertDialogCancel variant={'secondary'} className="hover:bg-gold/90">
+          <AlertDialogCancel variant={'secondary'}>
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            className={isLoading ? 'bg-primary/30' : 'bg-primary text-primary-foreground hover:bg-primary/90'}
+            disabled={isLoading}
             onClick={editSubcategory}
           >
             {isLoading ? <Spinner /> : 'Confirm'}
@@ -337,7 +337,6 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
       <AlertDialogFooter className="bg-background rounded-sm rounded-t-none">
         <AlertDialogCancel
           variant={'secondary'}
-          className="hover:bg-gold/90"
           onClick={(e) => {
             // Go back to the edit view instead of closing the whole dialog.
             e.preventDefault();
@@ -347,7 +346,8 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
           Cancel
         </AlertDialogCancel>
         <AlertDialogAction
-          className={isLoading ? 'bg-destructive/30!' : 'bg-destructive! text-destructive-foreground hover:bg-destructive/80!'}
+          variant="destructive"
+          disabled={isLoading}
           onClick={removeSubcategory}
         >
           {isLoading ? <Spinner /> : 'Confirm'}

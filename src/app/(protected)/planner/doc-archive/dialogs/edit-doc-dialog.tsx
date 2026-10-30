@@ -121,8 +121,8 @@ export default function EditDocDialog({ docs, docToUpdate, onSuccess }: EditDocD
             <IconPicker icons={ICON_LIBRARY} value={newIcon} onChange={setNewIcon} />
           </div>
           <Button
-            variant={'destructive'}
-            className="w-full mt-4 border border-destructive hover:bg-destructive hover:text-destructive-foreground"
+            variant={'ghost-destructive'}
+            className="w-full mt-4"
             onClick={() => {
               setIsDeleteDocActive(true)
             }}
@@ -131,11 +131,11 @@ export default function EditDocDialog({ docs, docToUpdate, onSuccess }: EditDocD
           </Button>
         </AlertDialogHeader>
         <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
-          <AlertDialogCancel variant={'secondary'} className="hover:bg-gold/90">
+          <AlertDialogCancel variant={'secondary'}>
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            className={isLoading ? 'bg-primary/30' : 'bg-primary text-primary-foreground hover:bg-primary/90'}
+            disabled={isLoading}
             onClick={editDoc}
           >
             {isLoading ? <Spinner /> : 'Confirm'}
@@ -157,7 +157,6 @@ export default function EditDocDialog({ docs, docToUpdate, onSuccess }: EditDocD
       <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
         <AlertDialogCancel
           variant={'secondary'}
-          className="hover:bg-gold/90"
           onClick={(e) => {
             // Go back to the edit view instead of closing the whole dialog.
             e.preventDefault();
@@ -167,7 +166,8 @@ export default function EditDocDialog({ docs, docToUpdate, onSuccess }: EditDocD
           Cancel
         </AlertDialogCancel>
         <AlertDialogAction
-          className={isLoading ? 'bg-destructive/30!' : 'bg-destructive! text-destructive-foreground hover:bg-destructive/80!'}
+          variant="destructive"
+          disabled={isLoading}
           onClick={removeDoc}
         >
           {isLoading ? <Spinner /> : 'Confirm'}

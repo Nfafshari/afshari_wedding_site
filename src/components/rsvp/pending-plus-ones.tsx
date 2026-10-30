@@ -42,15 +42,14 @@ export default function PendingPlusOnes ({ parties, onSetPlusOneStatus }: Pendin
               <div className="flex gap-2 ml-auto shrink-0">
                 <Button
                   size={'sm'}
-                  className="bg-olivine text-burg hover:bg-olivine/80"
+                  variant={'outline'}
                   onClick={() => onSetPlusOneStatus(guest, 'APPROVED')}
                 >
                   <Check /> Approve
                 </Button>
                 <Button
                   size={'sm'}
-                  variant={'ghost'}
-                  className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
+                  variant={'ghost-destructive'}
                   onClick={() => onSetPlusOneStatus(guest, 'REJECTED')}
                 >
                   <X /> Reject

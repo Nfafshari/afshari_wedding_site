@@ -42,8 +42,10 @@ export default function Task ({ task, onDelete }: TaskProps) {
       <p className={`${task?.status ? 'line-through' : ''}`}>{task?.name}</p>
       <p className={`text-burg/70 ml-auto ${task?.status ? 'line-through' : ''}`}>{task?.goalDate.toLocaleDateString('en-US', dateOptions)}</p>
       <Button
-        variant={'ghost'}
-        className="text-gold/40  ml-1 p-1 hover:bg-destructive hover:text-background"
+        variant={'ghost-destructive'}
+        size={'icon-sm'}
+        aria-label={`Delete ${task?.name}`}
+        className="ml-1"
         onClick={() => {
           onDelete()
         }}

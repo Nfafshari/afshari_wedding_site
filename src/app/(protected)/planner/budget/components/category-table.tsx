@@ -13,7 +13,7 @@ import {
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import BudgetStatusBadge from "@/components/budget-status-badge";
 import { BudgetStatus } from "@/generated/prisma/enums";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { toCurrency } from "@/lib/utils";
@@ -183,7 +183,8 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                       <Button
                         variant={'ghost'}
                         aria-label={`Edit ${budgetCategory.name}`}
-                        className="ml-2 text-gold/40 p-1 hover:bg-olivine hover:text-background"
+                        size={'icon-sm'}
+                        className="ml-2"
                         onClick={() => {
                           onEditCategory(budgetCategory.id)
                         }}
@@ -197,7 +198,8 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                       <Button
                         variant={'ghost'}
                         aria-label={`Edit ${budgetCategory.name}`}
-                        className="absolute left-0 top-1/2 -translate-y-1/2 text-gold/40 p-1 opacity-0 transition-opacity group-hover/category:opacity-100 focus-visible:opacity-100 hover:bg-olivine hover:text-background active:-translate-y-3.75!"
+                        size={'icon-sm'}
+                        className="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 transition-opacity group-hover/category:opacity-100 focus-visible:opacity-100 active:-translate-y-3.75!"
                         onClick={() => {
                           onEditCategory(budgetCategory.id)
                         }}
@@ -213,9 +215,7 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                   <TableHead className="hidden font-bold text-lg md:table-cell">{toCurrency(totalPaid)}</TableHead>
                   <TableHead className="text-right font-bold md:text-lg">{toCurrency(totalBalance)}</TableHead>
                   <TableHead className="text-right font-bold">
-                  <Badge variant={isCategoryPaid ? 'PAID' : 'DUE'} className="text-lg">
-                    {isCategoryPaid ? 'PAID' : 'DUE'}
-                  </Badge>
+                  <BudgetStatusBadge status={isCategoryPaid ? 'PAID' : 'DUE'} />
                   </TableHead>
                 </TableRow>
               </TableHeader>
@@ -233,7 +233,7 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                     <TableCell colSpan={6}>
                       <Button
                         variant={'ghost'}
-                        className="text-burg/70 text-xs ml-5 hover:bg-burg hover:text-background"
+                        className="text-xs ml-5"
                         onClick={() => {
                           onAddSubcategory(budgetCategory.id)
                         }}

@@ -121,7 +121,7 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
           <div className="flex w-full justify-start mt-2">
             <Button
               variant={'ghost'}
-              className="text-burg/70 ml-5 hover:bg-burg hover:text-background"
+              className="ml-5"
               onClick={() => {
                 setActiveDialog(DialogType.AddItem)
               }}
