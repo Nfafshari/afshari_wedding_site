@@ -40,7 +40,7 @@ export default function Header () {
             Our Story
           </NavButton>
           <NavButton
-            href={'/'}
+            href={'/rsvp'}
             isActive={pathname === '/rsvp'}
           >
             RSVP

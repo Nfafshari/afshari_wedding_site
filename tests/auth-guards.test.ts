@@ -21,6 +21,7 @@ import ts from "typescript";
 const PUBLIC_ACTION_FILES = [
   "src/app/sign-in/action.ts", // you can't require a login to log in
   "src/app/sign-out/action.ts",
+  "src/app/(public)/rsvp/action.ts", // guests are not signed in; guarded by a full-name lookup, server-side re-check of name and invitation, and the response deadline
 ];
 
 /** Route handlers that are intentionally public. */
