@@ -18,7 +18,7 @@ export default function RsvpStats ({ stats }: RsvpStatsProps) {
           <p className="muted-caption pt-2">Parties Awaiting</p>
         </div>
         <div className="flex flex-col w-full h-auto items-center">
-          <p className="stat-number text-olivine">{stats.attending}</p>
+          <p className="stat-number text-olivine-ink">{stats.attending}</p>
           <p className="muted-caption pt-2">Attending</p>
         </div>
         <div className="flex flex-col w-full h-auto items-center border-s-2 border-s-accent">

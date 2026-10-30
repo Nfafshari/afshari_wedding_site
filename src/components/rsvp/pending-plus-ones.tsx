@@ -27,13 +27,13 @@ export default function PendingPlusOnes ({ parties, onSetPlusOneStatus }: Pendin
 
   return (
     <section className="mb-10">
-      <h3 className="text-xl font-bold text-left text-gold">PLUS-ONES AWAITING APPROVAL</h3>
+      <h3 className="text-xl font-bold text-left text-gold-ink">PLUS-ONES AWAITING APPROVAL</h3>
       <ul className="flex flex-col mt-2 border-y border-accent divide-y divide-accent/50">
         {pending.map(({ guest, party }) => (
           <li key={guest.id} className="flex items-center gap-3 py-2 px-2">
             <div className="flex flex-col min-w-0">
               <p className="font-bold text-lg truncate">{guest.name}</p>
-              <p className="text-xs text-accent-foreground truncate">
+              <p className="text-xs text-muted-foreground truncate">
                 with {party.partyName}
                 {guest.dietary ? ` · ${guest.dietary}` : ''}
               </p>
@@ -50,7 +50,7 @@ export default function PendingPlusOnes ({ parties, onSetPlusOneStatus }: Pendin
                 <Button
                   size={'sm'}
                   variant={'ghost'}
-                  className="text-destructive hover:bg-destructive hover:text-white"
+                  className="text-destructive hover:bg-destructive hover:text-destructive-foreground"
                   onClick={() => onSetPlusOneStatus(guest, 'REJECTED')}
                 >
                   <X /> Reject

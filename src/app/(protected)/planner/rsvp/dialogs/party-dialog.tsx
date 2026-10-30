@@ -250,7 +250,7 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
           type="button"
           variant={'ghost'}
           size={'sm'}
-          className="w-fit text-burg/60 hover:bg-burg hover:text-background"
+          className="w-fit text-burg/70 hover:bg-burg hover:text-background"
           onClick={addMember}
         >
           Add guest <CirclePlus />

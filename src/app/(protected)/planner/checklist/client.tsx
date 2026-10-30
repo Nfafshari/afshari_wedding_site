@@ -170,7 +170,7 @@ export default function Checklist({ categories }: ChecklistProps) {
                   <div className="ml-1 px-1 flex items-center">
                     <Button
                       variant={'ghost'}
-                      className="text-burg/40 hover:bg-burg hover:text-background"
+                      className="text-burg/70 hover:bg-burg hover:text-background"
                       onClick={() => {
                         setActiveDialog(DialogType.Task);
                         setActiveCategoryId(category.id);
@@ -194,7 +194,7 @@ export default function Checklist({ categories }: ChecklistProps) {
               )
             })}
             <button
-              className="flex justify-center items-center mx-5 border border-olivine/20 rounded-sm p-2 bg-olivine/5 cursor-pointer text-burg/50 hover:text-burg hover:shadow-sm"
+              className="flex justify-center items-center mx-5 border border-olivine/20 rounded-sm p-2 bg-olivine/5 cursor-pointer text-burg/70 hover:text-burg hover:shadow-sm"
               onClick={() => {
                 setActiveDialog(DialogType.Category)
               }}

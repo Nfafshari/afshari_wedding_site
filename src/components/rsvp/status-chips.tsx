@@ -10,7 +10,7 @@ const ATTENDANCE_LABEL: Record<Attendance, string> = {
 };
 
 const ATTENDANCE_STYLE: Record<Attendance, string> = {
-  PENDING: 'bg-muted/40 text-burg/60',
+  PENDING: 'bg-muted/40 text-burg/70',
   ATTENDING: 'bg-olivine/30 text-burg',
   DECLINED: 'bg-destructive/15 text-destructive',
 };

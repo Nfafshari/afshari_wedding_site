@@ -96,14 +96,14 @@ export default function Planner({
                     const Icon = icon;
                     return (
                       <Link
-                        className="grid grid-rows-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/65 cursor-pointer hover:shadow active:bg-olivine/20"
+                        className="grid grid-rows-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/70 cursor-pointer hover:shadow active:bg-olivine/20"
                         href={'/planner/checklist'}
                         key={task.id}
                       >
                         <p className="text-center text-foreground">{task.name}</p>
                         <div className="flex w-full h-auto justify-center items-center">
                           <Icon
-                            className="w-10 h-10 text-gold"
+                            className="w-10 h-10 text-gold-ink"
                             strokeWidth={1}
                           />
                         </div>
@@ -117,11 +117,11 @@ export default function Planner({
                 <p className="section-title mt-3">Next Tasks:</p>
                 <div className="w-1/2 h-full pt-2 m-1 grid grid-cols-3 gap-3 mt-1">
                   <Link
-                    className="flex col-span-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/65 cursor-pointer hover:shadow active:bg-olivine/20"
+                    className="flex col-span-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/70 cursor-pointer hover:shadow active:bg-olivine/20"
                     href={'/planner/checklist'}
                   >
                     <NextTaskIcon
-                      className="w-10 h-10 mr-5 text-gold"
+                      className="w-10 h-10 mr-5 text-gold-ink"
                       strokeWidth={1}
                     />
                     <div className="mt-1 pr-2">
@@ -133,7 +133,7 @@ export default function Planner({
               </div>
             </>
           ) : (
-            <p className="mt-3 text-center text-burg/60">
+            <p className="mt-3 text-center text-burg/70">
               Nothing due yet —{" "}
               <Link href={'/planner/checklist'} className="underline hover:text-burg">
                 add a task
@@ -160,7 +160,7 @@ export default function Planner({
               <p className="muted-caption pt-2">Parties Responded</p>
             </div>
             <div className="flex flex-col w-full h-auto justify-center items-center md:items-baseline md:pl-5">
-              <p className="stat-number text-olivine">{rsvpStats.attending}</p>
+              <p className="stat-number text-olivine-ink">{rsvpStats.attending}</p>
               <p className="muted-caption text-base pt-2 md:text-lg">Attending</p>
             </div>
             <div className="flex flex-col w-full h-auto border-s-2 border-s-gold/50 justify-center items-center md:items-baseline md:pl-5">

@@ -141,7 +141,7 @@ export default function RsvpForm({ isOpen, deadline }: RsvpFormProps) {
 
         {step.kind === 'done' && (
           <div className={cn(CARD, "flex flex-col items-center text-center")}>
-            <CircleCheck className="w-12 h-12 text-olivine" strokeWidth={1.5} />
+            <CircleCheck className="w-12 h-12 text-success" strokeWidth={1.5} />
             <h2 className="page-subtitle text-2xl mt-2">Thank you!</h2>
             <p className="mt-2">
               {step.summary.attending.length > 0
@@ -165,7 +165,7 @@ export default function RsvpForm({ isOpen, deadline }: RsvpFormProps) {
                 <div className="mt-2">
                   <dt className="font-bold">Additional guests</dt>
                   <dd>{step.summary.plusOnes.join(', ')}</dd>
-                  <dd className="text-burg/60 text-xs mt-1">We&apos;ll confirm any new additional guests with you.</dd>
+                  <dd className="text-burg/70 text-xs mt-1">We&apos;ll confirm any new additional guests with you.</dd>
                 </div>
               )}
             </dl>
@@ -294,14 +294,14 @@ function PartyForm ({ party, lookupName, isOpen, deadline, onStartOver, onDone }
     >
       <div>
         <h2 className="page-subtitle text-2xl">{party.partyName}</h2>
-        <Button type="button" variant={'link'} className="px-0 h-auto text-sm text-burg/60" onClick={onStartOver}>
+        <Button type="button" variant={'link'} className="px-0 h-auto text-sm text-burg/70" onClick={onStartOver}>
           Not you? Search again
         </Button>
       </div>
 
       {isReturning && party.respondedAt && (
         <div role="status" className="flex gap-3 rounded-sm border border-gold bg-gold/15 p-3 text-sm">
-          <CircleAlert className="w-5 h-5 shrink-0 text-gold" />
+          <CircleAlert className="w-5 h-5 shrink-0 text-warning" />
           <p>
             {party.respondedByName ? `${party.respondedByName} already responded` : 'You already responded'} on{' '}
             {party.respondedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.{' '}
@@ -387,7 +387,7 @@ function PartyForm ({ party, lookupName, isOpen, deadline, onStartOver, onDone }
                   onChange={(e) => setSlots((prev) => prev.map((s, i) => (i === idx ? { ...s, name: e.target.value } : s)))}
                 />
                 {slot.status && (
-                  <span className="text-xs text-burg/60">{PLUS_ONE_STATUS_TEXT[slot.status]}</span>
+                  <span className="text-xs text-burg/70">{PLUS_ONE_STATUS_TEXT[slot.status]}</span>
                 )}
               </div>
               <Input

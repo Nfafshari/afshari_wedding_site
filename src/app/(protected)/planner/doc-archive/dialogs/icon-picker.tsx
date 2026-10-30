@@ -59,7 +59,7 @@ export default function IconPicker({ icons, value, onChange }: IconPickerProps) 
             className={`flex aspect-square items-center justify-center rounded-lg border transition-colors outline-none focus-visible:ring-2 focus-visible:ring-olivine focus-visible:ring-offset-2 ${
               isSelected
                 ? 'border-olivine bg-olivine text-popover'
-                : 'border-olivine/40 bg-popover text-olivine hover:border-olivine hover:bg-olivine/10'
+                : 'border-olivine/40 bg-popover text-olivine-ink hover:border-olivine hover:bg-olivine/10'
             }`}
             onClick={() => onChange(iconName)}
           >

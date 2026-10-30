@@ -58,7 +58,7 @@ export default function DocArchive({ docs }: DocArchiveProps) {
                     aria-label={`Open ${doc.name} (PDF, opens in a new tab)`}
                   />
 
-                  <ExternalLink className="absolute top-1 right-1 w-5 h-5 text-accent"/>
+                  <ExternalLink className="absolute top-1 right-1 w-5 h-5 text-gold-ink"/>
 
                   
                   {/* Icon area */}
@@ -89,7 +89,7 @@ export default function DocArchive({ docs }: DocArchiveProps) {
             })}
             {/* Add document button at end of documents list */}
             <button
-              className="flex w-full h-45 justify-center items-center border border-olivine/20 rounded-sm p-2 bg-olivine/5 cursor-pointer text-burg/50 hover:text-burg hover:shadow-sm active:translate-y-px active:-translate-x-px md:h-60 lg:h-80"
+              className="flex w-full h-45 justify-center items-center border border-olivine/20 rounded-sm p-2 bg-olivine/5 cursor-pointer text-burg/70 hover:text-burg hover:shadow-sm active:translate-y-px active:-translate-x-px md:h-60 lg:h-80"
               onClick={() => {
                 setActiveDialog(DialogType.Add)
               }}

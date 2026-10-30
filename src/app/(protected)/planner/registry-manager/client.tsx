@@ -85,7 +85,7 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
               <p className="muted-caption pt-2">Items</p>
             </div>
             <div className="flex flex-col w-full justify-center items-center text-center py-3 pl-2 border-s-2 border-s-gold/50 md:pl-5">
-              <p className="stat-number text-olivine">{fullyClaimedItems}</p>
+              <p className="stat-number text-olivine-ink">{fullyClaimedItems}</p>
               <p className="muted-caption pt-2">Fully Claimed</p>
             </div>
             <div className="flex flex-col w-full justify-center items-center text-center py-3 pl-2 border-s-2 border-s-gold/50 md:pl-5">
@@ -100,7 +100,7 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
         {/** items */}
         <div className="flex flex-col w-full mt-6">
           {registryItems.length === 0 ? (
-            <div className="flex flex-col w-full items-center justify-center gap-2 py-16 text-center text-burg/50">
+            <div className="flex flex-col w-full items-center justify-center gap-2 py-16 text-center text-burg/70">
               <Gift className="w-12 h-12 text-gold/50" strokeWidth={1} />
               <h2 className="page-subtitle text-lg md:text-2xl">Nothing on the registry yet</h2>
               <p className="text-sm text-muted">Add your first item to start tracking who is buying what.</p>
@@ -121,7 +121,7 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
           <div className="flex w-full justify-start mt-2">
             <Button
               variant={'ghost'}
-              className="text-burg/40 ml-5 hover:bg-burg hover:text-background"
+              className="text-burg/70 ml-5 hover:bg-burg hover:text-background"
               onClick={() => {
                 setActiveDialog(DialogType.AddItem)
               }}

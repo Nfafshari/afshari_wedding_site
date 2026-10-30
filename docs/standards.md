@@ -43,7 +43,7 @@ These are enforced by `tests/auth-guards.test.ts`. A Server Action must start wi
 
 ## Styling
 
-Theme colors are defined in `src/app/globals.css` and exposed as Tailwind color tokens: `burg` (= foreground), `cream` (= background), `gold`, `olivine`. Use them as `text-burg`, `bg-cream`, etc. Mobile-first with `md:`/`lg:`. Use existing utility classes (`page-title`, `section-title`, `stat-number`). (The README still describes the older `bg-(--burg)` form; treat the code as correct.)
+Theme colors are defined in `src/app/globals.css` and exposed as Tailwind color tokens: `burg` (= foreground), `cream` (= background), `gold`, `olivine`. Use them as `text-burg`, `bg-cream`, etc. Prefer the semantic roles (`bg-card`, `text-muted-foreground`, `bg-accent`, `text-destructive`); for gold or olivine text and icons on light backgrounds use `text-gold-ink` / `text-olivine-ink`, never the brand shades. No hex values or raw Tailwind palette classes. Every color, role and contrast ratio is shown live at `/planner/ui-kit`. Mobile-first with `md:`/`lg:`. Use existing utility classes (`page-title`, `section-title`, `stat-number`). (The README still describes the older `bg-(--burg)` form; treat the code as correct.)
 
 ## Tests
 

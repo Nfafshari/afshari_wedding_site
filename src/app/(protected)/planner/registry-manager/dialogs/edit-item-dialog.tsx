@@ -331,7 +331,7 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
 
           <Button
             variant={'destructive'}
-            className="w-full mt-4 border border-destructive hover:bg-destructive hover:text-white"
+            className="w-full mt-4 border border-destructive hover:bg-destructive hover:text-destructive-foreground"
             onClick={() => {
               setIsDeleteItemActive(true);
             }}
@@ -390,7 +390,7 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
           // Disabled rather than letting them click into a server error we can already
           // see coming. The action re-checks regardless; this is just courtesy.
           disabled={isLoading || hasClaims}
-          className={(isLoading || hasClaims) ? 'bg-destructive/30!' : 'bg-destructive! text-white hover:bg-destructive/80!'}
+          className={(isLoading || hasClaims) ? 'bg-destructive/30!' : 'bg-destructive! text-destructive-foreground hover:bg-destructive/80!'}
           onClick={removeItem}
         >
           {isLoading ? <Spinner /> : 'Confirm'}

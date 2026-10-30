@@ -103,7 +103,7 @@ export default function Rsvp({ invitations }: RsvpProps) {
         <hr className="mb-5 mt-2 bg-accent md:my-5" />
 
         {invitations.length === 0 ? (
-          <div className="flex flex-col w-full items-center justify-center gap-2 py-16 text-center text-burg/50">
+          <div className="flex flex-col w-full items-center justify-center gap-2 py-16 text-center text-burg/70">
             <Users className="w-12 h-12 text-gold/50" strokeWidth={1} />
             <h2 className="page-subtitle text-lg md:text-2xl">No one on the guest list yet</h2>
             <p className="text-sm text-muted">Add a party below, or import your whole list from a CSV.</p>
@@ -112,7 +112,7 @@ export default function Rsvp({ invitations }: RsvpProps) {
           <>
             <PendingPlusOnes parties={invitations} onSetPlusOneStatus={onSetPlusOneStatus} />
 
-            <h3 className="text-xl font-bold text-left text-olivine">ATTENDING</h3>
+            <h3 className="text-xl font-bold text-left text-olivine-ink">ATTENDING</h3>
             <RsvpTable parties={attending} emptyMessage="No one has said yes yet." {...handlers} />
 
             <h3 className="text-xl font-bold text-left text-destructive mt-10">DECLINED</h3>
@@ -127,7 +127,7 @@ export default function Rsvp({ invitations }: RsvpProps) {
         <div className="flex w-full justify-start gap-2 mt-4">
           <Button
             variant={'ghost'}
-            className="text-burg/40 ml-5 hover:bg-burg hover:text-background"
+            className="text-burg/70 ml-5 hover:bg-burg hover:text-background"
             onClick={() => {
               setActiveDialog(DialogType.AddParty);
             }}
@@ -137,7 +137,7 @@ export default function Rsvp({ invitations }: RsvpProps) {
           </Button>
           <Button
             variant={'ghost'}
-            className="text-burg/40 hover:bg-burg hover:text-background"
+            className="text-burg/70 hover:bg-burg hover:text-background"
             onClick={() => {
               setActiveDialog(DialogType.ImportGuests);
             }}

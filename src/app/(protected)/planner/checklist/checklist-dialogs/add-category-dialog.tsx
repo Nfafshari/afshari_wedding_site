@@ -94,7 +94,7 @@ export default function AddCategoryDialog({ categories, onSuccess }: AddCategory
               return (
                 <Button
                   variant={'outline'}
-                  className={`bg-popover border-olivine text-olivine hover:bg-olivine hover:text-background ${activeIcon === icon.displayName ? 'bg-olivine text-background' : 'bg-popover'}`}
+                  className={`bg-popover border-olivine text-olivine-ink hover:bg-olivine hover:text-background ${activeIcon === icon.displayName ? 'bg-olivine text-background' : 'bg-popover'}`}
                   key={idx}
                   onClick={() => {
                     setActiveIcon(icon.displayName ?? '')

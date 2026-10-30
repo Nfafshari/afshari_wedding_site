@@ -110,7 +110,7 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
                   return (
                     <Button
                       variant={'outline'}
-                      className={`bg-popover border-olivine text-olivine hover:bg-olivine hover:text-background ${newIcon === icon.displayName ? 'bg-olivine text-background' : 'bg-popover'}`}
+                      className={`bg-popover border-olivine text-olivine-ink hover:bg-olivine hover:text-background ${newIcon === icon.displayName ? 'bg-olivine text-background' : 'bg-popover'}`}
                       key={idx}
                       onClick={() => {
                         setNewIcon(icon.displayName ?? '')
@@ -125,7 +125,7 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
           </div>
           <Button
             variant={'destructive'}
-            className={`w-full mt-4 border border-destructive hover:bg-destructive hover:text-white`}
+            className={`w-full mt-4 border border-destructive hover:bg-destructive hover:text-destructive-foreground`}
             onClick={() => {
               setIsDeleteCategoryActive(true)
             }}
@@ -168,7 +168,7 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            className={isLoading ? 'bg-destructive/30!' : 'bg-destructive! text-white hover:bg-destructive/80!'}
+            className={isLoading ? 'bg-destructive/30!' : 'bg-destructive! text-destructive-foreground hover:bg-destructive/80!'}
             onClick={removeCategory}
           >
             {isLoading ? <Spinner /> : 'Confirm'}

@@ -68,9 +68,9 @@ export function StackedProgressBar ({ limits, legend }: StackedProgressBarProps)
       <div className="relative mx-1.5 mb-2 h-4 rounded-xs bg-muted">
         <div className='absolute left-0 top-0 h-full rounded-xs' style={{ width: `${primaryBarPercentage}%`, backgroundColor: legend.primary.color, zIndex: `${legend.secondary.value > legend.primary.value ? 15 : 5}` }} />
         <div className='absolute z-10 left-0 top-0 h-full rounded-xs' style={{ width: `${secondaryBarPercentage}%`, backgroundColor: legend.secondary.color }} />
-        <div className="absolute z-20 -top-1.5 h-8 w-0.5 bg-black border border-accent" style={{ left: `${targetPercentage}%` }} />
-        <div className="absolute z-20 -top-1.5 left-0 h-8 w-0.5 bg-black border border-accent" />
-        <div className="absolute z-20 -top-1.5 right-0 h-8 w-0.5 bg-black border border-accent" />
+        <div className="absolute z-20 -top-1.5 h-8 w-0.5 bg-foreground border border-accent" style={{ left: `${targetPercentage}%` }} />
+        <div className="absolute z-20 -top-1.5 left-0 h-8 w-0.5 bg-foreground border border-accent" />
+        <div className="absolute z-20 -top-1.5 right-0 h-8 w-0.5 bg-foreground border border-accent" />
       </div>
 
       {/** labels */}
@@ -79,7 +79,7 @@ export function StackedProgressBar ({ limits, legend }: StackedProgressBarProps)
       <div className="absolute text-sm right-1.5 translate-x-1/2" >${compactNumber(limits.cap)}</div>
     
       {/** Keys */}
-      <div className="flex mt-8 ml-1.5 gap-8 text-sm text-accent-foreground">
+      <div className="flex mt-8 ml-1.5 gap-8 text-sm text-muted-foreground">
         <div className="flex items-center tracking-wide">
           <div className='w-2 h-2 mr-2 rounded-xs' style={{ backgroundColor: legend.primary.color }} />
           <p>{legend.primary.label} • ${compactNumber(legend.primary.value)}</p>

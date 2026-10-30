@@ -115,7 +115,7 @@ export default function EditCategoryDialog({ budgetCategories, categoryToUpdate,
           </Field>
           <Button
             variant={'destructive'}
-            className="w-full mt-4 border border-destructive hover:bg-destructive hover:text-white"
+            className="w-full mt-4 border border-destructive hover:bg-destructive hover:text-destructive-foreground"
             onClick={() => {
               setIsDeleteCategoryActive(true)
             }}
@@ -160,7 +160,7 @@ export default function EditCategoryDialog({ budgetCategories, categoryToUpdate,
           Cancel
         </AlertDialogCancel>
         <AlertDialogAction
-          className={isLoading ? 'bg-destructive/30!' : 'bg-destructive! text-white hover:bg-destructive/80!'}
+          className={isLoading ? 'bg-destructive/30!' : 'bg-destructive! text-destructive-foreground hover:bg-destructive/80!'}
           onClick={removeCategory}
         >
           {isLoading ? <Spinner /> : 'Confirm'}

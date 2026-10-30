@@ -48,7 +48,7 @@ export default function RemoveSubcategoryDialog({ subcategoryToRemove, onSuccess
           Cancel
         </AlertDialogCancel>
         <AlertDialogAction
-          className={isLoading ? 'bg-destructive/30!' : 'bg-destructive! text-white hover:bg-destructive/90!'}
+          className={isLoading ? 'bg-destructive/30!' : 'bg-destructive! text-destructive-foreground hover:bg-destructive/90!'}
           onClick={removeSubcategory}
         >
           {isLoading ? <Spinner /> : 'Confirm'}

@@ -25,7 +25,7 @@ export default function RegistryCard({ registryItems }: RegistryCardProps) {
         <p className="section-title pr-2">Registry Manager</p>
         <Link
           href={'/planner/budget'}
-          className="flex items-center text-sm text-burg/60 whitespace-nowrap hover:text-burg"
+          className="flex items-center text-sm text-burg/70 whitespace-nowrap hover:text-burg"
         >
           <span className="underline">View Registry</span>
           <ChevronRight className="w-3.5 h-3.5" />
@@ -34,10 +34,10 @@ export default function RegistryCard({ registryItems }: RegistryCardProps) {
 
       {totalItems === 0 ? (
         <div className="flex flex-col flex-1 gap-3 items-center justify-center py-6">
-          <p className="text-center text-sm text-burg/60">Nothing on the registry yet.</p>
+          <p className="text-center text-sm text-burg/70">Nothing on the registry yet.</p>
           <Link
             href={'/planner/registry-manager'}
-            className="text-sm underline text-burg/60 hover:text-burg"
+            className="text-sm underline text-burg/70 hover:text-burg"
           >
             Add your first item
           </Link>
@@ -57,11 +57,11 @@ export default function RegistryCard({ registryItems }: RegistryCardProps) {
           />
 
           {latestClaim && (
-            <p className="text-center text-sm text-burg/60">
+            <p className="text-center text-sm text-burg/70">
               <span className="font-bold text-burg/80">{latestClaim.claimedBy}</span>
               {' claimed '}
               <span className="font-bold text-burg/80">{latestClaim.itemName}</span>
-              <span className="text-burg/40"> · {latestClaim.createdAt.toLocaleDateString()}</span>
+              <span className="text-burg/70"> · {latestClaim.createdAt.toLocaleDateString()}</span>
             </p>
           )}
         </div>
