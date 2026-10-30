@@ -134,7 +134,7 @@ Bloat is allowed as a finding only when its `rule` quotes the Anti-bloat section
 
 ## Step 5: print the report
 
-Print exactly the report in [report-format.md](report-format.md). Leave out empty sections, except Issue alignment, Declined to judge, and Lenses. If nothing survived verification, say "No issues found" plainly; never invent a finding to fill the template.
+Print exactly the report in [report-format.md](report-format.md). In pre-PR mode, follow it with the draft PR description defined there; in PR mode, print no draft. Leave out empty sections, except Issue alignment, Declined to judge, and Lenses. If nothing survived verification, say "No issues found" plainly; never invent a finding to fill the template.
 
 ## Install (the lenses call these)
 
