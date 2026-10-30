@@ -104,7 +104,7 @@ export default function ImportGuestsDialog({ onSuccess }: ImportGuestsDialogProp
           id="guest-csv"
           type="file"
           accept=".csv,text/csv"
-          className={`bg-popover text-burg rounded-sm cursor-pointer ${hasError ? 'border-destructive' : 'border-input'}`}
+          className={`text-burg rounded-sm cursor-pointer ${hasError ? 'border-destructive' : 'border-input'}`}
           onChange={(e) => onFileChosen(e.target.files?.[0])}
         />
         {fileError && <p className="text-destructive/80 text-xs">{fileError}</p>}

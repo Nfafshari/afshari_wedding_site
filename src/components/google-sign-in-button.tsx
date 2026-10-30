@@ -30,8 +30,8 @@ const googleSignInButtonVariants = cva(
         dark: "border-[#8e918f] bg-[#131314] text-[#e3e3e3] before:bg-white",
       },
       shape: {
-        rectangular: "rounded",
-        square: "rounded",
+        rectangular: "rounded-sm",
+        square: "rounded-sm",
         pill: "rounded-[20px]",
         circle: "rounded-full",
       },

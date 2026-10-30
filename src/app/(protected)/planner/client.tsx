@@ -70,11 +70,11 @@ export default function Planner({
 
 
   return (
-    <div className="flex flex-col w-full min-h-5/6 items-center font-serif">
+    <div className="flex flex-col w-full min-h-5/6 items-center">
       <h1 className="page-title p-2 pb-0"> Sept. 11th 2027 </h1>
       <h2 className="page-subtitle p-2 pt-0"> {daysTilWedding} Days to &ldquo;I Do&rdquo; </h2>
       <div className="flex-col w-full h-auto">
-        <div className="flex flex-col items-center w-full h-full pt-2 font-serif">
+        <div className="flex flex-col items-center w-full h-full pt-2">
           <Field className="w-2/3">
             <FieldLabel htmlFor="task-progress" className="text-burg/70 font-bold">
               <span className="section-title">Checklist Progress</span>
@@ -96,7 +96,7 @@ export default function Planner({
                     const Icon = icon;
                     return (
                       <Link
-                        className="grid grid-rows-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/70 cursor-pointer hover:shadow active:bg-olivine/20"
+                        className="grid grid-rows-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/70 cursor-pointer hover:shadow-sm active:bg-olivine/20"
                         href={'/planner/checklist'}
                         key={task.id}
                       >
@@ -117,7 +117,7 @@ export default function Planner({
                 <p className="section-title mt-3">Next Tasks:</p>
                 <div className="w-1/2 h-full pt-2 m-1 grid grid-cols-3 gap-3 mt-1">
                   <Link
-                    className="flex col-span-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/70 cursor-pointer hover:shadow active:bg-olivine/20"
+                    className="flex col-span-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/70 cursor-pointer hover:shadow-sm active:bg-olivine/20"
                     href={'/planner/checklist'}
                   >
                     <NextTaskIcon
@@ -148,7 +148,7 @@ export default function Planner({
         <p className="uppercase tracking-[0.16em]">RSVPs</p>
         <Link 
           href={'/planner/rsvp'}
-          className="w-full h-full border-2 border-s-0 border-e-0 border-gold/50 hover:shadow cursor-pointer"
+          className="w-full h-full border-2 border-s-0 border-e-0 border-gold/50 hover:shadow-sm cursor-pointer"
         >
           <div className="grid grid-cols-2 h-full md:grid-cols-4">
             <div className="hidden flex-col w-full h-auto border-e-2 border-e-gold/50 justify-center pl-5 md:flex">

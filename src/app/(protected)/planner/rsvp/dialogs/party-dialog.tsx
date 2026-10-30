@@ -194,7 +194,7 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
           type="text"
           placeholder="The Okafors"
           value={partyName}
-          className={`bg-popover text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.partyName || serverErrorField === 'partyName') ? 'border-destructive' : 'border-input'}`}
+          className={`text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.partyName || serverErrorField === 'partyName') ? 'border-destructive' : 'border-input'}`}
           onChange={(e) => {
             setPartyName(e.target.value);
             // Typing clears any previous error so the user gets a fresh start.
@@ -229,7 +229,7 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
                 aria-label={`Guest ${idx + 1} name`}
                 placeholder="Grace Okafor"
                 value={member.name}
-                className={`bg-popover text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.members || serverErrorField === 'members') ? 'border-destructive' : 'border-input'}`}
+                className={`text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.members || serverErrorField === 'members') ? 'border-destructive' : 'border-input'}`}
                 onChange={(e) => updateMember(member.key, e.target.value)}
               />
               <Button
@@ -267,7 +267,7 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
           inputMode="numeric"
           placeholder="0"
           value={plusOnesAllowed}
-          className={`bg-popover text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.plusOnesAllowed || serverErrorField === 'plusOnesAllowed') ? 'border-destructive' : 'border-input'}`}
+          className={`text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.plusOnesAllowed || serverErrorField === 'plusOnesAllowed') ? 'border-destructive' : 'border-input'}`}
           onChange={(e) => {
             setPlusOnesAllowed(e.target.value);
             if (e.target.value.trim() !== '') {

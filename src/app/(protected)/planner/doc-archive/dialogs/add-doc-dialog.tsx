@@ -149,7 +149,7 @@ export default function AddDocDialog({ docs, onSuccess }: AddDocDialogProps) {
           id="document-name"
           type="text"
           placeholder="Document"
-          className={`bg-popover text-burg rounded-sm ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+          className={`text-burg rounded-sm ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
           onChange={(e) => {
             setDocName(e.target.value);
             // Typing clears any previous error so the user gets a fresh start.
@@ -175,7 +175,7 @@ export default function AddDocDialog({ docs, onSuccess }: AddDocDialogProps) {
           id="document-company"
           type="text"
           placeholder="Company"
-          className={`bg-popover text-burg rounded-sm ${(fieldErrors.companyName || serverErrorField === 'companyName') ? 'border-destructive' : 'border-input'}`}
+          className={`text-burg rounded-sm ${(fieldErrors.companyName || serverErrorField === 'companyName') ? 'border-destructive' : 'border-input'}`}
           onChange={(e) => {
             setCompanyName(e.target.value);
             if (e.target.value.trim() !== '') {

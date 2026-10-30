@@ -17,7 +17,7 @@ export default function SignOut () {
             action={signOff}
           >
           <Button 
-            className="mt-3 mb-2 w-full text-lg shadow bg-destructive border-b-3 border-b-burgundy-900 text-destructive-foreground hover:bg-destructive/70 active:border-b-2 active:translate-y-0.5 active:-translate-x-px"
+            className="mt-3 mb-2 w-full text-lg shadow-sm bg-destructive border-b-3 border-b-burgundy-900 text-destructive-foreground hover:bg-destructive/70 active:border-b-2 active:translate-y-0.5 active:-translate-x-px"
             variant={'destructive'}
             size={'lg'}
           >

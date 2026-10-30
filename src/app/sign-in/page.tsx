@@ -45,11 +45,11 @@ export default async function SignIn ({ searchParams }: { searchParams: Promise<
             </form>
             <p className="my-0.5 text-center text-lg text-muted-foreground">or</p>
             <Input 
-              className="w-full h-10 bg-muted/5"
+              className="w-full h-10"
               placeholder="Email"
             />
             <Input 
-              className="w-full h-10 bg-muted/5"
+              className="w-full h-10"
               placeholder="Password"
               type="password"
             />

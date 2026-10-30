@@ -69,7 +69,7 @@ export default function AddCategoryDialog({ budgetCategories, onSuccess }: AddCa
           id="category-name"
           type="text"
           placeholder="Category"
-          className={`bg-popover text-burg rounded-sm ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+          className={`text-burg rounded-sm ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
           onChange={(e) => {
             setCategoryName(e.target.value);
             // Typing clears any previous error so the user gets a fresh start.

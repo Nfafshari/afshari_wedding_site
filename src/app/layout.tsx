@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Pinyon_Script, IM_Fell_Great_Primer, Herr_Von_Muellerhoff } from "next/font/google";
+import { Geist, Geist_Mono, Pinyon_Script, Cormorant_Garamond, Herr_Von_Muellerhoff } from "next/font/google";
 import { Viewport } from "next";
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -31,10 +31,11 @@ const herrVon = Herr_Von_Muellerhoff({
   weight: "400"
 });
 
-const imFellGreat = IM_Fell_Great_Primer({
-  variable: "--font-im-fell",
+// Headings, titles and stat numbers (the type @utility classes in globals.css).
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["latin"],
-  weight: "400"
+  weight: ["500", "600", "700"]
 });
 
 export const metadata: Metadata = {
@@ -58,7 +59,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${pinyon.variable} ${herrVon.variable} ${imFellGreat.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${pinyon.variable} ${herrVon.variable} ${cormorant.variable} h-full antialiased`}
     >
       <body className="h-full flex flex-col">
         <SidebarProvider>
