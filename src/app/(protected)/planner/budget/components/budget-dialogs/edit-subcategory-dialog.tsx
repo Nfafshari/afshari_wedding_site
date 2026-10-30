@@ -5,16 +5,8 @@ import { useState } from "react";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
-import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import ConfirmDialog from "@/components/confirm-dialog";
+import FormDialog from "@/components/form-dialog";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 
 import { updateBudgetSubcategory, deleteBudgetSubcategory, type ErrorField, type BudgetSubcategoryInput } from "../../action";
@@ -41,14 +33,12 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
   const [newPaidAmount, setNewPaidAmount] = useState(toAmount(subcategoryToUpdate.paidAmount));
   const [newStatus, setNewStatus] = useState<BudgetStatus>(subcategoryToUpdate.status)
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<ErrorField, string>>>({});
-  const [isDeleteSubcategoryActive, setIsDeleteSubcategoryActive] = useState(false);   // Flips this dialog between the "edit" view and the "confirm delete" view.
+  const [isDeleteSubcategoryActive, setIsDeleteSubcategoryActive] = useState(false);   // Opens the delete confirmation on top of the edit form.
 
   const { isLoading, serverError, serverErrorField, clearServerError, runAction } = useDialogSubmit<ErrorField>(onSuccess);
 
-  async function editSubcategory(event: React.MouseEvent) {
-    // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
-    event.preventDefault();
-
+  // FormDialog has already called preventDefault, so this just runs our logic.
+  async function editSubcategory() {
     // Validate every field into one local object, then gate on it
     const errors: Partial<Record<ErrorField, string>> = {};
 
@@ -101,7 +91,7 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
     }
 
     // Send it. Server-side field errors surface via serverError / serverErrorField.
-    await runAction("Subcategory updated", () => updateBudgetSubcategory(subcategoryToUpdate.id, payload));
+    await runAction("Subcategory saved", () => updateBudgetSubcategory(subcategoryToUpdate.id, payload));
   }
 
   /**
@@ -160,25 +150,27 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
     return null;
   }
 
-  async function removeSubcategory(event: React.MouseEvent) {
-    // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
-    event.preventDefault();
-
-    await runAction("Subcategory removed", () => deleteBudgetSubcategory(subcategoryToUpdate.id));
+  async function removeSubcategory() {
+    await runAction("Subcategory deleted", () => deleteBudgetSubcategory(subcategoryToUpdate.id));
   }
 
-  if (!isDeleteSubcategoryActive) {
-    return (
-      <AlertDialogContent id="edit-subcategory-dialog" className="bg-popover rounded-sm">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="page-title border-b border-b-burg w-full">Edit <span className="font-bold">{subcategoryToUpdate.name}</span>?</AlertDialogTitle>
+  return (
+    <>
+      <FormDialog
+        id="edit-subcategory-dialog"
+        title={`Edit ${subcategoryToUpdate.name}`}
+        submitLabel="Save changes"
+        isLoading={isLoading && !isDeleteSubcategoryActive}
+        error={!isDeleteSubcategoryActive && serverError && !serverErrorField ? serverError : undefined}
+        onSubmit={editSubcategory}
+      >
           <Field className="flex w-full text-burg">
             <FieldLabel htmlFor="edit-subcategory-name">New Subcategory Name</FieldLabel>
             <Input
               id="edit-subcategory-name"
               type="text"
               value={newName}
-              className={`text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+              aria-invalid={Boolean(fieldErrors.name || serverErrorField === 'name')}
               onChange={(e) => {
                 setNewName(e.target.value);
                 // Typing clears any previous error so the user gets a fresh start.
@@ -202,9 +194,10 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
 
           <Field className="flex w-full text-burg mt-2">
             <FieldLabel htmlFor="subcategory-estimate">Estimated Cost</FieldLabel>
-            <InputGroup className={`text-burg ${(fieldErrors.estimatedCost || serverErrorField === 'estimatedCost') ? 'border-destructive' : 'border-input'}`}>
+            <InputGroup>
               <InputGroupAddon>$</InputGroupAddon>
               <InputGroupInput
+            aria-invalid={Boolean(fieldErrors.estimatedCost || serverErrorField === 'estimatedCost')}
                 id="subcategory-estimate"
                 type="text"
                 inputMode="decimal"
@@ -239,9 +232,10 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
 
           <Field className="flex w-full text-burg mt-2">
             <FieldLabel htmlFor="subcategory-paid">Amount Paid</FieldLabel>
-            <InputGroup className={`text-burg ${(fieldErrors.paidAmount || serverErrorField === 'paidAmount') ? 'border-destructive' : 'border-input'}`}>
+            <InputGroup>
               <InputGroupAddon>$</InputGroupAddon>
               <InputGroupInput
+            aria-invalid={Boolean(fieldErrors.paidAmount || serverErrorField === 'paidAmount')}
                 id="subcategory-paid"
                 type="text"
                 inputMode="decimal"
@@ -301,58 +295,26 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
           </Field>
 
           <Button
+            type="button"
             variant={'ghost-destructive'}
-            className="w-full mt-4"
+            className="w-full"
             onClick={() => {
+              clearServerError();
               setIsDeleteSubcategoryActive(true)
             }}
           >
-            Delete &ldquo;{subcategoryToUpdate.name}&rdquo;?
+            Delete {subcategoryToUpdate.name}
           </Button>
-        </AlertDialogHeader>
-        <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
-          <AlertDialogCancel variant={'secondary'}>
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
-            disabled={isLoading}
-            onClick={editSubcategory}
-          >
-            {isLoading ? <Spinner /> : 'Confirm'}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    );
-  }
-
-  return (
-    <AlertDialogContent id="delete-subcategory-dialog" className="bg-popover rounded-sm">
-      <AlertDialogHeader>
-        <AlertDialogTitle className="page-title border-b border-b-burg w-full text-destructive">Delete <span className="font-bold">{subcategoryToUpdate.name}</span>?</AlertDialogTitle>
-        <AlertDialogDescription className="text-destructive">
-          You are about to delete {subcategoryToUpdate.name}. This cannot be undone. Do you wish to continue?
-        </AlertDialogDescription>
-        {serverError && <p className="text-destructive/80 text-xs">{serverError}</p>}
-      </AlertDialogHeader>
-      <AlertDialogFooter className="bg-background rounded-sm rounded-t-none">
-        <AlertDialogCancel
-          variant={'secondary'}
-          onClick={(e) => {
-            // Go back to the edit view instead of closing the whole dialog.
-            e.preventDefault();
-            setIsDeleteSubcategoryActive(false);
-          }}
-        >
-          Cancel
-        </AlertDialogCancel>
-        <AlertDialogAction
-          variant="destructive"
-          disabled={isLoading}
-          onClick={removeSubcategory}
-        >
-          {isLoading ? <Spinner /> : 'Confirm'}
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
+      </FormDialog>
+      <ConfirmDialog
+        open={isDeleteSubcategoryActive}
+        onOpenChange={setIsDeleteSubcategoryActive}
+        title={`Delete ${subcategoryToUpdate.name}?`}
+        description="You can't undo this."
+        isLoading={isLoading}
+        error={serverError || undefined}
+        onConfirm={removeSubcategory}
+      />
+    </>
   );
 }

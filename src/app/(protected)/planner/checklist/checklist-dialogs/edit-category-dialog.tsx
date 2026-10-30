@@ -7,16 +7,8 @@ import { LucideIcon } from "lucide-react";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
-import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import ConfirmDialog from "@/components/confirm-dialog";
+import FormDialog from "@/components/form-dialog";
 
 import { updateCategory, deleteCategory, type ErrorField } from "@/app/(protected)/planner/checklist/action";
 import type { CategoryWithTasks } from "@/app/(protected)/planner/checklist/page";
@@ -41,14 +33,13 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
   const [newIcon, setNewIcon] = useState('Astroid');
   const [isEmptyInput, setIsEmptyInput] = useState(false);
   const [isUniqueCategory, setIsUniqueCategory] = useState(true);
+  // Opens the delete confirmation on top of the edit form.
   const [isDeleteCategoryActive, setIsDeleteCategoryActive] = useState(false);
 
   const { isLoading, serverError, serverErrorField, clearServerError, runAction } = useDialogSubmit<ErrorField>(onSuccess);
 
-  async function editCategory(event: React.MouseEvent) {
-    // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
-    event.preventDefault();
-
+  // FormDialog has already called preventDefault, so this just runs our logic.
+  async function editCategory() {
     // Client-side checks for instant feedback (the server re-checks these too).
     if (newCategoryName.trim() === '') {
       setIsEmptyInput(true);
@@ -65,117 +56,88 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
         }
     }
 
-    await runAction("Category updated", () => updateCategory(categoryToUpdate?.id, newCategoryName, newIcon));
+    await runAction("Category saved", () => updateCategory(categoryToUpdate?.id, newCategoryName, newIcon));
   }
 
-  async function removeCategory(event: React.MouseEvent) {
-    // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
-    event.preventDefault();
-
-    await runAction("Category removed", () => deleteCategory(categoryToUpdate?.id));
+  async function removeCategory() {
+    await runAction("Category deleted", () => deleteCategory(categoryToUpdate?.id));
   }
 
-  if (!isDeleteCategoryActive) {
-    return (
-      <AlertDialogContent id="add-category-dialog" className="bg-popover rounded-sm">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="page-title border-b border-b-burg w-full">Edit <span className="font-bold">{categoryToUpdate?.name}</span>?</AlertDialogTitle>
-          <Field className="flex w-full text-burg">
-            <FieldLabel htmlFor="category-name">New Category Name</FieldLabel>
-            <Input
-              id="category-name"
-              type="text"
-              placeholder={categoryToUpdate?.name}
-              className={`text-burg rounded-sm placeholder:text-muted-foreground ${(isEmptyInput || !isUniqueCategory || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
-              onChange={(e) => {
-                setNewCategoryName(e.target.value);
-                // Typing clears any previous error so the user gets a fresh start.
-                if (e.target.value !== '') {
-                  setIsEmptyInput(false);
-                }
-                setIsUniqueCategory(true);
-                clearServerError();
-              }}
-            />
-            {isEmptyInput && <p className="text-destructive/80 text-xs">Category name cannot be empty</p>}
-            {!isUniqueCategory && <p className="text-destructive/80 text-xs">Category already exists!</p>}
-            {serverError && <p className="text-destructive/80 text-xs">{serverError}</p>}
-          </Field>
-          <div className="flex flex-col w-full items-start mt-2 text-burg">
-            Icon:
-            <div className="h-30 w-full overflow-y overflow-y-scroll">
-              <div className="grid grid-cols-3 grid-rows-3 gap-1 w-full">
-                {ICON_LIBRARY.map((icon, idx) => {
-                  const Icon = icon;
-                  return (
-                    <Button
-                      variant={'outline'}
-                      aria-pressed={newIcon === icon.displayName}
-                  aria-label={icon.displayName}
-                      key={idx}
-                      onClick={() => {
-                        setNewIcon(icon.displayName ?? '')
-                      }}
-                    >
-                      <Icon />
-                    </Button>
-                  )
-                })}
-              </div>
+  return (
+    <>
+      <FormDialog
+        id="edit-category-dialog"
+        title={`Edit ${categoryToUpdate?.name ?? "Category"}`}
+        submitLabel="Save changes"
+        isLoading={isLoading && !isDeleteCategoryActive}
+        onSubmit={editCategory}
+      >
+        <Field className="flex w-full text-burg">
+          <FieldLabel htmlFor="category-name">New Category Name</FieldLabel>
+          <Input
+            id="category-name"
+            type="text"
+            placeholder={categoryToUpdate?.name}
+            aria-invalid={Boolean(isEmptyInput || !isUniqueCategory || serverErrorField === 'name')}
+            onChange={(e) => {
+              setNewCategoryName(e.target.value);
+              // Typing clears any previous error so the user gets a fresh start.
+              if (e.target.value !== '') {
+                setIsEmptyInput(false);
+              }
+              setIsUniqueCategory(true);
+              clearServerError();
+            }}
+          />
+          {isEmptyInput && <p className="text-destructive/80 text-xs">Category name cannot be empty</p>}
+          {!isUniqueCategory && <p className="text-destructive/80 text-xs">Category already exists!</p>}
+          {serverError && !isDeleteCategoryActive && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        </Field>
+        <div className="flex flex-col w-full items-start text-burg">
+          Icon:
+          <div className="h-30 w-full overflow-y overflow-y-scroll">
+            <div className="grid grid-cols-3 grid-rows-3 gap-1 w-full">
+              {ICON_LIBRARY.map((icon, idx) => {
+                const Icon = icon;
+                return (
+                  <Button
+                    type="button"
+                    variant={'outline'}
+                    aria-pressed={newIcon === icon.displayName}
+                    aria-label={icon.displayName}
+                    key={idx}
+                    onClick={() => {
+                      setNewIcon(icon.displayName ?? '')
+                    }}
+                  >
+                    <Icon />
+                  </Button>
+                )
+              })}
             </div>
           </div>
-          <Button
-            variant={'ghost-destructive'}
-            className="w-full mt-4"
-            onClick={() => {
-              setIsDeleteCategoryActive(true)
-            }}
-          >
-            Delete {categoryToUpdate?.name}?
-          </Button>
-        </AlertDialogHeader>
-        <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
-          <AlertDialogCancel variant={'secondary'}>
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
-            disabled={isLoading}
-            onClick={editCategory}
-          >
-            {isLoading ? <Spinner /> : 'Confirm'}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    );
-  } else {
-    return (
-      <AlertDialogContent id="add-category-dialog" className="bg-popover rounded-sm">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="page-title border-b border-b-burg w-full text-destructive">Delete <span className="font-bold">{categoryToUpdate?.name}</span>?</AlertDialogTitle>
-          <AlertDialogDescription className="text-destructive">
-            You are about to delete {categoryToUpdate?.name}, this will delete the category as well as all tasks within the category. Do you wish to continue?
-          </AlertDialogDescription>
-          {serverError && <p className="text-destructive/80 text-xs">{serverError}</p>}
-        </AlertDialogHeader>
-        <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
-          <AlertDialogCancel
-            variant={'secondary'}
-            onClick={(e) => {
-              setIsDeleteCategoryActive(false)
-              e.preventDefault();
-            }}
-          >
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
-            variant="destructive"
-          disabled={isLoading}
-            onClick={removeCategory}
-          >
-            {isLoading ? <Spinner /> : 'Confirm'}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    );
-  }
+        </div>
+        <Button
+          type="button"
+          variant={'ghost-destructive'}
+          className="w-full"
+          onClick={() => {
+            clearServerError();
+            setIsDeleteCategoryActive(true)
+          }}
+        >
+          Delete {categoryToUpdate?.name}
+        </Button>
+      </FormDialog>
+      <ConfirmDialog
+        open={isDeleteCategoryActive}
+        onOpenChange={setIsDeleteCategoryActive}
+        title={`Delete ${categoryToUpdate?.name}?`}
+        description="This also deletes every task in it. You can't undo this."
+        isLoading={isLoading}
+        error={serverError || undefined}
+        onConfirm={removeCategory}
+      />
+    </>
+  );
 }

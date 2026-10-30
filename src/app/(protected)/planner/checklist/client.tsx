@@ -8,7 +8,7 @@ import { Field, FieldLabel } from "@/components/ui/field";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button"
 import FilterButton from "@/components/filter-button";
-import { AlertDialog } from "@/components/ui/alert-dialog"
+import { Dialog } from "@/components/ui/dialog"
 import AddCategoryDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/add-category-dialog";
 import AddTaskDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/add-task-dialog";
 import EditCategoryDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/edit-category-dialog";
@@ -78,8 +78,9 @@ export default function Checklist({ categories }: ChecklistProps) {
   }
 
   return (
-    <AlertDialog
-      open={activeDialog !== DialogType.None}
+    <Dialog
+      // Form dialogs share this root. Delete confirmations bring their own (ConfirmDialog).
+      open={activeDialog !== DialogType.None && activeDialog !== DialogType.Delete}
       onOpenChange={(open) => {
         // Radix calls this with the *next* open state. Only act on close.
         if (!open) {
@@ -236,8 +237,9 @@ export default function Checklist({ categories }: ChecklistProps) {
         <RemoveTaskDialog
           taskToRemove={categories.flatMap((category) => category.tasks).find((task) => task.id === activeTaskId)}
           onSuccess={closeDialog}
+          onCancel={closeDialog}
         />
       )}
-    </AlertDialog>
+    </Dialog>
   );
 }

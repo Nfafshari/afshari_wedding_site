@@ -2,72 +2,93 @@
 
 import * as React from "react";
 
+import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 interface FormDialogProps {
   /** DOM id for the dialog content (handy for labelling/testing). Optional. */
   id?: string;
-  /** Text shown in the dialog's title bar. */
-  title: string;
+  /** Noun phrase, title case: "Add Category", "Edit {name}". No question mark. */
+  title: React.ReactNode;
+  /** Optional one line under the title. */
+  description?: React.ReactNode;
   /** The form fields. Each concrete dialog supplies its own inputs here. */
   children: React.ReactNode;
-  /** True while the server action is in flight; swaps the button for a spinner. */
+  /** True while the server action is in flight: spinner, no closing, no double submit. */
   isLoading: boolean;
-  /** Runs when the user confirms. The shell has already called preventDefault. */
+  /** Runs on submit (button or Enter). The shell has already called preventDefault. */
   onSubmit: () => void;
-  /** Confirm-button label. Defaults to "Add". */
+  /** Says what happens: "Add", "Save changes", "Import". Defaults to "Add". */
   submitLabel?: string;
+  /** A server error that isn't about one field. Field errors stay next to their field. */
+  error?: string;
 }
 
 /**
- * The shared chrome for every add/edit form dialog: a title, a slot for fields,
- * and a Cancel / confirm footer that shows a spinner while submitting.
+ * The shared chrome for every add/edit form dialog: a centered title, the fields, an
+ * optional general error, and a Cancel / submit footer. Render it inside the page's
+ * <Dialog> root. Inner buttons that don't submit need type="button".
  *
- * It owns only the layout and the submit *button* lifecycle. Each caller still
- * owns its own fields, client-side validation, and which server action to call —
- * those are the parts that actually differ, so they stay in the concrete dialog.
- * Compose (pass fields as children), don't configure (no field schema).
+ * It owns only the layout and the submit lifecycle. Each caller still owns its own
+ * fields, client-side validation, and which server action to call. Compose (pass
+ * fields as children), don't configure (no field schema).
  */
 export default function FormDialog({
   id,
   title,
+  description,
   children,
   isLoading,
   onSubmit,
   submitLabel = "Add",
+  error,
 }: FormDialogProps) {
+  // While saving, nothing closes the dialog, so a submit in flight is never lost.
+  const blockWhileSaving = (event: Event) => {
+    if (isLoading) event.preventDefault();
+  };
+
   return (
-    <AlertDialogContent id={id} className="bg-popover rounded-sm">
-      <AlertDialogHeader>
-        <AlertDialogTitle className="page-title border-b border-b-burg w-full">
-          {title}
-        </AlertDialogTitle>
-        {children}
-      </AlertDialogHeader>
-      <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
-        <AlertDialogCancel variant={"secondary"}>
-          Cancel
-        </AlertDialogCancel>
-        <AlertDialogAction
-          disabled={isLoading}
-          onClick={(event) => {
-            // AlertDialogAction auto-closes the dialog on click. Stop that here so
-            // the dialog only closes on a successful submit (via the caller's onSuccess).
-            event.preventDefault();
-            onSubmit();
-          }}
-        >
-          {isLoading ? <Spinner /> : submitLabel}
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
+    <DialogContent
+      id={id}
+      closeDisabled={isLoading}
+      onEscapeKeyDown={blockWhileSaving}
+      onInteractOutside={blockWhileSaving}
+      {...(description ? {} : { "aria-describedby": undefined })}
+    >
+      <DialogHeader>
+        <DialogTitle>{title}</DialogTitle>
+        {description && <DialogDescription>{description}</DialogDescription>}
+      </DialogHeader>
+      <form
+        className="grid gap-5"
+        noValidate
+        onSubmit={(event) => {
+          event.preventDefault();
+          if (!isLoading) onSubmit();
+        }}
+      >
+        <div className="grid gap-4">{children}</div>
+        {error && <p role="alert" className="text-sm text-destructive">{error}</p>}
+        <DialogFooter>
+          <DialogClose asChild>
+            <Button type="button" variant="secondary" disabled={isLoading}>
+              Cancel
+            </Button>
+          </DialogClose>
+          <Button type="submit" disabled={isLoading}>
+            {isLoading ? <Spinner /> : submitLabel}
+          </Button>
+        </DialogFooter>
+      </form>
+    </DialogContent>
   );
 }

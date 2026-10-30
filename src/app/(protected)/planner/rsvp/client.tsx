@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { CirclePlus, FileUp, Users } from "lucide-react";
 
-import { AlertDialog } from "@/components/ui/alert-dialog";
+import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import RsvpTable from "@/components/rsvp/rsvp-table";
 import RsvpStats from "@/components/rsvp/rsvp-stats";
@@ -79,8 +79,9 @@ export default function Rsvp({ invitations }: RsvpProps) {
   const handlers = { onEditParty, onRemoveParty, onSetAttendance, onSetPlusOneStatus };
 
   return (
-    <AlertDialog
-      open={activeDialog !== DialogType.None}
+    <Dialog
+      // Form dialogs share this root. Delete confirmations bring their own (ConfirmDialog).
+      open={activeDialog !== DialogType.None && activeDialog !== DialogType.RemoveParty}
       onOpenChange={(open) => {
         // Radix calls this with the *next* open state. Only act on close.
         if (!open) {
@@ -172,8 +173,9 @@ export default function Rsvp({ invitations }: RsvpProps) {
         <RemovePartyDialog
           partyToRemove={activeParty}
           onSuccess={closeDialog}
+          onCancel={closeDialog}
         />
       }
-    </AlertDialog>
+    </Dialog>
   );
 }

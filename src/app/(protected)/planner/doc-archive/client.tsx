@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CirclePlus, ExternalLink, SquarePen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { AlertDialog } from "@/components/ui/alert-dialog";
+import { Dialog } from "@/components/ui/dialog";
 import AddDocDialog from "./dialogs/add-doc-dialog";
 import EditDocDialog from "./dialogs/edit-doc-dialog";
 import { resolveDocIcon } from "./dialogs/icon-picker";
@@ -26,7 +26,7 @@ export default function DocArchive({ docs }: DocArchiveProps) {
   const [docToEdit, setDocToEdit] = useState<ArchivedDoc | undefined>(undefined);
 
   return (
-    <AlertDialog
+    <Dialog
       open={activeDialog !== DialogType.None}
       onOpenChange={(open) => {
         // Radix calls this with the *next* open state. Only act on close.
@@ -118,6 +118,6 @@ export default function DocArchive({ docs }: DocArchiveProps) {
           onSuccess={() => setActiveDialog(DialogType.None)}
         />
       }
-    </AlertDialog>
+    </Dialog>
   );
 }

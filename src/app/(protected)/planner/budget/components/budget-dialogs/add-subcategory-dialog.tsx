@@ -129,8 +129,9 @@ export default function AddSubcategoryDialog({ budgetCategories, budgetCategoryI
   return (
     <FormDialog
       id="add-subcategory-dialog"
-      title="Add New Subcategory?"
+      title="Add Subcategory"
       isLoading={isLoading}
+      error={serverError && (serverErrorField === null || serverErrorField === 'budgetCategory') ? serverError : undefined}
       onSubmit={addSubcategory}
     >
       <Field className="flex w-full text-burg">
@@ -139,7 +140,7 @@ export default function AddSubcategoryDialog({ budgetCategories, budgetCategoryI
           id="subcategory-name"
           type="text"
           placeholder="Subcategory"
-          className={`text-burg rounded-sm ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+          aria-invalid={Boolean(fieldErrors.name || serverErrorField === 'name')}
           onChange={(e) => {
             setName(e.target.value);
             // Typing clears any previous error so the user gets a fresh start.
@@ -163,9 +164,10 @@ export default function AddSubcategoryDialog({ budgetCategories, budgetCategoryI
 
       <Field className="flex w-full text-burg mt-2">
         <FieldLabel htmlFor="subcategory-estimate">Estimated Cost</FieldLabel>
-        <InputGroup className={`text-burg ${(fieldErrors.estimatedCost || serverErrorField === 'estimatedCost') ? 'border-destructive' : 'border-input'}`}>
+        <InputGroup>
           <InputGroupAddon>$</InputGroupAddon>
           <InputGroupInput
+            aria-invalid={Boolean(fieldErrors.estimatedCost || serverErrorField === 'estimatedCost')}
             id="subcategory-estimate"
             type="text"
             inputMode="decimal"
@@ -201,9 +203,10 @@ export default function AddSubcategoryDialog({ budgetCategories, budgetCategoryI
 
       <Field className="flex w-full text-burg mt-2">
         <FieldLabel htmlFor="subcategory-paid">Amount Paid</FieldLabel>
-        <InputGroup className={`text-burg ${(fieldErrors.paidAmount || serverErrorField === 'paidAmount') ? 'border-destructive' : 'border-input'}`}>
+        <InputGroup>
           <InputGroupAddon>$</InputGroupAddon>
           <InputGroupInput
+            aria-invalid={Boolean(fieldErrors.paidAmount || serverErrorField === 'paidAmount')}
             id="subcategory-paid"
             type="text"
             inputMode="decimal"
@@ -237,11 +240,6 @@ export default function AddSubcategoryDialog({ budgetCategories, budgetCategoryI
         {fieldErrors.paidAmount && <p className="text-destructive/80 text-xs">{fieldErrors.paidAmount}</p>}
         {(serverError && serverErrorField === 'paidAmount') && <p className="text-destructive/80 text-xs">{serverError}</p>}
       </Field>
-
-      {/* general / no-field errors (e.g. category vanished) show at the bottom */}
-      {(serverError && (serverErrorField === null || serverErrorField === 'budgetCategory')) && (
-        <p className="text-destructive/80 text-xs">{serverError}</p>
-      )}
     </FormDialog>
   );
 }

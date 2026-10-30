@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { CirclePlus, Gift } from "lucide-react";
 
-import { AlertDialog } from "@/components/ui/alert-dialog";
+import { Dialog } from "@/components/ui/dialog";
 import RegistryRow from "./components/registry-row";
 import AddItemDialog from "./dialogs/add-item-dialog";
 import EditItemDialog from "./dialogs/edit-item-dialog";
@@ -61,8 +61,9 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
   }
 
   return (
-    <AlertDialog
-      open={activeDialog !== DialogType.None}
+    <Dialog
+      // Form dialogs share this root. Delete confirmations bring their own (ConfirmDialog).
+      open={activeDialog !== DialogType.None && activeDialog !== DialogType.RemoveClaim}
       onOpenChange={(open) => {
         // Radix calls this with the *next* open state. Only act on close.
         if (!open) {
@@ -159,8 +160,9 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
         <RemoveClaimDialog
           claimToRemove={activeClaim}
           onSuccess={closeDialog}
+          onCancel={closeDialog}
         />
       }
-    </AlertDialog>
+    </Dialog>
   );
 }

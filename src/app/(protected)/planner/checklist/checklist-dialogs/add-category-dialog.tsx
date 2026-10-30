@@ -60,7 +60,7 @@ export default function AddCategoryDialog({ categories, onSuccess }: AddCategory
   return (
     <FormDialog
       id="add-category-dialog"
-      title="Add New Category?"
+      title="Add Category"
       isLoading={isLoading}
       onSubmit={addCategory}
     >
@@ -70,7 +70,7 @@ export default function AddCategoryDialog({ categories, onSuccess }: AddCategory
           id="category-name"
           type="text"
           placeholder="Category"
-          className={`text-burg rounded-sm ${(isEmptyInput || !isUniqueCategory || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+          aria-invalid={Boolean(isEmptyInput || !isUniqueCategory || serverErrorField === 'name')}
           onChange={(e) => {
             setCategoryName(e.target.value);
             // Typing clears any previous error so the user gets a fresh start.
@@ -93,7 +93,8 @@ export default function AddCategoryDialog({ categories, onSuccess }: AddCategory
               const Icon = icon;
               return (
                 <Button
-                  variant={'outline'}
+                  type="button"
+                  variant="outline"
                   aria-pressed={activeIcon === icon.displayName}
                   aria-label={icon.displayName}
                   key={idx}

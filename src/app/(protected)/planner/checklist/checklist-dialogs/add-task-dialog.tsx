@@ -36,13 +36,13 @@ export default function AddTaskDialog({ categoryId, onSuccess }: AddTaskDialogPr
       return;
     }
 
-    await runAction('Task added successfully', () => createTask(taskName, taskDate, categoryId))
+    await runAction('Task added', () => createTask(taskName, taskDate, categoryId))
   }
 
   return (
     <FormDialog
       id="add-task-dialog"
-      title="Add New Task?"
+      title="Add Task"
       isLoading={isLoading}
       onSubmit={addTask}
     >
@@ -52,7 +52,7 @@ export default function AddTaskDialog({ categoryId, onSuccess }: AddTaskDialogPr
           id="task-name"
           type="text"
           placeholder="Task"
-          className={`text-burg placeholder:text-muted-foreground rounded-sm ${(isEmptyInput || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+          aria-invalid={Boolean(isEmptyInput || serverErrorField === 'name')}
           onChange={(e) => {
             setTaskName(e.target.value);
             if (e.target.value !== '') {
@@ -71,9 +71,11 @@ export default function AddTaskDialog({ categoryId, onSuccess }: AddTaskDialogPr
           <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
             <PopoverTrigger asChild>
               <Button
+                type="button"
                 variant="outline"
                 id="date-picker-simple"
-                className={`justify-start font-normal bg-field rounded-sm ${serverErrorField === 'date' ? 'border-destructive' : 'border-input'}`}
+                aria-invalid={Boolean(serverErrorField === 'date')}
+          className="justify-start font-normal bg-field rounded-sm"
               >
                 {taskDate ? format(taskDate, "PPP") : <span>Pick a date</span>}
               </Button>

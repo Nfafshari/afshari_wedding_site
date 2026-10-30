@@ -90,7 +90,6 @@ export default function RsvpForm({ isOpen, deadline }: RsvpFormProps) {
                   placeholder="Grace Okafor"
                   value={name}
                   aria-invalid={error !== ''}
-                  className="rounded-sm"
                   onChange={(e) => {
                     setName(e.target.value);
                     setError('');
@@ -355,7 +354,6 @@ function PartyForm ({ party, lookupName, isOpen, deadline, onStartOver, onDone }
                 placeholder="Dietary restrictions or allergies (optional)"
                 maxLength={MAX_SHORT_TEXT}
                 value={dietary[member.id]}
-                className="rounded-sm"
                 onChange={(e) => setDietary((prev) => ({ ...prev, [member.id]: e.target.value }))}
               />
             )}
@@ -383,7 +381,6 @@ function PartyForm ({ party, lookupName, isOpen, deadline, onStartOver, onDone }
                   placeholder="Full name"
                   maxLength={MAX_SHORT_TEXT}
                   value={slot.name}
-                  className="rounded-sm"
                   onChange={(e) => setSlots((prev) => prev.map((s, i) => (i === idx ? { ...s, name: e.target.value } : s)))}
                 />
                 {slot.status && (
@@ -396,7 +393,7 @@ function PartyForm ({ party, lookupName, isOpen, deadline, onStartOver, onDone }
                 placeholder="Dietary restrictions (optional)"
                 maxLength={MAX_SHORT_TEXT}
                 value={slot.dietary}
-                className="rounded-sm md:w-1/2"
+                className="md:w-1/2"
                 onChange={(e) => setSlots((prev) => prev.map((s, i) => (i === idx ? { ...s, dietary: e.target.value } : s)))}
               />
             </div>
@@ -422,7 +419,6 @@ function PartyForm ({ party, lookupName, isOpen, deadline, onStartOver, onDone }
             maxLength={MAX_SHORT_TEXT}
             value={email}
             aria-invalid={errorField === 'contact'}
-            className="rounded-sm"
             onChange={(e) => {
               setEmail(e.target.value);
               if (errorField === 'contact') setError('');
@@ -436,7 +432,6 @@ function PartyForm ({ party, lookupName, isOpen, deadline, onStartOver, onDone }
             maxLength={MAX_SHORT_TEXT}
             value={phoneNumber}
             aria-invalid={errorField === 'contact'}
-            className="rounded-sm"
             onChange={(e) => {
               setPhoneNumber(e.target.value);
               if (errorField === 'contact') setError('');
@@ -457,7 +452,6 @@ function PartyForm ({ party, lookupName, isOpen, deadline, onStartOver, onDone }
               placeholder="What will get you on the dance floor?"
               maxLength={MAX_SHORT_TEXT}
               value={songRequest}
-              className="rounded-sm"
               onChange={(e) => setSongRequest(e.target.value)}
             />
             {fieldError('songRequest')}
@@ -470,7 +464,6 @@ function PartyForm ({ party, lookupName, isOpen, deadline, onStartOver, onDone }
             placeholder="Optional"
             maxLength={MAX_LONG_TEXT}
             value={noteToCouple}
-            className="rounded-sm"
             onChange={(e) => setNoteToCouple(e.target.value)}
           />
           {fieldError('noteToCouple')}

@@ -100,7 +100,7 @@ export default function AddDocDialog({ docs, onSuccess }: AddDocDialogProps) {
   return (
     <FormDialog
       id="add-document-dialog"
-      title="Add New Document?"
+      title="Add Document"
       isLoading={isLoading}
       onSubmit={addDoc}
     >
@@ -149,7 +149,7 @@ export default function AddDocDialog({ docs, onSuccess }: AddDocDialogProps) {
           id="document-name"
           type="text"
           placeholder="Document"
-          className={`text-burg rounded-sm ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+          aria-invalid={Boolean(fieldErrors.name || serverErrorField === 'name')}
           onChange={(e) => {
             setDocName(e.target.value);
             // Typing clears any previous error so the user gets a fresh start.
@@ -175,7 +175,7 @@ export default function AddDocDialog({ docs, onSuccess }: AddDocDialogProps) {
           id="document-company"
           type="text"
           placeholder="Company"
-          className={`text-burg rounded-sm ${(fieldErrors.companyName || serverErrorField === 'companyName') ? 'border-destructive' : 'border-input'}`}
+          aria-invalid={Boolean(fieldErrors.companyName || serverErrorField === 'companyName')}
           onChange={(e) => {
             setCompanyName(e.target.value);
             if (e.target.value.trim() !== '') {

@@ -98,7 +98,7 @@ export default function AddClaimDialog({ itemToClaim, onSuccess }: AddClaimDialo
   return (
     <FormDialog
       id="add-claim-dialog"
-      title={`Who Claimed ${itemToClaim?.name}?`}
+      title={`Add Claim for ${itemToClaim?.name}`}
       isLoading={isLoading}
       onSubmit={addClaim}
     >
@@ -112,7 +112,7 @@ export default function AddClaimDialog({ itemToClaim, onSuccess }: AddClaimDialo
           id="claim-claimed-by"
           type="text"
           placeholder="Aunt Sue"
-          className={`text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.claimedBy || serverErrorField === 'claimedBy') ? 'border-destructive' : 'border-input'}`}
+          aria-invalid={Boolean(fieldErrors.claimedBy || serverErrorField === 'claimedBy')}
           onChange={(e) => {
             setClaimedBy(e.target.value);
             // Typing clears any previous error so the user gets a fresh start.
@@ -142,7 +142,7 @@ export default function AddClaimDialog({ itemToClaim, onSuccess }: AddClaimDialo
           inputMode="numeric"
           placeholder="1"
           value={quantity}
-          className={`text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.quantity || serverErrorField === 'quantity') ? 'border-destructive' : 'border-input'}`}
+          aria-invalid={Boolean(fieldErrors.quantity || serverErrorField === 'quantity')}
           onChange={(e) => {
             setQuantity(e.target.value);
             if (e.target.value.trim() !== '') {
