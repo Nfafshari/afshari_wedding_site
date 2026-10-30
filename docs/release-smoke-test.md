@@ -51,6 +51,16 @@ Use a **private/incognito window** for this entire section. This is the path a s
 | 1.9 | Look up the name again and change the response | Previous answers are prefilled; the change saves |
 | 1.10 | **Delete the throwaway party** in the planner | Party and its guests are gone; no real guest was edited |
 
+### 1.11 — RSVP rate limit (do this last in the section)
+
+The public form is protected by a Vercel firewall rule (NFA-33), not by app code, so only the deployed site can prove it. Rule, in Vercel → Project → Firewall → Custom Rules: path equals `/rsvp` and method is `POST`; rate limit about 20 requests per 60 seconds per IP (fixed window); action Deny. Recreate it if it is missing.
+
+1. Check the rule is listed and active.
+2. In devtools, copy a name-lookup request (Network → right click → Copy as cURL). Replay it about 25 times in a minute from one machine.
+3. Wait a minute, then look up a name and submit in the browser.
+
+**Expected:** the first ~20 replays succeed and later ones return **403** (what this rule's deny sends, measured on 2026-10-30); the denied requests show in the firewall log; after the window the normal lookup and submit work again. A missing or inactive rule is a blocker: the form is open to unlimited guessing.
+
 - [ ] Section 1 complete
 
 ---
