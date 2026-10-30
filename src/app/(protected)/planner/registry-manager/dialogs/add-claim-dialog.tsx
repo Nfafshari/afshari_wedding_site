@@ -112,7 +112,7 @@ export default function AddClaimDialog({ itemToClaim, onSuccess }: AddClaimDialo
           id="claim-claimed-by"
           type="text"
           placeholder="Aunt Sue"
-          className={`bg-popover text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.claimedBy || serverErrorField === 'claimedBy') ? 'border-destructive' : 'border-input'}`}
+          className={`text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.claimedBy || serverErrorField === 'claimedBy') ? 'border-destructive' : 'border-input'}`}
           onChange={(e) => {
             setClaimedBy(e.target.value);
             // Typing clears any previous error so the user gets a fresh start.
@@ -142,7 +142,7 @@ export default function AddClaimDialog({ itemToClaim, onSuccess }: AddClaimDialo
           inputMode="numeric"
           placeholder="1"
           value={quantity}
-          className={`bg-popover text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.quantity || serverErrorField === 'quantity') ? 'border-destructive' : 'border-input'}`}
+          className={`text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.quantity || serverErrorField === 'quantity') ? 'border-destructive' : 'border-input'}`}
           onChange={(e) => {
             setQuantity(e.target.value);
             if (e.target.value.trim() !== '') {

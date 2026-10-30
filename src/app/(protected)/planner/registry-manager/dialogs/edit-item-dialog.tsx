@@ -205,7 +205,7 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
               id="edit-item-name"
               type="text"
               value={name}
-              className={`bg-popover text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+              className={`text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
               onChange={(e) => {
                 setName(e.target.value);
                 // Typing clears any previous error so the user gets a fresh start.
@@ -234,7 +234,7 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
               type="url"
               inputMode="url"
               value={link}
-              className={`bg-popover text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.link || serverErrorField === 'link') ? 'border-destructive' : 'border-input'}`}
+              className={`text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.link || serverErrorField === 'link') ? 'border-destructive' : 'border-input'}`}
               onChange={(e) => {
                 setLink(e.target.value);
                 if (e.target.value.trim() !== '') {
@@ -262,7 +262,7 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
               type="text"
               inputMode="numeric"
               value={quantityWanted}
-              className={`bg-popover text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.quantityWanted || serverErrorField === 'quantityWanted') ? 'border-destructive' : 'border-input'}`}
+              className={`text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.quantityWanted || serverErrorField === 'quantityWanted') ? 'border-destructive' : 'border-input'}`}
               onChange={(e) => {
                 setQuantityWanted(e.target.value);
                 if (e.target.value.trim() !== '') {
@@ -307,7 +307,7 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
                 type="url"
                 inputMode="url"
                 value={image}
-                className={`bg-popover text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.image || serverErrorField === 'image') ? 'border-destructive' : 'border-input'}`}
+                className={`text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.image || serverErrorField === 'image') ? 'border-destructive' : 'border-input'}`}
                 onChange={(e) => {
                   setImage(e.target.value);
                   // Give the new URL a fresh chance to load rather than staying broken.

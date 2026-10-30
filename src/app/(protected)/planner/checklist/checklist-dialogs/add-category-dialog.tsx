@@ -70,7 +70,7 @@ export default function AddCategoryDialog({ categories, onSuccess }: AddCategory
           id="category-name"
           type="text"
           placeholder="Category"
-          className={`bg-popover text-burg rounded-sm ${(isEmptyInput || !isUniqueCategory || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+          className={`text-burg rounded-sm ${(isEmptyInput || !isUniqueCategory || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
           onChange={(e) => {
             setCategoryName(e.target.value);
             // Typing clears any previous error so the user gets a fresh start.

@@ -178,7 +178,7 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
               id="edit-subcategory-name"
               type="text"
               value={newName}
-              className={`bg-popover text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+              className={`text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
               onChange={(e) => {
                 setNewName(e.target.value);
                 // Typing clears any previous error so the user gets a fresh start.
@@ -202,7 +202,7 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
 
           <Field className="flex w-full text-burg mt-2">
             <FieldLabel htmlFor="subcategory-estimate">Estimated Cost</FieldLabel>
-            <InputGroup className={`bg-popover text-burg ${(fieldErrors.estimatedCost || serverErrorField === 'estimatedCost') ? 'border-destructive' : 'border-input'}`}>
+            <InputGroup className={`text-burg ${(fieldErrors.estimatedCost || serverErrorField === 'estimatedCost') ? 'border-destructive' : 'border-input'}`}>
               <InputGroupAddon>$</InputGroupAddon>
               <InputGroupInput
                 id="subcategory-estimate"
@@ -239,7 +239,7 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
 
           <Field className="flex w-full text-burg mt-2">
             <FieldLabel htmlFor="subcategory-paid">Amount Paid</FieldLabel>
-            <InputGroup className={`bg-popover text-burg ${(fieldErrors.paidAmount || serverErrorField === 'paidAmount') ? 'border-destructive' : 'border-input'}`}>
+            <InputGroup className={`text-burg ${(fieldErrors.paidAmount || serverErrorField === 'paidAmount') ? 'border-destructive' : 'border-input'}`}>
               <InputGroupAddon>$</InputGroupAddon>
               <InputGroupInput
                 id="subcategory-paid"

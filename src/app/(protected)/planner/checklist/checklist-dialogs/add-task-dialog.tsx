@@ -52,7 +52,7 @@ export default function AddTaskDialog({ categoryId, onSuccess }: AddTaskDialogPr
           id="task-name"
           type="text"
           placeholder="Task"
-          className={`bg-popover text-burg placeholder:text-muted-foreground rounded-sm ${(isEmptyInput || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+          className={`text-burg placeholder:text-muted-foreground rounded-sm ${(isEmptyInput || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
           onChange={(e) => {
             setTaskName(e.target.value);
             if (e.target.value !== '') {
@@ -73,7 +73,7 @@ export default function AddTaskDialog({ categoryId, onSuccess }: AddTaskDialogPr
               <Button
                 variant="outline"
                 id="date-picker-simple"
-                className={`justify-start font-normal bg-popover rounded-sm ${serverErrorField === 'date' ? 'border-destructive' : 'border-input'}`}
+                className={`justify-start font-normal bg-field rounded-sm ${serverErrorField === 'date' ? 'border-destructive' : 'border-input'}`}
               >
                 {taskDate ? format(taskDate, "PPP") : <span>Pick a date</span>}
               </Button>

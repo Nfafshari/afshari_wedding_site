@@ -95,7 +95,7 @@ export default function EditDocDialog({ docs, docToUpdate, onSuccess }: EditDocD
               id="edit-document-name"
               type="text"
               placeholder={docToUpdate?.name}
-              className={`bg-popover text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+              className={`text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
               onChange={(e) => {
                 setNewDocName(e.target.value);
                 // Typing clears any previous error so the user gets a fresh start.

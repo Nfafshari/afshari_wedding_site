@@ -152,7 +152,7 @@ export default function AddItemDialog({ items, onSuccess }: AddItemDialogProps) 
           id="item-name"
           type="text"
           placeholder="Stand Mixer"
-          className={`bg-popover text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+          className={`text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
           onChange={(e) => {
             setName(e.target.value);
             // Typing clears any previous error so the user gets a fresh start.
@@ -181,7 +181,7 @@ export default function AddItemDialog({ items, onSuccess }: AddItemDialogProps) 
           type="url"
           inputMode="url"
           placeholder="https://www.example.com/stand-mixer"
-          className={`bg-popover text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.link || serverErrorField === 'link') ? 'border-destructive' : 'border-input'}`}
+          className={`text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.link || serverErrorField === 'link') ? 'border-destructive' : 'border-input'}`}
           onChange={(e) => {
             setLink(e.target.value);
             if (e.target.value.trim() !== '') {
@@ -210,7 +210,7 @@ export default function AddItemDialog({ items, onSuccess }: AddItemDialogProps) 
           inputMode="numeric"
           placeholder="1"
           value={quantityWanted}
-          className={`bg-popover text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.quantityWanted || serverErrorField === 'quantityWanted') ? 'border-destructive' : 'border-input'}`}
+          className={`text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.quantityWanted || serverErrorField === 'quantityWanted') ? 'border-destructive' : 'border-input'}`}
           onChange={(e) => {
             setQuantityWanted(e.target.value);
             if (e.target.value.trim() !== '') {
@@ -238,7 +238,7 @@ export default function AddItemDialog({ items, onSuccess }: AddItemDialogProps) 
           type="url"
           inputMode="url"
           placeholder="https://www.example.com/stand-mixer.jpg"
-          className={`bg-popover text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.image || serverErrorField === 'image') ? 'border-destructive' : 'border-input'}`}
+          className={`text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.image || serverErrorField === 'image') ? 'border-destructive' : 'border-input'}`}
           onChange={(e) => {
             setImage(e.target.value);
             setFieldErrors(({ image, ...rest }) => rest);

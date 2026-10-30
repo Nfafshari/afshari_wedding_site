@@ -86,7 +86,7 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
               id="category-name"
               type="text"
               placeholder={categoryToUpdate?.name}
-              className={`bg-popover text-burg rounded-sm placeholder:text-muted-foreground ${(isEmptyInput || !isUniqueCategory || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+              className={`text-burg rounded-sm placeholder:text-muted-foreground ${(isEmptyInput || !isUniqueCategory || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
               onChange={(e) => {
                 setNewCategoryName(e.target.value);
                 // Typing clears any previous error so the user gets a fresh start.
