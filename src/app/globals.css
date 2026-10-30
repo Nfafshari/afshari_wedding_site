@@ -131,9 +131,9 @@
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-field: var(--field);
-  /* Fonts. next/font sets the --font-geist-sans / --font-cormorant variables on <html>.
-     Geist: body, tables, forms, buttons. Cormorant: headings, titles, stat numbers. */
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  /* Fonts. next/font sets the --font-lora / --font-cormorant variables on <html>.
+     Lora: body, tables, forms, buttons. Cormorant: headings, titles, stat numbers. */
+  --font-body: var(--font-lora), ui-serif, Georgia, serif;
   --font-serif: var(--font-cormorant), ui-serif, Georgia, serif;
   --font-heading: var(--font-cormorant), ui-serif, Georgia, serif;
   --font-mono: var(--font-geist-mono);
@@ -194,7 +194,7 @@
     @apply bg-background text-foreground;
   }
   html {
-    @apply font-sans;
+    @apply font-body;
   }
 }
 
@@ -234,7 +234,7 @@
   @apply font-heading font-bold lining-nums tabular-nums text-burg text-5xl md:text-6xl;
 }
 
-/* Muted caption under a stat or field (e.g. "Invited", "Responded"). Geist. */
+/* Muted caption under a stat or field (e.g. "Invited", "Responded"). Lora. */
 @utility muted-caption {
   @apply text-burg/70 text-lg uppercase tracking-widest;
 }

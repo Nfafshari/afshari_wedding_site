@@ -120,10 +120,10 @@ const TYPE_SCALE = [
   { name: "page-subtitle", className: "page-subtitle text-left", sample: "Paid of $32,000 estimated", spec: "Cormorant 500 · 24px", usage: "The line under a page title." },
   { name: "section-title", className: "section-title", sample: "By category", spec: "Cormorant 700 · 18px", usage: "Headings inside a page." },
   { name: "stat-number", className: "stat-number", sample: "$12,400", spec: "Cormorant 700 · 48–60px, even digits", usage: "Big numbers. Set the color per use." },
-  { name: "muted-caption", className: "muted-caption", sample: "Attending", spec: "Geist · 18px, uppercase", usage: "Short label under a stat, three words at most." },
-  { name: "text-base", className: "text-base", sample: "Kindly respond by August 1, 2027. We can't wait to celebrate with you.", spec: "Geist 400 · 16px", usage: "Body text and paragraphs." },
-  { name: "text-sm", className: "text-sm", sample: "Venue & catering · $18,500.00 · Save changes", spec: "Geist · 14px", usage: "Tables, buttons, labels, most interface text." },
-  { name: "text-xs", className: "text-xs", sample: "Updated October 30, 2026", spec: "Geist · 12px", usage: "Timestamps and helper text. The smallest size we use." },
+  { name: "muted-caption", className: "muted-caption", sample: "Attending", spec: "Lora · 18px, uppercase", usage: "Short label under a stat, three words at most." },
+  { name: "text-base", className: "text-base", sample: "Kindly respond by August 1, 2027. We can't wait to celebrate with you.", spec: "Lora 400 · 16px", usage: "Body text and paragraphs." },
+  { name: "text-sm", className: "text-sm", sample: "Venue & catering · $18,500.00 · Save changes", spec: "Lora · 14px", usage: "Tables, buttons, labels, most interface text." },
+  { name: "text-xs", className: "text-xs", sample: "Updated October 30, 2026", spec: "Lora · 12px", usage: "Timestamps and helper text. The smallest size we use." },
 ];
 
 const RADII = [
@@ -215,7 +215,7 @@ export default async function UiKitPage() {
       <KitSection
         id="type"
         title="Type"
-        description="Cormorant for headings, titles and big numbers. Geist for everything you read or click: body, tables, forms and buttons. Pinyon only for the couple's names."
+        description="Cormorant for headings, titles and big numbers. Lora for everything you read or click: body, tables, forms and buttons. Pinyon only for the couple's names."
       >
         <div className="border-t">
           {TYPE_SCALE.map((row) => (

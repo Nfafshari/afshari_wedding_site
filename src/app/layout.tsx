@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Pinyon_Script, Cormorant_Garamond, Herr_Von_Muellerhoff } from "next/font/google";
+import { Lora, Geist_Mono, Pinyon_Script, Cormorant_Garamond, Herr_Von_Muellerhoff } from "next/font/google";
 import { Viewport } from "next";
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -9,8 +9,9 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+// Body and interface text: paragraphs, tables, forms, buttons.
+const lora = Lora({
+  variable: "--font-lora",
   subsets: ["latin"],
 });
 
@@ -59,7 +60,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} ${pinyon.variable} ${herrVon.variable} ${cormorant.variable} h-full antialiased`}
+      className={`${lora.variable} ${geistMono.variable} ${pinyon.variable} ${herrVon.variable} ${cormorant.variable} h-full antialiased`}
     >
       <body className="h-full flex flex-col">
         <SidebarProvider>
