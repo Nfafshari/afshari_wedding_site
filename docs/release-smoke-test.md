@@ -43,6 +43,13 @@ Use a **private/incognito window** for this entire section. This is the path a s
 | 1.1 | Load `/` | Under-development page renders, hammer + wrench icons visible, no layout shift |
 | 1.2 | Check the page title in the browser tab | **Not** "Create Next App" |
 | 1.3 | Open devtools console | No red errors |
+| 1.4 | Click **RSVP** in the header | Lands on `/rsvp` with the name lookup form |
+| 1.5 | Look up a name that is not on the list | Not-found message, no party shown |
+| 1.6 | Look up a first name only | Asks for first and last name |
+| 1.7 | **Production: use a throwaway party.** In the planner add a party named e.g. "Zz Smoke Test" with two guests and one plus-one allowed. Then look up one guest's full name | Their party shows with both members |
+| 1.8 | Respond: mark one attending, one declined, add a plus-one and a contact email, submit | Success message. In `/planner/rsvp` the party shows the answers and the plus-one as pending approval |
+| 1.9 | Look up the name again and change the response | Previous answers are prefilled; the change saves |
+| 1.10 | **Delete the throwaway party** in the planner | Party and its guests are gone; no real guest was edited |
 
 - [ ] Section 1 complete
 
