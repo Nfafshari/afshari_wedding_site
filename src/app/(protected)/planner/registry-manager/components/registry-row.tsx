@@ -51,7 +51,7 @@ function ClaimMeter({ claimedTotal, quantityWanted, className }: ClaimMeterProps
         {isOverClaimed
           ? <span className="text-destructive"> · over-claimed by {Math.abs(remaining)}</span>
           : remaining === 0
-            ? <span className="text-olivine"> · fully claimed</span>
+            ? <span className="text-olivine-ink"> · fully claimed</span>
             : ` · ${remaining} remaining`}
       </p>
     </div>
@@ -115,7 +115,7 @@ export default function RegistryRow({ item, onEdit, onAddClaim, onRemoveClaim }:
             >
               {thumbnail}
               <span className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-sm bg-black/0 opacity-0 transition group-hover:bg-black/30 group-hover:opacity-100">
-                <ZoomIn className="w-5 h-5 text-white" />
+                <ZoomIn className="w-5 h-5 text-background" />
               </span>
             </button>
           </ImageLightbox>
@@ -129,7 +129,7 @@ export default function RegistryRow({ item, onEdit, onAddClaim, onRemoveClaim }:
             href={item.link}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex w-fit max-w-full items-center gap-1 font-bold text-burg hover:text-olivine active:translate-y-px md:text-lg"
+            className="flex w-fit max-w-full items-center gap-1 font-bold text-burg hover:text-olivine-ink active:translate-y-px md:text-lg"
             aria-label={`${item.name} (opens in a new tab)`}
           >
             <span className="truncate">{item.name}</span>
@@ -202,7 +202,7 @@ export default function RegistryRow({ item, onEdit, onAddClaim, onRemoveClaim }:
               <Button
                 variant={'ghost'}
                 aria-label={`Remove ${claim.claimedBy}'s claim on ${item.name}`}
-                className="h-8 w-8 shrink-0 text-muted hover:bg-destructive hover:text-white"
+                className="h-8 w-8 shrink-0 text-muted hover:bg-destructive hover:text-destructive-foreground"
                 onClick={() => onRemoveClaim(claim)}
               >
                 <Trash2 className="w-4 h-4" />
@@ -213,7 +213,7 @@ export default function RegistryRow({ item, onEdit, onAddClaim, onRemoveClaim }:
           <div className="flex w-full justify-start">
             <Button
               variant={'ghost'}
-              className="text-burg/40 hover:bg-burg hover:text-background"
+              className="text-burg/70 hover:bg-burg hover:text-background"
               disabled={remaining <= 0}
               onClick={() => onAddClaim(item)}
             >

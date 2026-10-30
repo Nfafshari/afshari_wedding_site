@@ -43,13 +43,13 @@ export default async function AccessDenied ({
             <h1 className="page-title">Sign-in failed.</h1>
             <h2>Something went wrong signing you in. Please try again.</h2>
             {error && (
-              <p className="text-xs text-accent mt-2">Reference code: {error}</p>
+              <p className="text-xs text-gold-ink mt-2">Reference code: {error}</p>
             )}
           </>
         )}
         <Link
           href={'/'}
-          className="text-xs text-accent underline hover:text-burg mt-3"
+          className="text-xs text-gold-ink underline hover:text-burg mt-3"
         >
           Return home?
         </Link>

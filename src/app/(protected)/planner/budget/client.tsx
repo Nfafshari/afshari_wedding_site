@@ -117,14 +117,14 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
         <hr className="my-5 bg-accent"/>
 
         <div className="flex flex-col justify-center items-center md:hidden">
-          <h2 className="page-title text-6xl text-olivine">{toCurrency(totalPaidAmount)}</h2>
-          <h3 className="section-title text-sm text-accent-foreground font-normal">Paid of {toCurrency(totalEstimatedCost)} Estimated</h3>
+          <h2 className="page-title text-6xl text-olivine-ink">{toCurrency(totalPaidAmount)}</h2>
+          <h3 className="section-title text-sm text-muted-foreground font-normal">Paid of {toCurrency(totalEstimatedCost)} Estimated</h3>
         </div>
 
         {/** overview */}
         <div className="grid pt-3 lg:grid-cols-2 lg:gap-10">
           <div className="flex flex-col w-full px-2">
-            <h3 className="hidden section-title font-normal text-accent-foreground ml-1 mb-3 md:flex">Estimated/Spent vs. Soft/Hard Caps</h3>
+            <h3 className="hidden section-title font-normal text-muted-foreground ml-1 mb-3 md:flex">Estimated/Spent vs. Soft/Hard Caps</h3>
             <StackedProgressBar
               limits={LIMITS}
               legend={progressLegend}
@@ -132,23 +132,23 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
           </div>
           <div className="hidden flex-col w-full mt-5 md:mt-0 md:flex">
             <div className="flex py-4 items-center border-b border-b-accent">
-              <p className="text-gold mt-1 text-xl">ESTIMATED TOTAL</p>
+              <p className="text-gold-ink mt-1 text-xl">ESTIMATED TOTAL</p>
               <p className="ml-auto text-3xl md:text-4xl">{toCurrency(totalEstimatedCost)}</p>
             </div>
             <div className="flex py-4 items-center border-b border-b-accent">
-              <p className="text-gold mt-1 text-xl">PAID TO DATE</p>
-              <p className="ml-auto text-3xl text-olivine md:text-4xl">{toCurrency(totalPaidAmount)}</p>
+              <p className="text-gold-ink mt-1 text-xl">PAID TO DATE</p>
+              <p className="ml-auto text-3xl text-olivine-ink md:text-4xl">{toCurrency(totalPaidAmount)}</p>
             </div>
             <div className="flex py-4 items-center border-b border-b-accent">
-              <p className="text-gold mt-1 text-xl">BALANCE DUE</p>
-              <p className="ml-auto text-red-800 text-3xl md:text-4xl">{toCurrency(totalBalance)}</p>
+              <p className="text-gold-ink mt-1 text-xl">BALANCE DUE</p>
+              <p className="ml-auto text-destructive text-3xl md:text-4xl">{toCurrency(totalBalance)}</p>
             </div>
           </div>
         </div>
 
         {/** Category breakdown */}
         <div className="mt-10 w-full">
-          <h3 className="text-accent-foreground text-lg mb-2">By Category Breakdown</h3>
+          <h3 className="text-muted-foreground text-lg mb-2">By Category Breakdown</h3>
           <CategoryTable
             data={budgetCategories}
             onAddSubcategory={onAddSubcategory}
@@ -158,7 +158,7 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
           />
           <Button
             variant={'ghost'}
-            className="text-burg/40 ml-5 hover:bg-burg hover:text-background"
+            className="text-burg/70 ml-5 hover:bg-burg hover:text-background"
             onClick={() => {
               setActiveDialog(DialogType.Category)
             }}

@@ -90,9 +90,9 @@ export default function RsvpTable ({
         <TableHeader>
           <TableRow className="hover:bg-background border-b border-b-accent">
             <TableHead className="h-6"/>
-            <TableHead className="h-6 text-xs text-accent">PARTY</TableHead>
-            <TableHead className="h-6 text-xs text-accent">GUESTS</TableHead>
-            <TableHead className="h-6 p-0 text-xs text-accent md:p-2"><span className="hidden md:inline">CONTACT</span></TableHead>
+            <TableHead className="h-6 text-xs text-gold-ink">PARTY</TableHead>
+            <TableHead className="h-6 text-xs text-gold-ink">GUESTS</TableHead>
+            <TableHead className="h-6 p-0 text-xs text-gold-ink md:p-2"><span className="hidden md:inline">CONTACT</span></TableHead>
             <TableHead className="h-6"/>
             <TableHead className="h-6"/>
           </TableRow>
@@ -120,7 +120,7 @@ export default function RsvpTable ({
                   <TableHead className="font-bold text-lg pb-1 md:pb-0">
                     <span className="block truncate">{party.partyName}</span>
                     {/* Mobile: the contact column is collapsed, so fold it into a subline here. */}
-                    <p className="text-xs font-normal text-accent-foreground truncate pb-2 md:hidden">
+                    <p className="text-xs font-normal text-muted-foreground truncate pb-2 md:hidden">
                       {contactLabel(party)}
                     </p>
                   </TableHead>
@@ -137,7 +137,7 @@ export default function RsvpTable ({
                     {hasNotes && (
                       <Popover>
                         <PopoverTrigger aria-label={`Notes from ${party.partyName}`}>
-                          <MessageSquareText className="w-5 h-5 cursor-pointer hover:text-gold"/>
+                          <MessageSquareText className="w-5 h-5 cursor-pointer hover:text-gold-ink"/>
                         </PopoverTrigger>
                         <PopoverContent className="w-64">
                           <div className="flex flex-col gap-2 px-1 py-1 text-sm">
@@ -226,11 +226,11 @@ function GuestRow ({ guest, isLast, onSetAttendance, onSetPlusOneStatus }: Guest
           <div className="flex flex-col min-w-0">
             <span className="truncate">
               {guest.name}
-              {guest.isPlusOne && <span className="ml-2 text-xs font-normal text-accent-foreground">plus-one</span>}
+              {guest.isPlusOne && <span className="ml-2 text-xs font-normal text-muted-foreground">plus-one</span>}
             </span>
             {/* Mobile: the dietary column is collapsed, so fold it into a subline. */}
             {guest.dietary && (
-              <p className="text-xs font-normal text-accent-foreground truncate md:hidden">{guest.dietary}</p>
+              <p className="text-xs font-normal text-muted-foreground truncate md:hidden">{guest.dietary}</p>
             )}
           </div>
         </div>

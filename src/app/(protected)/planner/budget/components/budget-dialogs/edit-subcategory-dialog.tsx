@@ -302,7 +302,7 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
 
           <Button
             variant={'destructive'}
-            className="w-full mt-4 border border-destructive hover:bg-destructive hover:text-white"
+            className="w-full mt-4 border border-destructive hover:bg-destructive hover:text-destructive-foreground"
             onClick={() => {
               setIsDeleteSubcategoryActive(true)
             }}
@@ -347,7 +347,7 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
           Cancel
         </AlertDialogCancel>
         <AlertDialogAction
-          className={isLoading ? 'bg-destructive/30!' : 'bg-destructive! text-white hover:bg-destructive/80!'}
+          className={isLoading ? 'bg-destructive/30!' : 'bg-destructive! text-destructive-foreground hover:bg-destructive/80!'}
           onClick={removeSubcategory}
         >
           {isLoading ? <Spinner /> : 'Confirm'}

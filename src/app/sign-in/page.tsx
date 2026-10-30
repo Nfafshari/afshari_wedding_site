@@ -43,7 +43,7 @@ export default async function SignIn ({ searchParams }: { searchParams: Promise<
                 className="w-full"
               />
             </form>
-            <p className="my-0.5 text-center text-lg text-accent-foreground">or</p>
+            <p className="my-0.5 text-center text-lg text-muted-foreground">or</p>
             <Input 
               className="w-full h-10 bg-muted/5"
               placeholder="Email"
@@ -63,7 +63,7 @@ export default async function SignIn ({ searchParams }: { searchParams: Promise<
           </Button>
           <Link 
             href={'/'}
-            className="text-xs text-accent underline hover:text-burg mt-3"
+            className="text-xs text-gold-ink underline hover:text-burg mt-3"
           >
             Return home?
           </Link>

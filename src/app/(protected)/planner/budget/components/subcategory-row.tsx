@@ -193,7 +193,7 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
       <TableCell className="font-medium">
         <div className="flex flex-col overflow-x-scroll pb-2 text-lg md:hidden">
           {subcategory.name}
-          <p className="text-xs text-accent">{toCurrency(subcategory.estimatedCost)} est. <span className="text-sm leading-tight">•</span> {toCurrency(subcategory.paidAmount)} paid</p>
+          <p className="text-xs text-gold-ink">{toCurrency(subcategory.estimatedCost)} est. <span className="text-sm leading-tight">•</span> {toCurrency(subcategory.paidAmount)} paid</p>
         </div>
         <div className="hidden md:flex md:flex-col">
           <InputGroup className={`border-transparent rounded-sm hover:border-border w-fit min-w-20 ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : ''}`}>

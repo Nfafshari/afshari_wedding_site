@@ -105,12 +105,12 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
         <TableHeader>
           <TableRow className="hover:bg-background border-b border-b-accent">
             <TableHead className="h-6"/>
-            <TableHead className="h-6 text-xs text-accent">CATEGORY</TableHead>
+            <TableHead className="h-6 text-xs text-gold-ink">CATEGORY</TableHead>
             <TableHead className="hidden h-6 md:table-cell">
               <Button
                 variant={'ghost'}
                 size={'sm'}
-                className="px-1.5 h-6 text-xs text-accent"
+                className="px-1.5 h-6 text-xs text-gold-ink"
                 onClick={() => {
                   handleSortParams('estimated')
                 }}
@@ -123,7 +123,7 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
               <Button 
                 variant={'ghost'}
                 size={'sm'}
-                className="px-1.5 h-6 text-xs text-accent"
+                className="px-1.5 h-6 text-xs text-gold-ink"
                 onClick={() => {
                   handleSortParams('paid')
                 }}
@@ -137,7 +137,7 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                 <Button 
                   variant={'ghost'}
                   size={'sm'}
-                  className="px-1.5 h-6 text-xs text-accent"
+                  className="px-1.5 h-6 text-xs text-gold-ink"
                   onClick={() => {
                     handleSortParams('balance')
                   }}
@@ -147,7 +147,7 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                 </Button>
               </div>
             </TableHead>
-            <TableHead className="h-6 pr-3 text-xs text-right text-accent">STATUS</TableHead>
+            <TableHead className="h-6 pr-3 text-xs text-right text-gold-ink">STATUS</TableHead>
           </TableRow>
         </TableHeader>
       </Table>
@@ -178,7 +178,7 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                     <div className="flex items-center overflow-y-scroll py-2 text-xl md:hidden">
                       <div>
                         {budgetCategory.name}
-                        <p className="text-xs text-accent">{toCurrency(totalEstimated)} est. <span className="text-sm leading-tight">•</span> {toCurrency(totalPaid)} paid</p>
+                        <p className="text-xs text-gold-ink">{toCurrency(totalEstimated)} est. <span className="text-sm leading-tight">•</span> {toCurrency(totalPaid)} paid</p>
                       </div>
                       <Button
                         variant={'ghost'}
@@ -233,7 +233,7 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                     <TableCell colSpan={6}>
                       <Button
                         variant={'ghost'}
-                        className="text-burg/40 text-xs ml-5 hover:bg-burg hover:text-background"
+                        className="text-burg/70 text-xs ml-5 hover:bg-burg hover:text-background"
                         onClick={() => {
                           onAddSubcategory(budgetCategory.id)
                         }}

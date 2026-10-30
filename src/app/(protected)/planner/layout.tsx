@@ -24,7 +24,7 @@ export default async function PlannerLayout ({ children }: { children: React.Rea
       <PlannerHeader />
       <div className="w-full px-3 pt-0.5">
         <Link
-          className="flex justify-end text-destructive underline hover:text-red-800 md:flex"
+          className="flex justify-end text-destructive underline hover:opacity-80 md:flex"
           href={'/sign-out'}
         >
           Sign Out?

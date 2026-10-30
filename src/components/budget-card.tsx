@@ -47,7 +47,7 @@ export default function BudgetCard({ budgetCategories }: BudgetCardProps) {
         <p className="section-title">Budget Breakdown</p>
         <Link
           href={'/planner/budget'}
-          className="flex items-center text-sm text-burg/60 whitespace-nowrap hover:text-burg"
+          className="flex items-center text-sm text-burg/70 whitespace-nowrap hover:text-burg"
         >
           <span className="underline">View Budget</span>
           <ChevronRight className="w-3.5 h-3.5" />
@@ -59,8 +59,8 @@ export default function BudgetCard({ budgetCategories }: BudgetCardProps) {
       {totalEstimated <= 0 ? (
         <div className="flex flex-col flex-1 gap-3 items-center justify-center py-6">
           <div className="size-24 rounded-full border-8 border-(--budget-slice-other)/40" />
-          <p className="text-center text-sm text-burg/60">Nothing budgeted yet.</p>
-          <Link href={'/planner/budget'} className="text-sm underline text-burg/60 hover:text-burg">
+          <p className="text-center text-sm text-burg/70">Nothing budgeted yet.</p>
+          <Link href={'/planner/budget'} className="text-sm underline text-burg/70 hover:text-burg">
             Add to your budget
           </Link>
         </div>
