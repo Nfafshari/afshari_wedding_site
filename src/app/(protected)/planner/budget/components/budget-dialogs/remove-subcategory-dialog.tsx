@@ -1,15 +1,6 @@
 "use client";
 
-import { Spinner } from "@/components/ui/spinner";
-import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import ConfirmDialog from "@/components/confirm-dialog";
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 import { deleteBudgetSubcategory, type ErrorField } from "../../action";
@@ -20,41 +11,24 @@ interface RemoveSubcategoryDialogProps {
   subcategoryToRemove: BudgetSubcategory | undefined;
   /** Called after the subcategory is deleted so the parent can close the dialog. */
   onSuccess: () => void;
+  /** Called when the user backs out. */
+  onCancel: () => void;
 }
 
-export default function RemoveSubcategoryDialog({ subcategoryToRemove, onSuccess }: RemoveSubcategoryDialogProps) {
+export default function RemoveSubcategoryDialog({ subcategoryToRemove, onSuccess, onCancel }: RemoveSubcategoryDialogProps) {
   const { isLoading, serverError, runAction } = useDialogSubmit<ErrorField>(onSuccess);
 
-  async function removeSubcategory(event: React.MouseEvent) {
-    // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
-    event.preventDefault();
-
-    await runAction("Subcategory removed", () => deleteBudgetSubcategory(subcategoryToRemove?.id));
-  }
-
   return (
-    <AlertDialogContent id="remove-subcategory-dialog" className="bg-popover rounded-sm">
-      <AlertDialogHeader>
-        <AlertDialogTitle className="page-title border-b border-b-burg w-full text-destructive">
-          Delete <span className="font-bold">{subcategoryToRemove?.name}</span>?
-        </AlertDialogTitle>
-        <AlertDialogDescription className="text-destructive">
-          You are about to delete {subcategoryToRemove?.name}. This cannot be undone. Do you wish to continue?
-        </AlertDialogDescription>
-        {serverError && <p className="text-destructive/80 text-xs">{serverError}</p>}
-      </AlertDialogHeader>
-      <AlertDialogFooter className="bg-background rounded-sm rounded-t-none">
-        <AlertDialogCancel variant={'secondary'}>
-          Cancel
-        </AlertDialogCancel>
-        <AlertDialogAction
-          variant="destructive"
-          disabled={isLoading}
-          onClick={removeSubcategory}
-        >
-          {isLoading ? <Spinner /> : 'Confirm'}
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
+    <ConfirmDialog
+      open
+      onOpenChange={(open) => {
+        if (!open) onCancel();
+      }}
+      title={`Delete ${subcategoryToRemove?.name}?`}
+      description="You can't undo this."
+      isLoading={isLoading}
+      error={serverError || undefined}
+      onConfirm={() => runAction("Subcategory deleted", () => deleteBudgetSubcategory(subcategoryToRemove?.id))}
+    />
   );
 }

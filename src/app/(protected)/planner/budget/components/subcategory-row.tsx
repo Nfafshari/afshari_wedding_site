@@ -198,8 +198,9 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
           <p className="text-xs text-gold-ink">{toCurrency(subcategory.estimatedCost)} est. <span className="text-sm leading-tight">•</span> {toCurrency(subcategory.paidAmount)} paid</p>
         </div>
         <div className="hidden md:flex md:flex-col">
-          <InputGroup className={`border-transparent rounded-sm hover:border-border w-fit min-w-20 ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : ''}`}>
+          <InputGroup className="border-transparent rounded-sm hover:border-border w-fit min-w-20">
             <InputGroupInput
+              aria-invalid={Boolean(fieldErrors.name || serverErrorField === 'name')}
               className="field-sizing-content text-lg! flex-none!"
               defaultValue={subcategory.name}
               onBlur={(e) => {
@@ -222,9 +223,10 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
         </div>
       </TableCell>
       <TableCell className="hidden md:table-cell">
-        <InputGroup className={`border-transparent rounded-sm hover:border-border w-fit min-w-20 ${(fieldErrors.estimatedCost || serverErrorField === 'estimatedCost') ? 'border-destructive' : ''}`}>
+        <InputGroup className="border-transparent rounded-sm hover:border-border w-fit min-w-20">
           <InputGroupAddon className="text-lg text-foreground">$</InputGroupAddon>
           <InputGroupInput
+            aria-invalid={Boolean(fieldErrors.estimatedCost || serverErrorField === 'estimatedCost')}
             className="field-sizing-content flex-none! text-lg! pl-px!"
             defaultValue={toAmount(subcategory.estimatedCost)}
             onBlur={(e) => {
@@ -251,9 +253,10 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
         {(serverError && serverErrorField === 'estimatedCost') && <p className="overflow-x-scroll text-destructive/80 text-xs">{serverError}</p>}
       </TableCell>
       <TableCell className="hidden md:table-cell pl-0!">
-        <InputGroup className={`border-transparent rounded-sm hover:border-border w-fit min-w-20 ${(fieldErrors.paidAmount || serverErrorField === 'paidAmount') ? 'border-destructive' : ''}`}>
+        <InputGroup className="border-transparent rounded-sm hover:border-border w-fit min-w-20">
           <InputGroupAddon className="text-lg text-foreground">$</InputGroupAddon>
           <InputGroupInput
+            aria-invalid={Boolean(fieldErrors.paidAmount || serverErrorField === 'paidAmount')}
             className="field-sizing-content flex-none! text-lg! pl-px!"
             defaultValue={toAmount(subcategory.paidAmount)}
             onBlur={(e) => {

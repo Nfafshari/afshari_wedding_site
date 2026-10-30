@@ -5,16 +5,8 @@ import { useState } from "react";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
-import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import ConfirmDialog from "@/components/confirm-dialog";
+import FormDialog from "@/components/form-dialog";
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 import { updateDocument, deleteDocument, type ErrorField } from "../action";
@@ -63,10 +55,7 @@ export default function EditDocDialog({ docs, docToUpdate, onSuccess }: EditDocD
     return null;
   }
 
-  async function editDoc(event: React.MouseEvent) {
-    // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
-    event.preventDefault();
-
+  async function editDoc() {
     // Client-side checks for instant feedback (the server re-checks these too).
     const nameError = nameValidator(newDocName);
     if (nameError) {
@@ -74,28 +63,30 @@ export default function EditDocDialog({ docs, docToUpdate, onSuccess }: EditDocD
       return;
     }
 
-    await runAction("Document updated", () => updateDocument(docToUpdate?.id, newDocName, newIcon));
+    await runAction("Document saved", () => updateDocument(docToUpdate?.id, newDocName, newIcon));
   }
 
-  async function removeDoc(event: React.MouseEvent) {
-    // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
-    event.preventDefault();
-
-    await runAction("Document removed", () => deleteDocument(docToUpdate?.id));
+  async function removeDoc() {
+    await runAction("Document deleted", () => deleteDocument(docToUpdate?.id));
   }
 
-  if (!isDeleteDocActive) {
-    return (
-      <AlertDialogContent id="edit-document-dialog" className="bg-popover rounded-sm">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="page-title border-b border-b-burg w-full">Edit <span className="font-bold">{docToUpdate?.name}</span>?</AlertDialogTitle>
+  return (
+    <>
+      <FormDialog
+        id="edit-document-dialog"
+        title={`Edit ${docToUpdate?.name ?? "Document"}`}
+        submitLabel="Save changes"
+        isLoading={isLoading && !isDeleteDocActive}
+        error={!isDeleteDocActive && serverError && !serverErrorField ? serverError : undefined}
+        onSubmit={editDoc}
+      >
           <Field className="flex w-full text-burg">
             <FieldLabel htmlFor="edit-document-name">New Document Name</FieldLabel>
             <Input
               id="edit-document-name"
               type="text"
               placeholder={docToUpdate?.name}
-              className={`text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+              aria-invalid={Boolean(fieldErrors.name || serverErrorField === 'name')}
               onChange={(e) => {
                 setNewDocName(e.target.value);
                 // Typing clears any previous error so the user gets a fresh start.
@@ -121,58 +112,26 @@ export default function EditDocDialog({ docs, docToUpdate, onSuccess }: EditDocD
             <IconPicker icons={ICON_LIBRARY} value={newIcon} onChange={setNewIcon} />
           </div>
           <Button
+            type="button"
             variant={'ghost-destructive'}
-            className="w-full mt-4"
+            className="w-full"
             onClick={() => {
+              clearServerError();
               setIsDeleteDocActive(true)
             }}
-          >
-            Delete {docToUpdate?.name}?
+            >
+            Delete {docToUpdate?.name}
           </Button>
-        </AlertDialogHeader>
-        <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
-          <AlertDialogCancel variant={'secondary'}>
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
-            disabled={isLoading}
-            onClick={editDoc}
-          >
-            {isLoading ? <Spinner /> : 'Confirm'}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    );
-  }
-
-  return (
-    <AlertDialogContent id="delete-document-dialog" className="bg-popover rounded-sm">
-      <AlertDialogHeader>
-        <AlertDialogTitle className="page-title border-b border-b-burg w-full text-destructive">Delete <span className="font-bold">{docToUpdate?.name}</span>?</AlertDialogTitle>
-        <AlertDialogDescription className="text-destructive">
-          You are about to delete {docToUpdate?.name}. This will remove the document and its uploaded file from the archive. This cannot be undone. Do you wish to continue?
-        </AlertDialogDescription>
-        {serverError && <p className="text-destructive/80 text-xs">{serverError}</p>}
-      </AlertDialogHeader>
-      <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
-        <AlertDialogCancel
-          variant={'secondary'}
-          onClick={(e) => {
-            // Go back to the edit view instead of closing the whole dialog.
-            e.preventDefault();
-            setIsDeleteDocActive(false);
-          }}
-        >
-          Cancel
-        </AlertDialogCancel>
-        <AlertDialogAction
-          variant="destructive"
-          disabled={isLoading}
-          onClick={removeDoc}
-        >
-          {isLoading ? <Spinner /> : 'Confirm'}
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
+      </FormDialog>
+      <ConfirmDialog
+        open={isDeleteDocActive}
+        onOpenChange={setIsDeleteDocActive}
+        title={`Delete ${docToUpdate?.name}?`}
+        description="This also removes its uploaded file. You can't undo this."
+        isLoading={isLoading}
+        error={serverError || undefined}
+        onConfirm={removeDoc}
+      />
+    </>
   );
 }

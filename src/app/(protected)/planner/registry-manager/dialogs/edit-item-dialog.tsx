@@ -5,16 +5,8 @@ import { useState } from "react";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
-import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import ConfirmDialog from "@/components/confirm-dialog";
+import FormDialog from "@/components/form-dialog";
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 import { updateRegistryItem, deleteRegistryItem, type ErrorField } from "../action";
@@ -140,10 +132,8 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
     return null;
   }
 
-  async function editItem (event: React.MouseEvent) {
-    // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
-    event.preventDefault();
-
+  // FormDialog has already called preventDefault, so this just runs our logic.
+  async function editItem () {
     // Validate every field into one local object, then gate on it
     const errors: Partial<Record<ErrorField, string>> = {};
 
@@ -176,7 +166,7 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
     const parsedQuantityWanted = parseQuantityString(quantityWanted);
     if (parsedQuantityWanted === null) return;
 
-    await runAction("Item updated", () => updateRegistryItem(itemToUpdate?.id, {
+    await runAction("Item saved", () => updateRegistryItem(itemToUpdate?.id, {
       name,
       link,
       quantityWanted: parsedQuantityWanted,
@@ -184,20 +174,22 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
     }));
   }
 
-  async function removeItem (event: React.MouseEvent) {
-    // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
-    event.preventDefault();
-
-    await runAction("Item removed", () => deleteRegistryItem(itemToUpdate?.id));
+  async function removeItem () {
+    await runAction("Item deleted", () => deleteRegistryItem(itemToUpdate?.id));
   }
 
-  if (!isDeleteItemActive) {
-    return (
-      <AlertDialogContent id="edit-item-dialog" className="bg-popover rounded-sm max-h-[90vh] overflow-y-auto">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="page-title border-b border-b-burg w-full">
-            Edit <span className="font-bold">{itemToUpdate?.name}</span>?
-          </AlertDialogTitle>
+  const claimCount = itemToUpdate?.claimed.length ?? 0;
+
+  return (
+    <>
+      <FormDialog
+        id="edit-item-dialog"
+        title={`Edit ${itemToUpdate?.name ?? "Item"}`}
+        submitLabel="Save changes"
+        isLoading={isLoading && !isDeleteItemActive}
+        error={!isDeleteItemActive && serverError && !serverErrorField ? serverError : undefined}
+        onSubmit={editItem}
+      >
 
           <Field className="flex w-full text-burg">
             <FieldLabel htmlFor="edit-item-name">Item Name</FieldLabel>
@@ -205,7 +197,7 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
               id="edit-item-name"
               type="text"
               value={name}
-              className={`text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+              aria-invalid={Boolean(fieldErrors.name || serverErrorField === 'name')}
               onChange={(e) => {
                 setName(e.target.value);
                 // Typing clears any previous error so the user gets a fresh start.
@@ -234,7 +226,7 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
               type="url"
               inputMode="url"
               value={link}
-              className={`text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.link || serverErrorField === 'link') ? 'border-destructive' : 'border-input'}`}
+              aria-invalid={Boolean(fieldErrors.link || serverErrorField === 'link')}
               onChange={(e) => {
                 setLink(e.target.value);
                 if (e.target.value.trim() !== '') {
@@ -262,7 +254,7 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
               type="text"
               inputMode="numeric"
               value={quantityWanted}
-              className={`text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.quantityWanted || serverErrorField === 'quantityWanted') ? 'border-destructive' : 'border-input'}`}
+              aria-invalid={Boolean(fieldErrors.quantityWanted || serverErrorField === 'quantityWanted')}
               onChange={(e) => {
                 setQuantityWanted(e.target.value);
                 if (e.target.value.trim() !== '') {
@@ -280,14 +272,14 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
               }}
             />
             {hasClaims && !fieldErrors.quantityWanted && (
-              <p className="text-muted text-xs">{claimedTotal} already claimed.</p>
+              <p className="text-muted-foreground text-xs">{claimedTotal} already claimed.</p>
             )}
             {fieldErrors.quantityWanted && <p className="text-destructive/80 text-xs">{fieldErrors.quantityWanted}</p>}
             {(serverError && serverErrorField === 'quantityWanted') && <p className="text-destructive/80 text-xs">{serverError}</p>}
           </Field>
 
           <Field className="flex w-full text-burg mt-2">
-            <FieldLabel htmlFor="edit-item-image">Image Link <span className="text-muted font-normal">(optional)</span></FieldLabel>
+            <FieldLabel htmlFor="edit-item-image">Image Link <span className="text-muted-foreground font-normal">(optional)</span></FieldLabel>
             <div className="flex w-full items-center gap-2">
               {/*
                 Preview so a mistyped URL is obvious before saving — paste-a-URL is
@@ -307,7 +299,7 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
                 type="url"
                 inputMode="url"
                 value={image}
-                className={`text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.image || serverErrorField === 'image') ? 'border-destructive' : 'border-input'}`}
+                aria-invalid={Boolean(fieldErrors.image || serverErrorField === 'image')}
                 onChange={(e) => {
                   setImage(e.target.value);
                   // Give the new URL a fresh chance to load rather than staying broken.
@@ -330,71 +322,31 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
           </Field>
 
           <Button
+            type="button"
             variant={'ghost-destructive'}
-            className="w-full mt-4"
+            className="w-full"
             onClick={() => {
+              clearServerError();
               setIsDeleteItemActive(true);
             }}
           >
-            Delete {itemToUpdate?.name}?
+            Delete {itemToUpdate?.name}
           </Button>
-        </AlertDialogHeader>
-        <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
-          <AlertDialogCancel variant={'secondary'}>
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
-            disabled={isLoading}
-            onClick={editItem}
-          >
-            {isLoading ? <Spinner /> : 'Confirm'}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    );
-  }
-
-  return (
-    <AlertDialogContent id="delete-item-dialog" className="bg-popover rounded-sm">
-      <AlertDialogHeader>
-        <AlertDialogTitle className="page-title border-b border-b-burg w-full text-destructive">
-          Delete <span className="font-bold">{itemToUpdate?.name}</span>?
-        </AlertDialogTitle>
-
-        {hasClaims ? (
-          <AlertDialogDescription className="text-destructive">
-            {itemToUpdate?.claimed.length === 1 ? 'A guest has' : `${itemToUpdate?.claimed.length} guests have`} already
-            claimed this item ({itemToUpdate?.claimed.map((claim) => claim.claimedBy).join(', ')}). Remove
-            their {itemToUpdate?.claimed.length === 1 ? 'claim' : 'claims'} first if you really want it gone.
-          </AlertDialogDescription>
-        ) : (
-          <AlertDialogDescription className="text-destructive">
-            You are about to delete {itemToUpdate?.name}. This cannot be undone. Do you wish to continue?
-          </AlertDialogDescription>
-        )}
-        {serverError && <p className="text-destructive/80 text-xs">{serverError}</p>}
-      </AlertDialogHeader>
-      <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
-        <AlertDialogCancel
-          variant={'secondary'}
-          onClick={(e) => {
-            // Go back to the edit view instead of closing the whole dialog.
-            e.preventDefault();
-            setIsDeleteItemActive(false);
-          }}
-        >
-          Cancel
-        </AlertDialogCancel>
-        <AlertDialogAction
-          // Disabled rather than letting them click into a server error we can already
-          // see coming. The action re-checks regardless; this is just courtesy.
-          disabled={isLoading || hasClaims}
-          variant="destructive"
-          onClick={removeItem}
-        >
-          {isLoading ? <Spinner /> : 'Confirm'}
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
+      </FormDialog>
+      <ConfirmDialog
+        open={isDeleteItemActive}
+        onOpenChange={setIsDeleteItemActive}
+        title={`Delete ${itemToUpdate?.name}?`}
+        description={hasClaims
+          ? `${claimCount === 1 ? 'A guest has' : `${claimCount} guests have`} already claimed this item (${itemToUpdate?.claimed.map((claim) => claim.claimedBy).join(', ')}). Remove their ${claimCount === 1 ? 'claim' : 'claims'} first if you really want it gone.`
+          : "You can't undo this."}
+        isLoading={isLoading}
+        // Blocked rather than letting them click into a server error we can already
+        // see coming. The action re-checks regardless; this is just courtesy.
+        confirmDisabled={hasClaims}
+        error={serverError || undefined}
+        onConfirm={removeItem}
+      />
+    </>
   );
 }

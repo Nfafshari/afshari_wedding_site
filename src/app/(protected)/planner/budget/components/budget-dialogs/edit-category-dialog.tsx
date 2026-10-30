@@ -5,16 +5,8 @@ import { useState } from "react";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Spinner } from "@/components/ui/spinner";
-import {
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+import ConfirmDialog from "@/components/confirm-dialog";
+import FormDialog from "@/components/form-dialog";
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 
 import { updateBudgetCategory, deleteBudgetCategory, type ErrorField } from "../../action";
@@ -32,7 +24,7 @@ interface EditCategoryDialogProps {
 export default function EditCategoryDialog({ budgetCategories, categoryToUpdate, onSuccess }: EditCategoryDialogProps) {
   const [newCategoryName, setNewCategoryName] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Partial<Record<ErrorField, string>>>({});
-  // Flips this dialog between the "edit" view and the "confirm delete" view.
+  // Opens the delete confirmation on top of the edit form.
   const [isDeleteCategoryActive, setIsDeleteCategoryActive] = useState(false);
   const { isLoading, serverError, serverErrorField, clearServerError, runAction } = useDialogSubmit<ErrorField>(onSuccess);
 
@@ -60,10 +52,8 @@ export default function EditCategoryDialog({ budgetCategories, categoryToUpdate,
     return null;
   }
 
-  async function editCategory(event: React.MouseEvent) {
-    // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
-    event.preventDefault();
-
+  // FormDialog has already called preventDefault, so this just runs our logic.
+  async function editCategory() {
     // Client-side checks for instant feedback (the server re-checks these too).
     const nameError = nameValidator(newCategoryName);
     if (nameError) {
@@ -71,28 +61,30 @@ export default function EditCategoryDialog({ budgetCategories, categoryToUpdate,
       return;
     }
 
-    await runAction("Category updated", () => updateBudgetCategory(categoryToUpdate?.id, newCategoryName));
+    await runAction("Category saved", () => updateBudgetCategory(categoryToUpdate?.id, newCategoryName));
   }
 
-  async function removeCategory(event: React.MouseEvent) {
-    // Always stop the dialog's built-in auto-close; we close via onSuccess only when it works.
-    event.preventDefault();
-
-    await runAction("Category removed", () => deleteBudgetCategory(categoryToUpdate?.id));
+  async function removeCategory() {
+    await runAction("Category deleted", () => deleteBudgetCategory(categoryToUpdate?.id));
   }
 
-  if (!isDeleteCategoryActive) {
-    return (
-      <AlertDialogContent id="edit-category-dialog" className="bg-popover rounded-sm">
-        <AlertDialogHeader>
-          <AlertDialogTitle className="page-title border-b border-b-burg w-full">Edit <span className="font-bold">{categoryToUpdate?.name}</span>?</AlertDialogTitle>
+  return (
+    <>
+      <FormDialog
+        id="edit-category-dialog"
+        title={`Edit ${categoryToUpdate?.name ?? "Category"}`}
+        submitLabel="Save changes"
+        isLoading={isLoading && !isDeleteCategoryActive}
+        error={!isDeleteCategoryActive && serverError && !serverErrorField ? serverError : undefined}
+        onSubmit={editCategory}
+      >
           <Field className="flex w-full text-burg">
             <FieldLabel htmlFor="edit-category-name">New Category Name</FieldLabel>
             <Input
               id="edit-category-name"
               type="text"
               placeholder={categoryToUpdate?.name}
-              className={`text-burg rounded-sm placeholder:text-muted-foreground ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+              aria-invalid={Boolean(fieldErrors.name || serverErrorField === 'name')}
               onChange={(e) => {
                 setNewCategoryName(e.target.value);
                 // Typing clears any previous error so the user gets a fresh start.
@@ -114,58 +106,26 @@ export default function EditCategoryDialog({ budgetCategories, categoryToUpdate,
             {(serverError && serverErrorField === 'name') && <p className="text-destructive/80 text-xs">{serverError}</p>}
           </Field>
           <Button
+            type="button"
             variant={'ghost-destructive'}
-            className="w-full mt-4"
+            className="w-full"
             onClick={() => {
+              clearServerError();
               setIsDeleteCategoryActive(true)
             }}
           >
-            Delete {categoryToUpdate?.name}?
+            Delete {categoryToUpdate?.name}
           </Button>
-        </AlertDialogHeader>
-        <AlertDialogFooter className="bg-background rounded-sm rounded-t-none">
-          <AlertDialogCancel variant={'secondary'}>
-            Cancel
-          </AlertDialogCancel>
-          <AlertDialogAction
-            disabled={isLoading}
-            onClick={editCategory}
-          >
-            {isLoading ? <Spinner /> : 'Confirm'}
-          </AlertDialogAction>
-        </AlertDialogFooter>
-      </AlertDialogContent>
-    );
-  }
-
-  return (
-    <AlertDialogContent id="delete-category-dialog" className="bg-popover rounded-sm">
-      <AlertDialogHeader>
-        <AlertDialogTitle className="page-title border-b border-b-burg w-full text-destructive">Delete <span className="font-bold">{categoryToUpdate?.name}</span>?</AlertDialogTitle>
-        <AlertDialogDescription className="text-destructive">
-          You are about to delete {categoryToUpdate?.name}. This will delete the category and every subcategory within it. This cannot be undone. Do you wish to continue?
-        </AlertDialogDescription>
-        {serverError && <p className="text-destructive/80 text-xs">{serverError}</p>}
-      </AlertDialogHeader>
-      <AlertDialogFooter className="bg-background rounded-sm rounded-t-none">
-        <AlertDialogCancel
-          variant={'secondary'}
-          onClick={(e) => {
-            // Go back to the edit view instead of closing the whole dialog.
-            e.preventDefault();
-            setIsDeleteCategoryActive(false);
-          }}
-        >
-          Cancel
-        </AlertDialogCancel>
-        <AlertDialogAction
-          variant="destructive"
-          disabled={isLoading}
-          onClick={removeCategory}
-        >
-          {isLoading ? <Spinner /> : 'Confirm'}
-        </AlertDialogAction>
-      </AlertDialogFooter>
-    </AlertDialogContent>
+      </FormDialog>
+      <ConfirmDialog
+        open={isDeleteCategoryActive}
+        onOpenChange={setIsDeleteCategoryActive}
+        title={`Delete ${categoryToUpdate?.name}?`}
+        description="This also deletes every subcategory in it. You can't undo this."
+        isLoading={isLoading}
+        error={serverError || undefined}
+        onConfirm={removeCategory}
+      />
+    </>
   );
 }

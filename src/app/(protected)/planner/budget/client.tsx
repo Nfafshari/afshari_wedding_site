@@ -5,7 +5,7 @@ import { CirclePlus } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { StackedProgressBar, type ProgressBarLegend } from "@/components/stacked-progress-bar";
-import { AlertDialog } from "@/components/ui/alert-dialog";
+import { Dialog } from "@/components/ui/dialog";
 
 import { BudgetCategory } from './page'
 import { toCurrency } from "@/lib/utils";
@@ -96,8 +96,9 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
   }
 
   return (
-    <AlertDialog
-      open={activeDialog !== DialogType.None}
+    <Dialog
+      // Form dialogs share this root. Delete confirmations bring their own (ConfirmDialog).
+      open={activeDialog !== DialogType.None && activeDialog !== DialogType.Delete}
       onOpenChange={(open) => {
         // Radix calls this with the *next* open state. Only act on close.
         if (!open) {
@@ -189,6 +190,7 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
         <RemoveSubcategoryDialog
           subcategoryToRemove={activeSubcategory}
           onSuccess={closeDialog}
+          onCancel={closeDialog}
         />
       )}
 
@@ -206,6 +208,6 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
           onSuccess={closeDialog}
         />
       )}
-    </AlertDialog>
+    </Dialog>
   );
 }

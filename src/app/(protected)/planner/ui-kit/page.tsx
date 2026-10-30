@@ -11,6 +11,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 
 import ColorSwatch from "@/components/ui-kit/color-swatch";
+import DialogDemo from "@/components/ui-kit/dialog-demo";
 import ContrastTable, { type ContrastPair } from "@/components/ui-kit/contrast-table";
 import KitSection from "@/components/ui-kit/kit-section";
 import TokenTile from "@/components/ui-kit/token-tile";
@@ -324,6 +325,19 @@ export default async function UiKitPage() {
             </div>
           </div>
         </div>
+      </KitSection>
+
+      <KitSection
+        id="modals"
+        title="Modals"
+        description="Forms use FormDialog: Enter submits, Esc or a click outside closes, and nothing closes while it saves. Deletes use ConfirmDialog, which only closes on Cancel or when the delete succeeds. From an edit form, the confirm opens on top and Cancel keeps your edits."
+      >
+        <DialogDemo />
+        <ul className="mt-4 flex max-w-prose list-disc flex-col gap-1 pl-5 text-sm">
+          <li>Titles are noun phrases in title case: &ldquo;Add Category&rdquo;, &ldquo;Edit Flowers&rdquo;. Confirms ask: &ldquo;Delete Flowers?&rdquo;</li>
+          <li>Buttons say what happens: Add, Save changes, Delete, Remove, Import. The toast repeats the verb: &ldquo;Category added&rdquo;.</li>
+          <li>Mark a field with an error using aria-invalid and put the message right under it.</li>
+        </ul>
       </KitSection>
 
       <KitSection id="rules" title="Color rules">

@@ -59,8 +59,9 @@ export default function AddCategoryDialog({ budgetCategories, onSuccess }: AddCa
   return (
     <FormDialog
       id="add-category-dialog"
-      title="Add New Category?"
+      title="Add Category"
       isLoading={isLoading}
+      error={serverError && !serverErrorField ? serverError : undefined}
       onSubmit={addCategory}
     >
       <Field className="flex w-full text-burg">
@@ -69,7 +70,7 @@ export default function AddCategoryDialog({ budgetCategories, onSuccess }: AddCa
           id="category-name"
           type="text"
           placeholder="Category"
-          className={`text-burg rounded-sm ${(fieldErrors.name || serverErrorField === 'name') ? 'border-destructive' : 'border-input'}`}
+          aria-invalid={Boolean(fieldErrors.name || serverErrorField === 'name')}
           onChange={(e) => {
             setCategoryName(e.target.value);
             // Typing clears any previous error so the user gets a fresh start.

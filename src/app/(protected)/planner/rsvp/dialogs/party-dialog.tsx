@@ -173,7 +173,7 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
     };
 
     if (isEdit) {
-      await runAction("Party updated", () => updateInvitation(partyToUpdate.id, input));
+      await runAction("Party saved", () => updateInvitation(partyToUpdate.id, input));
     } else {
       await runAction("Party added", () => createInvitation(input));
     }
@@ -182,10 +182,10 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
   return (
     <FormDialog
       id="party-dialog"
-      title={isEdit ? `Edit ${partyToUpdate.partyName}?` : 'Add New Party?'}
+      title={isEdit ? `Edit ${partyToUpdate.partyName}` : 'Add Party'}
       isLoading={isLoading}
       onSubmit={saveParty}
-      submitLabel={isEdit ? 'Save' : 'Add'}
+      submitLabel={isEdit ? 'Save changes' : 'Add'}
     >
       <Field className="flex w-full text-burg">
         <FieldLabel htmlFor="party-name">Party Name</FieldLabel>
@@ -194,7 +194,7 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
           type="text"
           placeholder="The Okafors"
           value={partyName}
-          className={`text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.partyName || serverErrorField === 'partyName') ? 'border-destructive' : 'border-input'}`}
+          aria-invalid={Boolean(fieldErrors.partyName || serverErrorField === 'partyName')}
           onChange={(e) => {
             setPartyName(e.target.value);
             // Typing clears any previous error so the user gets a fresh start.
@@ -229,7 +229,7 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
                 aria-label={`Guest ${idx + 1} name`}
                 placeholder="Grace Okafor"
                 value={member.name}
-                className={`text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.members || serverErrorField === 'members') ? 'border-destructive' : 'border-input'}`}
+                aria-invalid={Boolean(fieldErrors.members || serverErrorField === 'members')}
                 onChange={(e) => updateMember(member.key, e.target.value)}
               />
               <Button
@@ -266,7 +266,7 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
           inputMode="numeric"
           placeholder="0"
           value={plusOnesAllowed}
-          className={`text-burg placeholder:text-muted-foreground rounded-sm ${(fieldErrors.plusOnesAllowed || serverErrorField === 'plusOnesAllowed') ? 'border-destructive' : 'border-input'}`}
+          aria-invalid={Boolean(fieldErrors.plusOnesAllowed || serverErrorField === 'plusOnesAllowed')}
           onChange={(e) => {
             setPlusOnesAllowed(e.target.value);
             if (e.target.value.trim() !== '') {
