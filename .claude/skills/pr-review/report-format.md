@@ -50,3 +50,54 @@ C ran · D skipped (no failing checks) · A ran · B ran without the skill · E 
 - **Docs-only diffs:** only lens C runs; the other lenses read `skipped (docs-only)`.
 - **Pre-PR mode:** CI failures reads `no CI before a PR exists`; the PR-requirements checks are limited to the branch name.
 - If nothing survived verification, write under the Summary: `No issues found.` Never invent a finding to fill the template.
+
+## Draft PR description (pre-PR mode only)
+
+After the report, in pre-PR mode, print one more fenced markdown block: a draft body the author can save and pass to `gh pr create --body-file`. PR mode never prints it (the PR already has a body). Build it from what steps 1 and 2 gathered and the verified findings; it adds no lens and no extra cost.
+
+The six headings are copied from `.github/pull_request_template.md`, same text and same order. `tests/pr-review-draft.test.ts` fails if they drift. Do not rename, drop, or reorder them, and do not copy the template's HTML comments.
+
+```markdown
+## Summary
+
+Linear issue: NFA-<n> (parent: NFA-<n>, Track <n>).
+
+<what changed and why, in a short paragraph; say what is NOT changed if the issue could be read more broadly>
+
+## Walkthrough
+
+1. `<path>`: <why a reader starts here>
+2. `<path>`: <why next>
+
+## Verified
+
+Not run by the reviewer (the review is read-only). Author: run these and fill in the real results before opening.
+
+- `pnpm lint`:
+- `pnpm exec tsc --noEmit`:
+- `pnpm test`:
+- `pnpm build`:
+
+## Calls I made (please check)
+
+- <a choice the diff makes that the issue did not make for the author>
+
+## By-hand checklist
+
+- [ ] CI `checks` is green (required to merge)
+- [ ] <each acceptance criterion, quoted>
+- [ ] <each risk flag the diff trips>
+
+## Out of scope / follow-ups
+
+- <scope-out lines the diff touched or came near, and anything noticed and rightly left alone>
+```
+
+Rules for the draft:
+
+- **Walkthrough order:** follow the change top to bottom: schema or migration, then `src/lib`, then actions and routes, then UI, then tests, then docs. Give each step its *why*. Group a large deletion into one line ("52 files under X").
+- **Verified:** never invent a result. The reviewer does not run project commands, so the commands stay listed with empty results for the author to fill in. Write `None` only if the diff has no code.
+- **Calls I made:** inferred from the diff, so they are candidates. Write `None` if nothing was chosen beyond the issue.
+- **By-hand checklist:** the `CI checks` line first, then every acceptance criterion of the Linear issue verbatim, then one box per risk flag, decided from the changed paths so it works even when lens G was skipped: `src/auth*.ts`, `src/proxy.ts`, `src/lib/require-user.ts` or any `action.ts` (auth); `src/prisma/migrations/**` (migration); `.env*` or a new `process.env` read (env var); any removed file or a `delete` call (destructive); `package.json`, `pnpm-lock.yaml`, or `.github/workflows/**` (dependencies or CI).
+- **Out of scope:** the issue's scope-out lines that the diff touched or came near, plus anything a lens noticed that the diff rightly left alone. Link the Linear issue if one exists.
+- If the Linear issue could not be read, say so in the Summary line instead of guessing; do not invent criteria.
