@@ -44,11 +44,12 @@ export default function RemoveSubcategoryDialog({ subcategoryToRemove, onSuccess
         {serverError && <p className="text-destructive/80 text-xs">{serverError}</p>}
       </AlertDialogHeader>
       <AlertDialogFooter className="bg-background rounded-sm rounded-t-none">
-        <AlertDialogCancel variant={'secondary'} className="hover:bg-gold/90">
+        <AlertDialogCancel variant={'secondary'}>
           Cancel
         </AlertDialogCancel>
         <AlertDialogAction
-          className={isLoading ? 'bg-destructive/30!' : 'bg-destructive! text-destructive-foreground hover:bg-destructive/90!'}
+          variant="destructive"
+          disabled={isLoading}
           onClick={removeSubcategory}
         >
           {isLoading ? <Spinner /> : 'Confirm'}

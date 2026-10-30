@@ -76,7 +76,8 @@ export default function DocArchive({ docs }: DocArchiveProps) {
                   <Button
                     variant={'ghost'}
                     aria-label={`Edit ${doc.name}`}
-                    className="absolute bottom-0.5 right-0.5 text-gold/40 hover:bg-olivine hover:text-background z-20 md:mt-auto"
+                    size={'icon-sm'}
+                    className="absolute bottom-0.5 right-0.5 z-20 md:mt-auto"
                     onClick={() => {
                       setDocToEdit(doc);
                       setActiveDialog(DialogType.Edit);

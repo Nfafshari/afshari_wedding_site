@@ -145,10 +145,7 @@ export default function RegistryRow({ item, onEdit, onAddClaim, onRemoveClaim }:
                   key={claim.id} 
                   href={'/planner/rsvp'}
                 >
-                  <Badge 
-                    variant="outline" 
-                    className="text-burg/80"
-                  >
+                  <Badge>
                     {claim.claimedBy}{claim.quantity > 1 && ` x${claim.quantity}`}
                   </Badge>
                 </Link>
@@ -168,16 +165,15 @@ export default function RegistryRow({ item, onEdit, onAddClaim, onRemoveClaim }:
           <Button
             variant={'ghost'}
             aria-label={`Edit ${item.name}`}
-            className="text-gold/50 hover:bg-olivine hover:text-background"
+            size={'icon-sm'}
             onClick={() => onEdit(item)}
           >
             <SquarePen />
           </Button>
-          <CollapsibleTrigger
-            className="group flex h-9 w-9 items-center justify-center rounded-sm text-burg/50 cursor-pointer hover:bg-muted/30 hover:text-burg"
-            aria-label={`Manage claims for ${item.name}`}
-          >
-            <ChevronDown className="w-4 h-4 transition-transform group-data-[state=open]:rotate-180" />
+          <CollapsibleTrigger asChild>
+            <Button variant={'ghost'} size={'icon-lg'} className="group" aria-label={`Manage claims for ${item.name}`}>
+              <ChevronDown className="w-4 h-4 transition-transform group-data-[state=open]:rotate-180" />
+            </Button>
           </CollapsibleTrigger>
         </div>
       </div>
@@ -195,14 +191,15 @@ export default function RegistryRow({ item, onEdit, onAddClaim, onRemoveClaim }:
           {item.claimed.map((claim) => (
             <div key={claim.id} className="flex items-center gap-3 pb-1 text-sm border-b border-border">
               <span className="font-bold text-burg truncate">{claim.claimedBy}</span>
-              <span className="text-muted shrink-0">×{claim.quantity}</span>
-              <span className="ml-auto shrink-0 text-xs text-muted sm:inline">
+              <span className="text-muted-foreground shrink-0">×{claim.quantity}</span>
+              <span className="ml-auto shrink-0 text-xs text-muted-foreground sm:inline">
                 {claim.createdAt.toLocaleDateString()}
               </span>
               <Button
-                variant={'ghost'}
+                variant={'ghost-destructive'}
+                size={'icon'}
                 aria-label={`Remove ${claim.claimedBy}'s claim on ${item.name}`}
-                className="h-8 w-8 shrink-0 text-muted hover:bg-destructive hover:text-destructive-foreground"
+                className="shrink-0"
                 onClick={() => onRemoveClaim(claim)}
               >
                 <Trash2 className="w-4 h-4" />
@@ -213,7 +210,6 @@ export default function RegistryRow({ item, onEdit, onAddClaim, onRemoveClaim }:
           <div className="flex w-full justify-start">
             <Button
               variant={'ghost'}
-              className="text-burg/70 hover:bg-burg hover:text-background"
               disabled={remaining <= 0}
               onClick={() => onAddClaim(item)}
             >

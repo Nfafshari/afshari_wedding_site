@@ -7,7 +7,7 @@ import { TableRow, TableCell } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Badge } from "@/components/ui/badge";
+import BudgetStatusBadge from "@/components/budget-status-badge";
 
 import { BudgetStatus } from "@/generated/prisma/enums";
 import { parseMoneyString, toAmount, toCurrency } from "@/lib/utils";
@@ -169,9 +169,10 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
         <div className="flex justify-center">
           {/** Show trash can on desktop and edit on mobile */}
           <Button
-            variant={'ghost'}
+            variant={'ghost-destructive'}
+            size={'icon-sm'}
             aria-label={`Delete ${subcategory.name}`}
-            className="hidden text-gold/40 p-1 ml-1 hover:bg-destructive hover:text-background md:flex"
+            className="hidden ml-1 md:flex"
             onClick={() => {
               onDeleteSubcategory(subcategory.id)
             }}
@@ -181,7 +182,8 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
           <Button
             variant={'ghost'}
             aria-label={`Edit ${subcategory.name}`}
-            className="text-gold/40 p-1 ml-1 hover:bg-olivine hover:text-background md:hidden"
+            size={'icon-sm'}
+            className="ml-1 md:hidden"
             onClick={() => {
               onEditSubcategory(subcategory.id)
             }}
@@ -299,7 +301,7 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
                     key={badge} value={badge}
                     className="focus:bg-muted/20"
                   >
-                    <Badge variant={badge}>{badge}</Badge>
+                    <BudgetStatusBadge status={badge} />
                   </SelectItem>
                 ))}
               </SelectGroup>
@@ -310,7 +312,7 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
           {(serverError && serverErrorField === 'status') && <p className="overflow-x-scroll text-destructive/80 text-xs">{serverError}</p>}
         </div>
         <div className="mt-3.5 md:hidden">
-          <Badge variant={subcategory.status}>{subcategory.status}</Badge>
+          <BudgetStatusBadge status={subcategory.status} />
         </div>
       </TableCell>
     </TableRow>

@@ -110,7 +110,8 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
                   return (
                     <Button
                       variant={'outline'}
-                      className={`bg-popover border-olivine text-olivine-ink hover:bg-olivine hover:text-background ${newIcon === icon.displayName ? 'bg-olivine text-background' : 'bg-popover'}`}
+                      aria-pressed={newIcon === icon.displayName}
+                  aria-label={icon.displayName}
                       key={idx}
                       onClick={() => {
                         setNewIcon(icon.displayName ?? '')
@@ -124,8 +125,8 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
             </div>
           </div>
           <Button
-            variant={'destructive'}
-            className={`w-full mt-4 border border-destructive hover:bg-destructive hover:text-destructive-foreground`}
+            variant={'ghost-destructive'}
+            className="w-full mt-4"
             onClick={() => {
               setIsDeleteCategoryActive(true)
             }}
@@ -134,11 +135,11 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
           </Button>
         </AlertDialogHeader>
         <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
-          <AlertDialogCancel variant={'secondary'} className="hover:bg-gold/90">
+          <AlertDialogCancel variant={'secondary'}>
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            className={isLoading ? 'bg-primary/30' : 'bg-primary text-primary-foreground hover:bg-primary/90'}
+            disabled={isLoading}
             onClick={editCategory}
           >
             {isLoading ? <Spinner /> : 'Confirm'}
@@ -158,8 +159,7 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
         </AlertDialogHeader>
         <AlertDialogFooter className="bg-muted/20 rounded-sm rounded-t-none">
           <AlertDialogCancel
-            variant={'secondary'} 
-            className="hover:bg-gold/90"
+            variant={'secondary'}
             onClick={(e) => {
               setIsDeleteCategoryActive(false)
               e.preventDefault();
@@ -168,7 +168,8 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
             Cancel
           </AlertDialogCancel>
           <AlertDialogAction
-            className={isLoading ? 'bg-destructive/30!' : 'bg-destructive! text-destructive-foreground hover:bg-destructive/80!'}
+            variant="destructive"
+          disabled={isLoading}
             onClick={removeCategory}
           >
             {isLoading ? <Spinner /> : 'Confirm'}

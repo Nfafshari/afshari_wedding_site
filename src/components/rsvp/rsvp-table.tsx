@@ -167,7 +167,7 @@ export default function RsvpTable ({
                           </Button>
                         )}
                         {onRemoveParty && (
-                          <Button variant={'ghost'} size={'icon-sm'} className="hover:text-destructive" aria-label={`Remove ${party.partyName}`} onClick={() => onRemoveParty(party)}>
+                          <Button variant={'ghost-destructive'} size={'icon-sm'} aria-label={`Remove ${party.partyName}`} onClick={() => onRemoveParty(party)}>
                             <Trash2 />
                           </Button>
                         )}

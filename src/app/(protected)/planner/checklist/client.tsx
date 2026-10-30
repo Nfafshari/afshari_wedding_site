@@ -170,7 +170,6 @@ export default function Checklist({ categories }: ChecklistProps) {
                   <div className="ml-1 px-1 flex items-center">
                     <Button
                       variant={'ghost'}
-                      className="text-burg/70 hover:bg-burg hover:text-background"
                       onClick={() => {
                         setActiveDialog(DialogType.Task);
                         setActiveCategoryId(category.id);
@@ -182,7 +181,9 @@ export default function Checklist({ categories }: ChecklistProps) {
                   </div>
                   <Button
                     variant={'ghost'}
-                    className=" ml-auto mt-auto text-gold/40 hover:bg-olivine hover:text-background"
+                    size={'icon-sm'}
+                    aria-label={`Edit ${category.name}`}
+                    className="ml-auto mt-auto"
                     onClick={() => {
                       setActiveDialog(DialogType.Edit);
                       setActiveCategoryId(category.id);

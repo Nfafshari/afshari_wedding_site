@@ -11,7 +11,8 @@ export default function FilterButton ({ children, isActive, ...props}: NavButton
   return (
     <Button 
       variant={'outline'}
-      className={`border-olivine rounded-full text-olivine-ink hover:bg-olivine hover:text-burg md:text-xl md:px-5 md:py-4 ${isActive ? 'bg-burg border-burg text-background' : 'bg-background'}`}
+      aria-pressed={isActive}
+      className="rounded-full md:text-xl md:px-5 md:py-4"
       {...props}
     >
       {children}
