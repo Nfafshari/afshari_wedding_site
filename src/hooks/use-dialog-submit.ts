@@ -32,12 +32,16 @@ export function useDialogSubmit<Field extends string>(onSuccess: () => void) {
    * Runs a server action, tracking loading + error, toasting the outcome, and
    * closing on success.
    *
-   * @param successMessage - shown in the success toast when the action succeeds
+   * @param successMessage - shown in the success toast when the action succeeds, or
+   *   a function building it from the result, for actions that report what they did
    */
-  async function runAction(successMessage: string, action: () => Promise<ActionResult<Field>>) {
+  async function runAction<Result extends ActionResult<Field>>(
+    successMessage: string | ((result: Extract<Result, { ok: true }>) => string),
+    action: () => Promise<Result>,
+  ) {
     setIsLoading(true);
 
-    let result: ActionResult<Field>;
+    let result: Result;
     try {
       result = await action();
     } catch (error) {
@@ -70,7 +74,11 @@ export function useDialogSubmit<Field extends string>(onSuccess: () => void) {
       return;
     }
 
-    notifySuccess(successMessage);
+    notifySuccess(
+      typeof successMessage === 'string'
+        ? successMessage
+        : successMessage(result as Extract<Result, { ok: true }>)
+    );
     onSuccess();
   }
 

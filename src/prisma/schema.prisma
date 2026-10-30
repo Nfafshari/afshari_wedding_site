@@ -13,25 +13,58 @@ enum BudgetStatus {
   PAID
 }
 
-model Rsvp {
-  id              Int       @id @default(autoincrement())
-  attendance      Boolean   @default(false)
-  createdAt       DateTime  @default(now())
+enum Attendance {
+  PENDING
+  ATTENDING
+  DECLINED
+}
 
-  guests           Guest[]
+enum PlusOneStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+// One household on the guest list. Exists before anyone responds — the couple
+// loads the list ahead of time, and the response fields stay null until a member
+// of the party looks it up and submits the form.
+model Invitation {
+  id              Int       @id @default(autoincrement())
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+  // Also the CSV import's upsert key, so re-running an import updates rather than duplicates.
+  partyName       String    @unique
+  plusOnesAllowed Int       @default(0)
+
+  respondedAt     DateTime?
+  respondedByName String?
+  email           String?
+  phoneNumber     String?
+  noteToCouple    String?
+  songRequest     String?
+
+  guests          Guest[]
 }
 
 model Guest {
-  id              Int        @id @default(autoincrement())
+  id              Int            @id @default(autoincrement())
+  createdAt       DateTime       @default(now())
   name            String
-  phoneNumber     String?
-  email           String?
-  isPrimary       Boolean    @default(false)
-  notes           String?
-  createdAt       DateTime   @default(now())
-  rsvpId          Int
+  // normalizeName(name) from src/lib/rsvp.ts — what the public lookup matches against.
+  nameKey         String
+  attendance      Attendance     @default(PENDING)
+  dietary         String?
+  // Invited members are created by the couple; plus-ones only by the guest form,
+  // and only those carry a plusOneStatus.
+  isPlusOne       Boolean        @default(false)
+  plusOneStatus   PlusOneStatus?
+  invitationId    Int
 
-  rsvp            Rsvp       @relation(fields: [rsvpId], references: [id])
+  // Cascade, unlike RegistryClaim: a guest row means nothing without its invitation.
+  invitation      Invitation     @relation(fields: [invitationId], references: [id], onDelete: Cascade)
+
+  @@index([nameKey])
+  @@index([invitationId])
 }
 
 model RegistryItem {

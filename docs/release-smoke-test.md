@@ -156,12 +156,16 @@ The most complete feature — exercise it hardest.
 
 ## 8. RSVP
 
-Read-only display — no mutations to exercise.
-
 | # | Action | Expected |
 |---|---|---|
-| 8.1 | Load `/planner/rsvp` | Table renders with guest data |
-| 8.2 | Check attendance/status columns | Values render, no `undefined` or blank enum cells |
+| 8.1 | Load `/planner/rsvp` | Page renders; an empty list shows "No one on the guest list yet" |
+| 8.2 | Add a party with two guests and one plus-one allowed | Party appears under "AWAITING RESPONSE" with the right counts |
+| 8.3 | Import a small CSV (`party,name,plus_ones`) with the Import button | Toast reports parties created and guests added |
+| 8.4 | Import the same CSV again | Parties updated, nothing duplicated |
+| 8.5 | Edit a party (rename a guest, change plus-ones allowed) | Changes saved and shown |
+| 8.6 | Remove a party | Party and its guests disappear |
+| 8.7 | Check attendance/status columns and the stats | Values render, no `undefined` or blank enum cells |
+| 8.8 | Load `/planner` | Dashboard RSVP numbers match the RSVP page |
 
 - [ ] Section 8 complete
 

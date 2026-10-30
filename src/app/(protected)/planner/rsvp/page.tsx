@@ -4,28 +4,31 @@ import { requireUser } from "@/lib/require-user";
 
 export const dynamic = 'force-dynamic';
 
-export async function getRsvps () {
+export async function getInvitations () {
   // Guarded here rather than only in the layout: Next renders layouts and pages in
   // parallel, so this query would otherwise fire before the layout's redirect wins.
   await requireUser();
 
-  const rsvps = prisma.rsvp.findMany({
+  const invitations = prisma.invitation.findMany({
     include: {
       guests: {
-        orderBy: [{ name: "asc" }, { id: "asc" }]
+        // Invited members first, then their plus-ones.
+        orderBy: [{ isPlusOne: "asc" }, { name: "asc" }, { id: "asc" }]
       },
-     },
+    },
 
-    orderBy: [{ id: "asc" }]
+    orderBy: [{ partyName: "asc" }, { id: "asc" }]
   });
 
-  return rsvps;
+  return invitations;
 }
 
-export type Rsvps = Awaited<ReturnType<typeof getRsvps>>[number]
+/** Singular shape, plural name — matches the other pages' exports. */
+export type Invitations = Awaited<ReturnType<typeof getInvitations>>[number]
+export type InvitationGuest = Invitations['guests'][number]
 
 export default async function RsvpPage() {
-  const rsvps = await getRsvps();
+  const invitations = await getInvitations();
 
-  return <Rsvp rsvpData={rsvps}/>;
+  return <Rsvp invitations={invitations}/>;
 }
