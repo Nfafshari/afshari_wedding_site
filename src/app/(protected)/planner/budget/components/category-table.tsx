@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowUpDown, ChevronDown, CirclePlus, SquarePen } from "lucide-react";
+import { ArrowUpDown, ChevronDown, CirclePlus, Receipt } from "lucide-react";
 
 import {
   Table,
@@ -14,6 +14,8 @@ import {
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Button } from "@/components/ui/button";
 import BudgetStatusBadge from "@/components/budget-status-badge";
+import RowActionButton from "@/components/row-action-button";
+import TableEmptyState from "@/components/table-empty-state";
 import { BudgetStatus } from "@/generated/prisma/enums";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { toCurrency } from "@/lib/utils";
@@ -27,6 +29,8 @@ interface CategoryTableProps {
   data: BudgetCategory[];
   /** Open the "add subcategory" dialog for the given category. */
   onAddSubcategory(budgetCategoryId: number): void;
+  /** Open the delete-confirmation dialog for the given category. */
+  onDeleteCategory(budgetCategoryId: number): void;
   /** Open the delete-confirmation dialog for the given subcategory. */
   onDeleteSubcategory(subcategoryId: number): void;
   /** Open the edit/delete dialog for the given category. */
@@ -73,7 +77,7 @@ function sortCategories (
   }));
 }
 
-export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcategory, onEditCategory, onEditSubcategory }: CategoryTableProps) {
+export default function CategoryTable ({ data, onAddSubcategory, onDeleteCategory, onDeleteSubcategory, onEditCategory, onEditSubcategory }: CategoryTableProps) {
   const { searchParams, setParams } = useQueryParams();
 
   // The query string is untrusted input, so it gets parsed once here; everything
@@ -101,53 +105,22 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
       {/** custom heading */}
       <Table className="w-full table-fixed mb-1">
         {/** custom column sizing */}
-        <CategoryColumns heading />
+        <CategoryColumns />
         <TableHeader>
-          <TableRow className="hover:bg-background border-b border-b-accent">
-            <TableHead className="h-6"/>
-            <TableHead className="h-6 text-xs text-gold-ink">CATEGORY</TableHead>
-            <TableHead className="hidden h-6 md:table-cell">
-              <Button
-                variant={'ghost'}
-                size={'sm'}
-                className="px-1.5 h-6 text-xs text-gold-ink"
-                onClick={() => {
-                  handleSortParams('estimated')
-                }}
-              >
-                ESTIMATED
-                <ArrowUpDown />
-              </Button>
+          <TableRow variant="heading">
+            <TableHead variant="label"/>
+            <TableHead variant="label">Category</TableHead>
+            <TableHead variant="label" numeric className="hidden md:table-cell">
+              <SortButton label="Estimated" onClick={() => handleSortParams('estimated')} />
             </TableHead>
-            <TableHead className="hidden h-6 md:table-cell">
-              <Button 
-                variant={'ghost'}
-                size={'sm'}
-                className="px-1.5 h-6 text-xs text-gold-ink"
-                onClick={() => {
-                  handleSortParams('paid')
-                }}
-              >
-                PAID
-                <ArrowUpDown />
-              </Button>
+            <TableHead variant="label" numeric className="hidden md:table-cell">
+              <SortButton label="Paid" onClick={() => handleSortParams('paid')} />
             </TableHead>
-            <TableHead className="h-6">
-              <div className="flex justify-end">
-                <Button 
-                  variant={'ghost'}
-                  size={'sm'}
-                  className="px-1.5 h-6 text-xs text-gold-ink"
-                  onClick={() => {
-                    handleSortParams('balance')
-                  }}
-                >
-                  BALANCE
-                  <ArrowUpDown />
-                </Button>
-              </div>
+            <TableHead variant="label" numeric>
+              <SortButton label="Balance" onClick={() => handleSortParams('balance')} />
             </TableHead>
-            <TableHead className="h-6 pr-3 text-xs text-right text-gold-ink">STATUS</TableHead>
+            <TableHead variant="label" className="pr-3 text-right">Status</TableHead>
+            <TableHead variant="label" className="hidden md:table-cell"/>
           </TableRow>
         </TableHeader>
       </Table>
@@ -161,66 +134,62 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
           isCategoryPaid = budgetCategory.budgetSubcategories.every((subcategory) => subcategory.status === BudgetStatus.PAID);
         }
 
+        const actions = (
+          <>
+            <RowActionButton action="edit" aria-label={`Edit ${budgetCategory.name}`} onClick={() => onEditCategory(budgetCategory.id)} />
+            <RowActionButton action="delete" aria-label={`Delete ${budgetCategory.name}`} onClick={() => onDeleteCategory(budgetCategory.id)} />
+          </>
+        );
+
+        const addSubcategoryButton = (
+          <Button
+            variant={'ghost'}
+            className="text-xs"
+            onClick={() => {
+              onAddSubcategory(budgetCategory.id)
+            }}
+          >
+            Add Subcategory
+            <CirclePlus/>
+          </Button>
+        );
+
         return (
           <Collapsible key={budgetCategory.id} defaultOpen={budgetCategory.budgetSubcategories.length > 0}>
             <Table className="table-fixed">
               {/** custom column sizing */}
               <CategoryColumns />
               <TableHeader>
-                <TableRow className="group/category">
+                <TableRow variant="group">
                   <TableHead className="pt-2">
-                    <CollapsibleTrigger className="group">
+                    <CollapsibleTrigger className="group rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={`Show subcategories in ${budgetCategory.name}`}>
                       <ChevronDown className="w-4 h-4 group-data-[state=open]:rotate-180 transition-transform"/>
                     </CollapsibleTrigger>
                   </TableHead>
                   <TableHead className="font-bold text-lg pb-1 md:pb-0">
-                    {/* Mobile: no hover on touch, so the pen is always shown to the right of the title. */}
-                    <div className="flex items-center overflow-y-scroll py-2 text-xl md:hidden">
-                      <div>
+                    {/* Mobile: est/paid and the actions fold into sublines, since their columns are hidden. */}
+                    <div className="flex flex-col py-2 text-xl md:hidden">
+                      <div className="flex flex-col overflow-x-auto">
                         {budgetCategory.name}
-                        <p className="text-xs text-gold-ink">{toCurrency(totalEstimated)} est. <span className="text-sm leading-tight">•</span> {toCurrency(totalPaid)} paid</p>
+                        <p className="text-xs text-gold-ink tabular-nums">{toCurrency(totalEstimated)} est. <span className="text-sm leading-tight">•</span> {toCurrency(totalPaid)} paid</p>
                       </div>
-                      <Button
-                        variant={'ghost'}
-                        aria-label={`Edit ${budgetCategory.name}`}
-                        size={'icon-sm'}
-                        className="ml-2"
-                        onClick={() => {
-                          onEditCategory(budgetCategory.id)
-                        }}
-                      >
-                        <SquarePen />
-                      </Button>
+                      <div className="-ml-2 mt-1 flex">{actions}</div>
                     </div>
-
-                    {/* Desktop: pen hidden on the left (zero layout width), revealed on row hover as the title slides right. */}
-                    <div className="relative hidden items-center md:flex">
-                      <Button
-                        variant={'ghost'}
-                        aria-label={`Edit ${budgetCategory.name}`}
-                        size={'icon-sm'}
-                        className="absolute left-0 top-1/2 -translate-y-1/2 opacity-0 transition-opacity group-hover/category:opacity-100 focus-visible:opacity-100 active:-translate-y-3.75!"
-                        onClick={() => {
-                          onEditCategory(budgetCategory.id)
-                        }}
-                      >
-                        <SquarePen />
-                      </Button>
-                      <div className="transition-transform duration-200 group-hover/category:translate-x-8">
-                        {budgetCategory.name}
-                      </div>
-                    </div>
+                    <span className="hidden truncate md:block">{budgetCategory.name}</span>
                   </TableHead>
-                  <TableHead className="hidden font-bold text-lg md:table-cell">{toCurrency(totalEstimated)}</TableHead>
-                  <TableHead className="hidden font-bold text-lg md:table-cell">{toCurrency(totalPaid)}</TableHead>
-                  <TableHead className="text-right font-bold md:text-lg">{toCurrency(totalBalance)}</TableHead>
+                  <TableHead numeric className="hidden font-bold text-lg md:table-cell">{toCurrency(totalEstimated)}</TableHead>
+                  <TableHead numeric className="hidden font-bold text-lg md:table-cell">{toCurrency(totalPaid)}</TableHead>
+                  <TableHead numeric className="font-bold md:text-lg">{toCurrency(totalBalance)}</TableHead>
                   <TableHead className="text-right font-bold">
-                  <BudgetStatusBadge status={isCategoryPaid ? 'PAID' : 'DUE'} />
+                    <BudgetStatusBadge status={isCategoryPaid ? 'PAID' : 'DUE'} />
+                  </TableHead>
+                  <TableHead className="hidden md:table-cell">
+                    <div className="flex justify-end">{actions}</div>
                   </TableHead>
                 </TableRow>
               </TableHeader>
               <CollapsibleContent asChild>
-                <TableBody>
+                <TableBody variant="group">
                   {budgetCategory.budgetSubcategories.map((budgetSubcategory) => (
                     <SubcategoryRow
                       key={budgetSubcategory.id}
@@ -229,18 +198,15 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
                       onEditSubcategory={onEditSubcategory}
                     />
                   ))}
-                  <TableRow className="border-b! border-burg! hover:bg-transparent">
-                    <TableCell colSpan={6}>
-                      <Button
-                        variant={'ghost'}
-                        className="text-xs ml-5"
-                        onClick={() => {
-                          onAddSubcategory(budgetCategory.id)
-                        }}
-                      >
-                        Add Subcategory
-                        <CirclePlus/>
-                      </Button>
+                  <TableRow variant="static">
+                    <TableCell colSpan={7}>
+                      {budgetCategory.budgetSubcategories.length === 0 ? (
+                        <TableEmptyState icon={Receipt} message={`Nothing in ${budgetCategory.name} yet.`}>
+                          {addSubcategoryButton}
+                        </TableEmptyState>
+                      ) : (
+                        <div className="ml-5">{addSubcategoryButton}</div>
+                      )}
                     </TableCell>
                   </TableRow>
                 </TableBody>
@@ -250,5 +216,20 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteSubcate
         );
       })}
     </>
+  );
+}
+
+/** A column label that sorts by it. The negative margin lines its text up with the numbers below. */
+function SortButton ({ label, onClick }: { label: string; onClick(): void }) {
+  return (
+    <Button
+      variant={'ghost'}
+      size={'sm'}
+      className="-mr-1.5 px-1.5 h-6 text-xs tracking-wide uppercase text-gold-ink"
+      onClick={onClick}
+    >
+      {label}
+      <ArrowUpDown />
+    </Button>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDown, GitCommitVertical, LineDotRightHorizontal, MessageSquareText, Pencil, Trash2 } from "lucide-react";
+import { ChevronDown, GitCommitVertical, LineDotRightHorizontal, MessageSquareText, Users } from "lucide-react";
 
 import {
   Table,
@@ -13,7 +13,8 @@ import {
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+import RowActionButton from "@/components/row-action-button";
+import TableEmptyState from "@/components/table-empty-state";
 import type { Attendance } from "@/generated/prisma/enums";
 import { getMembers, getPlusOnes, isCountedAttending } from "@/lib/rsvp";
 
@@ -79,7 +80,7 @@ export default function RsvpTable ({
   const hasActions = onEditParty !== undefined || onRemoveParty !== undefined;
 
   if (parties.length === 0) {
-    return <p className="py-4 text-sm text-muted-foreground">{emptyMessage}</p>;
+    return <TableEmptyState icon={Users} message={emptyMessage} />;
   }
 
   return (
@@ -88,13 +89,13 @@ export default function RsvpTable ({
       <Table className="w-full table-fixed mb-1">
         <RsvpColumns hasActions={hasActions} />
         <TableHeader>
-          <TableRow className="hover:bg-background border-b border-b-accent">
-            <TableHead className="h-6"/>
-            <TableHead className="h-6 text-xs text-gold-ink">PARTY</TableHead>
-            <TableHead className="h-6 text-xs text-gold-ink">GUESTS</TableHead>
-            <TableHead className="h-6 p-0 text-xs text-gold-ink md:p-2"><span className="hidden md:inline">CONTACT</span></TableHead>
-            <TableHead className="h-6"/>
-            <TableHead className="h-6"/>
+          <TableRow variant="heading">
+            <TableHead variant="label"/>
+            <TableHead variant="label">Party</TableHead>
+            <TableHead variant="label">Guests</TableHead>
+            <TableHead variant="label" className="p-0 md:p-2"><span className="hidden md:inline">Contact</span></TableHead>
+            <TableHead variant="label"/>
+            <TableHead variant="label"/>
           </TableRow>
         </TableHeader>
       </Table>
@@ -111,9 +112,9 @@ export default function RsvpTable ({
             <Table className="table-fixed">
               <RsvpColumns hasActions={hasActions} />
               <TableHeader>
-                <TableRow className="group/category hover:bg-muted/20 has-aria-expanded:bg-muted/20">
+                <TableRow variant="group">
                   <TableHead className="pt-2 w-7">
-                    <CollapsibleTrigger className="group" aria-label={`Show guests in ${party.partyName}`}>
+                    <CollapsibleTrigger className="group rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={`Show guests in ${party.partyName}`}>
                       <ChevronDown className="w-4 h-4 group-data-[state=open]:rotate-180 transition-transform"/>
                     </CollapsibleTrigger>
                   </TableHead>
@@ -136,7 +137,7 @@ export default function RsvpTable ({
                   <TableHead className="p-0">
                     {hasNotes && (
                       <Popover>
-                        <PopoverTrigger aria-label={`Notes from ${party.partyName}`}>
+                        <PopoverTrigger className="rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={`Notes from ${party.partyName}`}>
                           <MessageSquareText className="w-5 h-5 cursor-pointer hover:text-gold-ink"/>
                         </PopoverTrigger>
                         <PopoverContent className="w-64">
@@ -162,14 +163,10 @@ export default function RsvpTable ({
                     {hasActions && (
                       <div className="flex justify-end">
                         {onEditParty && (
-                          <Button variant={'ghost'} size={'icon-sm'} aria-label={`Edit ${party.partyName}`} onClick={() => onEditParty(party)}>
-                            <Pencil />
-                          </Button>
+                          <RowActionButton action="edit" aria-label={`Edit ${party.partyName}`} onClick={() => onEditParty(party)} />
                         )}
                         {onRemoveParty && (
-                          <Button variant={'ghost-destructive'} size={'icon-sm'} aria-label={`Remove ${party.partyName}`} onClick={() => onRemoveParty(party)}>
-                            <Trash2 />
-                          </Button>
+                          <RowActionButton action="delete" aria-label={`Remove ${party.partyName}`} onClick={() => onRemoveParty(party)} />
                         )}
                       </div>
                     )}
@@ -177,7 +174,7 @@ export default function RsvpTable ({
                 </TableRow>
               </TableHeader>
               <CollapsibleContent asChild>
-                <TableBody className="last:border-b-2 border-burg">
+                <TableBody variant="group">
                   {guests.map((guest, idx) => (
                     <GuestRow
                       key={guest.id}
@@ -188,7 +185,7 @@ export default function RsvpTable ({
                     />
                   ))}
                   {party.respondedAt && (
-                    <TableRow className="hover:bg-transparent">
+                    <TableRow variant="static">
                       <TableCell/>
                       {/* pl-8 lines this up with the guest names, which sit after a tree icon. */}
                       <TableCell colSpan={5} className="pt-1 pb-3 pl-8 text-xs text-muted-foreground whitespace-normal">

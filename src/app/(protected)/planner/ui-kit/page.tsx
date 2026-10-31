@@ -1,4 +1,4 @@
-import { Plus, SquarePen, Trash2 } from "lucide-react";
+import { ChevronDown, Plus, Receipt, SquarePen, Trash2 } from "lucide-react";
 
 import { requireUser } from "@/lib/require-user";
 
@@ -8,7 +8,12 @@ import { Input } from "@/components/ui/input";
 import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group";
 import { Select, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Spinner } from "@/components/ui/spinner";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Textarea } from "@/components/ui/textarea";
+
+import RowActionButton from "@/components/row-action-button";
+import TableEmptyState from "@/components/table-empty-state";
+import TableSkeleton from "@/components/table-skeleton";
 
 import ColorSwatch from "@/components/ui-kit/color-swatch";
 import DialogDemo from "@/components/ui-kit/dialog-demo";
@@ -160,6 +165,11 @@ const BADGE_TONES = [
   { variant: "warning", label: "Deposit", usage: "In between, needs approval" },
   { variant: "danger", label: "Declined", usage: "Declined, rejected, failed" },
 ] as const;
+
+const TABLE_ROWS = [
+  { name: "Bouquets", estimated: "$1,200.00", paid: "$400.00", balance: "$800.00" },
+  { name: "Centerpieces", estimated: "$950.00", paid: "$0.00", balance: "$950.00" },
+];
 
 export default async function UiKitPage() {
   await requireUser();
@@ -337,6 +347,86 @@ export default async function UiKitPage() {
           <li>Titles are noun phrases in title case: &ldquo;Add Category&rdquo;, &ldquo;Edit Flowers&rdquo;. Confirms ask: &ldquo;Delete Flowers?&rdquo;</li>
           <li>Buttons say what happens: Add, Save changes, Delete, Remove, Import. The toast repeats the verb: &ldquo;Category added&rdquo;.</li>
           <li>Mark a field with an error using aria-invalid and put the message right under it.</li>
+        </ul>
+      </KitSection>
+
+      <KitSection
+        id="tables"
+        title="Tables"
+        description="Each table keeps its own markup and column sizing. The styling comes from variants on the table parts, so every table reads the same."
+      >
+        <div className="flex flex-col gap-10">
+          <Table className="table-fixed">
+            <colgroup>
+              <col className="w-8" />
+              <col />
+              <col className="w-[18%]" />
+              <col className="w-[18%]" />
+              <col className="w-[18%]" />
+              <col className="w-18" />
+            </colgroup>
+            <TableHeader>
+              <TableRow variant="heading">
+                <TableHead variant="label" />
+                <TableHead variant="label">Category</TableHead>
+                <TableHead variant="label" numeric>Estimated</TableHead>
+                <TableHead variant="label" numeric>Paid</TableHead>
+                <TableHead variant="label" numeric>Balance</TableHead>
+                <TableHead variant="label" />
+              </TableRow>
+              <TableRow variant="group">
+                <TableHead><ChevronDown className="size-4" aria-hidden /></TableHead>
+                <TableHead className="text-lg font-bold">Flowers</TableHead>
+                <TableHead numeric className="text-lg font-bold">$2,150.00</TableHead>
+                <TableHead numeric className="text-lg font-bold">$400.00</TableHead>
+                <TableHead numeric className="text-lg font-bold">$1,750.00</TableHead>
+                <TableHead>
+                  <div className="flex justify-end">
+                    <RowActionButton action="edit" aria-label="Edit Flowers (example)" />
+                    <RowActionButton action="delete" aria-label="Delete Flowers (example)" />
+                  </div>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody variant="group">
+              {TABLE_ROWS.map((row) => (
+                <TableRow key={row.name}>
+                  <TableCell />
+                  <TableCell>{row.name}</TableCell>
+                  <TableCell numeric>{row.estimated}</TableCell>
+                  <TableCell numeric>{row.paid}</TableCell>
+                  <TableCell numeric>{row.balance}</TableCell>
+                  <TableCell>
+                    <div className="flex justify-end">
+                      <RowActionButton action="edit" aria-label={`Edit ${row.name} (example)`} />
+                      <RowActionButton action="delete" aria-label={`Delete ${row.name} (example)`} />
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <div>
+              <h3 className="mb-3 font-bold">Empty</h3>
+              <TableEmptyState icon={Receipt} message="Nothing in Flowers yet.">
+                <Button variant="ghost" size="sm"><Plus /> Add Subcategory</Button>
+              </TableEmptyState>
+            </div>
+            <div>
+              <h3 className="mb-3 font-bold">Loading</h3>
+              <TableSkeleton columns={3} rows={3} />
+            </div>
+          </div>
+        </div>
+        <ul className="mt-4 flex max-w-prose list-disc flex-col gap-1 pl-5 text-sm">
+          <li>Rows: <code>heading</code> for column labels, <code>group</code> for a party or category, <code>default</code> for its items, <code>static</code> for notes and &ldquo;Add …&rdquo; rows. Close a group with <code>&lt;TableBody variant=&quot;group&quot;&gt;</code>.</li>
+          <li>Column labels use <code>variant=&quot;label&quot;</code> and are written in sentence case; the variant sets the caps.</li>
+          <li>Money and counts take <code>numeric</code>: right-aligned, even-width digits, header included.</li>
+          <li>Edit and delete are <code>RowActionButton</code>s at the end of the row, always visible, each labelled with the row&apos;s name.</li>
+          <li>An empty table or group shows <code>TableEmptyState</code>, with the next step when there is one. A loading page shows <code>TableSkeleton</code>.</li>
+          <li>On phones nothing scrolls sideways: columns that don&apos;t fit fold into a subline under the name. Hide their cells with <code>hidden md:table-cell</code> and give their <code>&lt;col&gt;</code> a zero width on mobile.</li>
         </ul>
       </KitSection>
 
