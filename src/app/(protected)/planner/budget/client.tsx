@@ -1,9 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import { CirclePlus } from "lucide-react";
+import { CirclePlus, Receipt } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import EmptyState from "@/components/empty-state";
+import PageHeader from "@/components/page-header";
+import PlannerPage from "@/components/planner-page";
 import { StackedProgressBar, type ProgressBarLegend } from "@/components/stacked-progress-bar";
 import { Dialog } from "@/components/ui/dialog";
 
@@ -114,16 +117,17 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
         }
       }}
     >
-      <div className="flex flex-col min-h-dvh w-full bg-background text-burg px-6 py-2 md:px-12 lg:px-16">
-        {/** title */}
-        <div className="flex w-full">
-          <h1 className="page-title w-full text-center translate-y-3 md:text-start">Budget Tracker</h1>
-          <div className="hidden flex-col w-1/2 ml-auto md:flex">
-            <h2 className="page-title text-2xl text-end">{toCurrency(totalPaidAmount)} Paid</h2>
-            <h3 className="section-title text-end text-sm">{toCurrency(totalBalance)} Remaining</h3>
-          </div>
-        </div>
-        <hr className="my-5 bg-accent"/>
+      <PlannerPage>
+        <PageHeader
+          title="Budget"
+          subtitle={`${toCurrency(totalPaidAmount)} paid · ${toCurrency(totalBalance)} remaining`}
+          actions={
+            <Button onClick={() => setActiveDialog(DialogType.Category)}>
+              <CirclePlus />
+              Add category
+            </Button>
+          }
+        />
 
         <div className="flex flex-col justify-center items-center md:hidden">
           <h2 className="page-title text-6xl text-olivine-ink">{toCurrency(totalPaidAmount)}</h2>
@@ -158,26 +162,30 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
         {/** Category breakdown */}
         <div className="mt-10 w-full">
           <h3 className="text-muted-foreground text-lg mb-2">By Category Breakdown</h3>
-          <CategoryTable
-            data={budgetCategories}
-            onAddSubcategory={onAddSubcategory}
-            onDeleteCategory={onDeleteCategory}
-            onDeleteSubcategory={onDeleteSubcategory}
-            onEditCategory={onEditCategory}
-            onEditSubcategory={onEditSubcategory}
-          />
-          <Button
-            variant={'ghost'}
-            className="ml-5"
-            onClick={() => {
-              setActiveDialog(DialogType.Category)
-            }}
-          >
-            Add Category
-            <CirclePlus/>
-          </Button>
+          {budgetCategories.length === 0 ? (
+            <EmptyState
+              size="page"
+              icon={Receipt}
+              title="Nothing in the budget yet"
+              message="Add a category, like Venue or Flowers, then the costs inside it."
+            >
+              <Button onClick={() => setActiveDialog(DialogType.Category)}>
+                <CirclePlus />
+                Add category
+              </Button>
+            </EmptyState>
+          ) : (
+            <CategoryTable
+              data={budgetCategories}
+              onAddSubcategory={onAddSubcategory}
+              onDeleteCategory={onDeleteCategory}
+              onDeleteSubcategory={onDeleteSubcategory}
+              onEditCategory={onEditCategory}
+              onEditSubcategory={onEditSubcategory}
+            />
+          )}
         </div>
-      </div>
+      </PlannerPage>
 
       {/* Each dialog owns its own form state; rendering it conditionally mounts/unmounts (and resets) it. */}
       {activeDialog === DialogType.Category && (

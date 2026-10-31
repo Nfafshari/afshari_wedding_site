@@ -20,8 +20,8 @@ The couple's private tools. Every page follows the same shape — a Server Compo
 - **Dashboard** (`/planner`) — task progress, budget rollup, section cards
 - **Checklist** (`/planner/checklist`) — tasks grouped by category, filtered via URL search params
 - **Budget** (`/planner/budget`) — categories and subcategories with estimated/paid amounts and a stacked progress bar
-- **RSVP Manager** (`/planner/rsvp`) — read-only guest table
-- **Registry Claims** (`/planner/registry-manager`) — registry items and who claimed what
+- **RSVPs** (`/planner/rsvp`) — read-only guest table
+- **Registry** (`/planner/registry-manager`) — registry items and who claimed what
 - **Documents** (`/planner/doc-archive`) — vendor quotes, contracts, receipts
 
 ## Getting started

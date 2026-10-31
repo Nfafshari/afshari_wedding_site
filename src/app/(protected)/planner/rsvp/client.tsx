@@ -5,6 +5,9 @@ import { CirclePlus, FileUp, Users } from "lucide-react";
 
 import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import EmptyState from "@/components/empty-state";
+import PageHeader from "@/components/page-header";
+import PlannerPage from "@/components/planner-page";
 import RsvpTable from "@/components/rsvp/rsvp-table";
 import RsvpStats from "@/components/rsvp/rsvp-stats";
 import PendingPlusOnes from "@/components/rsvp/pending-plus-ones";
@@ -89,26 +92,39 @@ export default function Rsvp({ invitations }: RsvpProps) {
         }
       }}
     >
-      <div className="relative w-full min-h-full bg-background text-burg px-6 pb-10 md:py-2 md:px-12 lg:px-16">
-        {/** title */}
-        <div className="flex flex-col w-full md:flex-row">
-          <h1 className="page-title w-full text-center translate-y-3 md:text-start">RSVP Tracker</h1>
-          <div className="flex flex-col mt-4 md:w-1/2 md:ml-auto md:mt-0">
-            <h2 className="page-title text-xl text-center md:text-2xl md:text-end">{stats.respondedParties} of {invitations.length} Parties Responded</h2>
-            <h3 className="section-title text-sm text-center md:text-end">{stats.invited} Guests Invited</h3>
-          </div>
-        </div>
-        <hr className="mb-5 mt-2 bg-accent md:my-5" />
+      <PlannerPage>
+        <PageHeader
+          title="RSVPs"
+          subtitle={`${stats.respondedParties} of ${invitations.length} parties responded · ${stats.invited} guests invited`}
+          actions={
+            <>
+              <Button onClick={() => setActiveDialog(DialogType.AddParty)}>
+                <CirclePlus />
+                Add party
+              </Button>
+              <Button variant="secondary" onClick={() => setActiveDialog(DialogType.ImportGuests)}>
+                <FileUp />
+                Import
+              </Button>
+            </>
+          }
+        />
 
         <RsvpStats stats={stats} />
-        <hr className="mb-5 mt-2 bg-accent md:my-5" />
+        <hr className="my-5 bg-accent" />
 
         {invitations.length === 0 ? (
-          <div className="flex flex-col w-full items-center justify-center gap-2 py-16 text-center text-burg/70">
-            <Users className="w-12 h-12 text-gold/50" strokeWidth={1} />
-            <h2 className="page-subtitle text-lg md:text-2xl">No one on the guest list yet</h2>
-            <p className="text-sm text-muted">Add a party below, or import your whole list from a CSV.</p>
-          </div>
+          <EmptyState
+            size="page"
+            icon={Users}
+            title="No one on the guest list yet"
+            message="Add a party, or import your whole list from a CSV."
+          >
+            <Button onClick={() => setActiveDialog(DialogType.AddParty)}>
+              <CirclePlus />
+              Add party
+            </Button>
+          </EmptyState>
         ) : (
           <>
             <PendingPlusOnes parties={invitations} onSetPlusOneStatus={onSetPlusOneStatus} />
@@ -123,30 +139,7 @@ export default function Rsvp({ invitations }: RsvpProps) {
             <RsvpTable parties={awaiting} emptyMessage="Everyone has responded!" {...handlers} />
           </>
         )}
-
-        {/** Add / import buttons at the end of the list */}
-        <div className="flex w-full justify-start gap-2 mt-4">
-          <Button
-            variant={'ghost'}
-            className="ml-5"
-            onClick={() => {
-              setActiveDialog(DialogType.AddParty);
-            }}
-          >
-            Add Party
-            <CirclePlus />
-          </Button>
-          <Button
-            variant={'ghost'}
-            onClick={() => {
-              setActiveDialog(DialogType.ImportGuests);
-            }}
-          >
-            Import CSV
-            <FileUp />
-          </Button>
-        </div>
-      </div>
+      </PlannerPage>
 
       {activeDialog === DialogType.AddParty &&
         <PartyDialog

@@ -13,8 +13,11 @@ import { BudgetCategory } from "./budget/page";
 import { Invitations } from "./rsvp/page";
 import { RegistryItem } from "./registry-manager/page";
 import BudgetCard from "../../../components/budget-card";
-import PlannerStatCard from "@/components/planner-stat-card";
+import PageHeader from "@/components/page-header";
+import PlannerPage from "@/components/planner-page";
 import RegistryCard from "@/components/registry-card";
+import { Stat, StatRow } from "@/components/stat";
+import SummaryCard from "@/components/summary-card";
 
 interface PlannerProps {
   invitations: Invitations[];
@@ -70,9 +73,8 @@ export default function Planner({
 
 
   return (
-    <div className="flex flex-col w-full min-h-5/6 items-center">
-      <h1 className="page-title p-2 pb-0"> Sept. 11th 2027 </h1>
-      <h2 className="page-subtitle p-2 pt-0"> {daysTilWedding} Days to &ldquo;I Do&rdquo; </h2>
+    <PlannerPage>
+      <PageHeader title="Dashboard" subtitle={`Sept. 11, 2027 · ${daysTilWedding} days to go`} subtitlePlacement="end" />
       <div className="flex-col w-full h-auto">
         <div className="flex flex-col items-center w-full h-full pt-2">
           <Field className="w-2/3">
@@ -144,46 +146,31 @@ export default function Planner({
         </div>
       </div>
 
-      <div className="flex flex-col w-full h-1/4 justify-center px-10 py-5 text-burg md:px-20">
+      <div className="flex flex-col w-full justify-center py-5">
         <p className="uppercase tracking-[0.16em]">RSVPs</p>
-        <Link 
+        <Link
           href={'/planner/rsvp'}
-          className="w-full h-full border-2 border-s-0 border-e-0 border-gold/50 hover:shadow-sm cursor-pointer"
+          className="w-full border-2 border-s-0 border-e-0 border-gold/50 hover:shadow-sm cursor-pointer"
         >
-          <div className="grid grid-cols-2 h-full md:grid-cols-4">
-            <div className="hidden flex-col w-full h-auto border-e-2 border-e-gold/50 justify-center pl-5 md:flex">
-              <p className="stat-number">{rsvpStats.invited}</p>
-              <p className="muted-caption pt-2">Invited</p>
-            </div>
-            <div className="hidden flex-col w-full h-auto justify-center pl-5 md:border-e-2 md:border-e-gold/50 md:flex">
-              <p className="stat-number">{rsvpStats.respondedParties}</p>
-              <p className="muted-caption pt-2">Parties Responded</p>
-            </div>
-            <div className="flex flex-col w-full h-auto justify-center items-center md:items-baseline md:pl-5">
-              <p className="stat-number text-olivine-ink">{rsvpStats.attending}</p>
-              <p className="muted-caption text-base pt-2 md:text-lg">Attending</p>
-            </div>
-            <div className="flex flex-col w-full h-auto border-s-2 border-s-gold/50 justify-center items-center md:items-baseline md:pl-5">
-              <p className="stat-number text-destructive">{rsvpStats.declined}</p>
-              <p className="muted-caption text-base pt-2 md:text-lg">Declined</p>
-            </div>
-          </div>
+          {/* Phones show only the two answers; the first two stats join from md. */}
+          <StatRow className="grid-cols-2 md:grid-cols-4">
+            <Stat value={rsvpStats.invited} caption="Invited" className="hidden md:flex" />
+            <Stat value={rsvpStats.respondedParties} caption="Parties Responded" className="hidden md:flex" />
+            <Stat value={rsvpStats.attending} caption="Attending" tone="success" />
+            <Stat value={rsvpStats.declined} caption="Declined" tone="danger" />
+          </StatRow>
         </Link>
       </div>
 
-      <div className="w-full mb-10 px-10 py-5 md:px-20 lg:mb-0">
+      <div className="w-full py-5">
         <div className="grid grid-cols-[repeat(auto-fit,minmax(18rem,30rem))] justify-center gap-4">
           <BudgetCard budgetCategories={budgetCategories} />
           <RegistryCard registryItems={registryItems} />
-          <PlannerStatCard
-            title="Documents Archive"
-            href={'/planner/doc-archive'}
-            linkLabel="View documents"
-            value={documentCount}
-            caption={documentCount === 1 ? 'Document' : 'Documents'}
-          />
+          <SummaryCard title="Documents" href="/planner/doc-archive" linkLabel="View documents">
+            <Stat value={documentCount} caption={documentCount === 1 ? 'Document' : 'Documents'} className="flex-1 justify-center py-6" />
+          </SummaryCard>
         </div>
       </div>
-    </div>
+    </PlannerPage>
   );
 }

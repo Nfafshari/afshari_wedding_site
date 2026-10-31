@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 import {
   Sidebar,
@@ -16,11 +17,12 @@ import {
 } from "@/components/ui/sidebar";
 
 interface SidebarProps {
-  navItems: { label: string, href: string }[]
+  navItems: readonly { label: string, href: string }[]
 }
 
 export function NavSidebar({ navItems }: SidebarProps) {
   const { isMobile, setOpenMobile } = useSidebar();
+  const pathname = usePathname();
 
   if (!isMobile) {
     return null;
@@ -39,10 +41,11 @@ export function NavSidebar({ navItems }: SidebarProps) {
                 <SidebarMenuItem key={item.href}>
                   <SidebarMenuButton
                     asChild
-                    className="text-3xl border-b-3 border-burg py-5"
+                    className="text-3xl border-b-3 border-burg py-5 aria-[current=page]:border-l-4 aria-[current=page]:border-l-gold aria-[current=page]:font-bold"
                   >
                     <Link
                       href={item.href}
+                      aria-current={pathname === item.href ? "page" : undefined}
                       onClick={() => setOpenMobile(false)}
                     >
                       {item.label}
@@ -54,7 +57,15 @@ export function NavSidebar({ navItems }: SidebarProps) {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        <Link
+          href="/sign-out"
+          className="px-2 py-3 text-xl text-burg/70 underline-offset-4 hover:text-burg hover:underline"
+          onClick={() => setOpenMobile(false)}
+        >
+          Sign out
+        </Link>
+      </SidebarFooter>
     </Sidebar>
   );
 }

@@ -12,6 +12,10 @@ import RemoveClaimDialog from "./dialogs/remove-claim-dialog";
 
 import type { RegistryClaim, RegistryItem } from "./page";
 import { Button } from "@/components/ui/button";
+import EmptyState from "@/components/empty-state";
+import PageHeader from "@/components/page-header";
+import PlannerPage from "@/components/planner-page";
+import { Stat, StatRow } from "@/components/stat";
 import { countFullyClaimedItems, getClaimedQuantity } from "@/lib/registry";
 
 interface RegistryManagerProps {
@@ -71,41 +75,38 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
         }
       }}
     >
-      <div className="w-full min-h-full bg-background text-burg px-6 pb-10 md:py-2 md:pb-10 md:px-12 lg:px-16">
-        {/** title */}
-        <div className="flex flex-col w-full md:flex-row">
-          <h1 className="page-title w-full text-center translate-y-3 md:text-start">Registry Manager</h1>
-        </div>
-        <hr className="my-5 bg-accent"/>
+      <PlannerPage>
+        <PageHeader
+          title="Registry"
+          actions={
+            <Button onClick={() => setActiveDialog(DialogType.AddItem)}>
+              <CirclePlus />
+              Add item
+            </Button>
+          }
+        />
 
-        {/** summary stats */}
-        <div className="flex flex-col w-full justify-center items-center">
-          <div className="grid grid-cols-3 w-full">
-            <div className="flex flex-col w-full justify-center items-center py-3 pl-2 md:pl-5">
-              <p className="stat-number">{totalItems}</p>
-              <p className="muted-caption pt-2">Items</p>
-            </div>
-            <div className="flex flex-col w-full justify-center items-center text-center py-3 pl-2 border-s-2 border-s-gold/50 md:pl-5">
-              <p className="stat-number text-olivine-ink">{fullyClaimedItems}</p>
-              <p className="muted-caption pt-2">Fully Claimed</p>
-            </div>
-            <div className="flex flex-col w-full justify-center items-center text-center py-3 pl-2 border-s-2 border-s-gold/50 md:pl-5">
-              <p className="stat-number">{totalGiftsClaimed}</p>
-              <p className="muted-caption pt-2">Gifts Claimed</p>
-            </div>
-          </div>
-          <hr className="mb-5 mt-2 w-9/10 bg-accent md:my-5"/>
-        </div>
-        
+        <StatRow className="grid-cols-3">
+          <Stat value={totalItems} caption="Items" />
+          <Stat value={fullyClaimedItems} caption="Fully Claimed" tone="success" />
+          <Stat value={totalGiftsClaimed} caption="Gifts Claimed" />
+        </StatRow>
+        <hr className="my-5 bg-accent" />
 
         {/** items */}
-        <div className="flex flex-col w-full mt-6">
+        <div className="flex flex-col w-full">
           {registryItems.length === 0 ? (
-            <div className="flex flex-col w-full items-center justify-center gap-2 py-16 text-center text-burg/70">
-              <Gift className="w-12 h-12 text-gold/50" strokeWidth={1} />
-              <h2 className="page-subtitle text-lg md:text-2xl">Nothing on the registry yet</h2>
-              <p className="text-sm text-muted">Add your first item to start tracking who is buying what.</p>
-            </div>
+            <EmptyState
+              size="page"
+              icon={Gift}
+              title="Nothing on the registry yet"
+              message="Add your first item to start tracking who is buying what."
+            >
+              <Button onClick={() => setActiveDialog(DialogType.AddItem)}>
+                <CirclePlus />
+                Add item
+              </Button>
+            </EmptyState>
           ) : (
             registryItems.map((item) => (
               <RegistryRow
@@ -117,22 +118,8 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
               />
             ))
           )}
-
-          {/** Add item button at the end of the list */}
-          <div className="flex w-full justify-start mt-2">
-            <Button
-              variant={'ghost'}
-              className="ml-5"
-              onClick={() => {
-                setActiveDialog(DialogType.AddItem)
-              }}
-            >
-              Add Item
-              <CirclePlus/>
-            </Button>
-          </div>
         </div>
-      </div>
+      </PlannerPage>
 
       {activeDialog === DialogType.AddItem &&
         <AddItemDialog
