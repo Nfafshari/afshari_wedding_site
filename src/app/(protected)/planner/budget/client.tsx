@@ -12,6 +12,7 @@ import { toCurrency } from "@/lib/utils";
 import CategoryTable from "./components/category-table";
 import AddCategoryDialog from "./components/budget-dialogs/add-category-dialog";
 import AddSubcategoryDialog from "./components/budget-dialogs/add-subcategory-dialog";
+import RemoveCategoryDialog from "./components/budget-dialogs/remove-category-dialog";
 import RemoveSubcategoryDialog from "./components/budget-dialogs/remove-subcategory-dialog";
 import EditCategoryDialog from "./components/budget-dialogs/edit-category-dialog";
 import EditSubcategoryDialog from "./components/budget-dialogs/edit-subcategory-dialog";
@@ -26,7 +27,8 @@ export enum DialogType {
   Subcategory = 'subcategory',
   Edit =        'edit',
   EditSubcat =  'editSubcat',
-  Delete =      'delete'
+  Delete =      'delete',
+  DeleteCat =   'deleteCat'
 }
 
 export default function Budget ({ budgetCategories }: BudgetProps ) {
@@ -37,7 +39,7 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
   const [activeBudgetCategoryId, setActiveBudgetCategoryId] = useState<number | null>(null);
   const [activeSubcategoryId, setActiveSubcategoryId] = useState<number | null>(null);
 
-  // The category a pending edit refers to.
+  // The category a pending edit or delete refers to.
   const categoryToUpdate = budgetCategories.find(
     (budgetCategory) => budgetCategory.id === activeBudgetCategoryId
   );
@@ -83,6 +85,12 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
     setActiveDialog(DialogType.Delete);
   }
 
+  // Opens the delete-confirmation dialog for a specific category.
+  function onDeleteCategory (budgetCategoryId: number) {
+    setActiveBudgetCategoryId(budgetCategoryId);
+    setActiveDialog(DialogType.DeleteCat);
+  }
+
   // Opens the edit/delete dialog for a specific category.
   function onEditCategory (budgetCategoryId: number) {
     setActiveBudgetCategoryId(budgetCategoryId);
@@ -98,7 +106,7 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
   return (
     <Dialog
       // Form dialogs share this root. Delete confirmations bring their own (ConfirmDialog).
-      open={activeDialog !== DialogType.None && activeDialog !== DialogType.Delete}
+      open={activeDialog !== DialogType.None && activeDialog !== DialogType.Delete && activeDialog !== DialogType.DeleteCat}
       onOpenChange={(open) => {
         // Radix calls this with the *next* open state. Only act on close.
         if (!open) {
@@ -153,6 +161,7 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
           <CategoryTable
             data={budgetCategories}
             onAddSubcategory={onAddSubcategory}
+            onDeleteCategory={onDeleteCategory}
             onDeleteSubcategory={onDeleteSubcategory}
             onEditCategory={onEditCategory}
             onEditSubcategory={onEditSubcategory}
@@ -189,6 +198,14 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
       {activeDialog === DialogType.Delete && (
         <RemoveSubcategoryDialog
           subcategoryToRemove={activeSubcategory}
+          onSuccess={closeDialog}
+          onCancel={closeDialog}
+        />
+      )}
+
+      {activeDialog === DialogType.DeleteCat && (
+        <RemoveCategoryDialog
+          categoryToRemove={categoryToUpdate}
           onSuccess={closeDialog}
           onCancel={closeDialog}
         />

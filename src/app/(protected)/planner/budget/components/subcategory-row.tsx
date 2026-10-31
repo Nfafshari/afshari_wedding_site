@@ -1,13 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Trash2, SquarePen } from "lucide-react";
-
 import { TableRow, TableCell } from "@/components/ui/table";
-import { Button } from "@/components/ui/button";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import BudgetStatusBadge from "@/components/budget-status-badge";
+import RowActionButton from "@/components/row-action-button";
 
 import { BudgetStatus } from "@/generated/prisma/enums";
 import { parseMoneyString, toAmount, toCurrency } from "@/lib/utils";
@@ -163,39 +161,24 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
     await runAction("Status updated", () => updateBudgetSubcategory(subcategory.id, { status: updatedStatus }));
   }
 
+  const actions = (
+    <>
+      <RowActionButton action="edit" aria-label={`Edit ${subcategory.name}`} onClick={() => onEditSubcategory(subcategory.id)} />
+      <RowActionButton action="delete" aria-label={`Delete ${subcategory.name}`} onClick={() => onDeleteSubcategory(subcategory.id)} />
+    </>
+  );
+
   return (
     <TableRow key={subcategory.id}>
-      <TableCell>
-        <div className="flex justify-center">
-          {/** Show trash can on desktop and edit on mobile */}
-          <Button
-            variant={'ghost-destructive'}
-            size={'icon-sm'}
-            aria-label={`Delete ${subcategory.name}`}
-            className="hidden ml-1 md:flex"
-            onClick={() => {
-              onDeleteSubcategory(subcategory.id)
-            }}
-          >
-            <Trash2 />
-          </Button>
-          <Button
-            variant={'ghost'}
-            aria-label={`Edit ${subcategory.name}`}
-            size={'icon-sm'}
-            className="ml-1 md:hidden"
-            onClick={() => {
-              onEditSubcategory(subcategory.id)
-            }}
-          >
-            <SquarePen />
-          </Button>
-        </div>
-      </TableCell>
+      <TableCell/>
       <TableCell className="font-medium">
-        <div className="flex flex-col overflow-x-scroll pb-2 text-lg md:hidden">
-          {subcategory.name}
-          <p className="text-xs text-gold-ink">{toCurrency(subcategory.estimatedCost)} est. <span className="text-sm leading-tight">•</span> {toCurrency(subcategory.paidAmount)} paid</p>
+        {/* Mobile: est/paid and the actions fold into sublines, since their columns are hidden. */}
+        <div className="flex flex-col pb-2 text-lg md:hidden">
+          <div className="flex flex-col overflow-x-auto">
+            {subcategory.name}
+            <p className="text-xs text-gold-ink tabular-nums">{toCurrency(subcategory.estimatedCost)} est. <span className="text-sm leading-tight">•</span> {toCurrency(subcategory.paidAmount)} paid</p>
+          </div>
+          <div className="-ml-2 mt-1 flex">{actions}</div>
         </div>
         <div className="hidden md:flex md:flex-col">
           <InputGroup className="border-transparent rounded-sm hover:border-border w-fit min-w-20">
@@ -222,12 +205,12 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
           {(serverError && serverErrorField === null) && <p className="text-destructive/80 text-xs">{serverError}</p>}
         </div>
       </TableCell>
-      <TableCell className="hidden md:table-cell">
-        <InputGroup className="border-transparent rounded-sm hover:border-border w-fit min-w-20">
+      <TableCell numeric className="hidden md:table-cell">
+        <InputGroup className="ml-auto border-transparent rounded-sm hover:border-border w-fit min-w-20">
           <InputGroupAddon className="text-lg text-foreground">$</InputGroupAddon>
           <InputGroupInput
             aria-invalid={Boolean(fieldErrors.estimatedCost || serverErrorField === 'estimatedCost')}
-            className="field-sizing-content flex-none! text-lg! pl-px!"
+            className="field-sizing-content flex-none! text-lg! pl-px! tabular-nums"
             defaultValue={toAmount(subcategory.estimatedCost)}
             onBlur={(e) => {
               // Snap to canonical formatting first; garbage is left alone so the
@@ -252,12 +235,12 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
         {fieldErrors.estimatedCost && <p className="overflow-x-scroll text-destructive/80 text-xs">{fieldErrors.estimatedCost}</p>}
         {(serverError && serverErrorField === 'estimatedCost') && <p className="overflow-x-scroll text-destructive/80 text-xs">{serverError}</p>}
       </TableCell>
-      <TableCell className="hidden md:table-cell pl-0!">
-        <InputGroup className="border-transparent rounded-sm hover:border-border w-fit min-w-20">
+      <TableCell numeric className="hidden md:table-cell">
+        <InputGroup className="ml-auto border-transparent rounded-sm hover:border-border w-fit min-w-20">
           <InputGroupAddon className="text-lg text-foreground">$</InputGroupAddon>
           <InputGroupInput
             aria-invalid={Boolean(fieldErrors.paidAmount || serverErrorField === 'paidAmount')}
-            className="field-sizing-content flex-none! text-lg! pl-px!"
+            className="field-sizing-content flex-none! text-lg! pl-px! tabular-nums"
             defaultValue={toAmount(subcategory.paidAmount)}
             onBlur={(e) => {
               // Snap to canonical formatting first; garbage is left alone so the
@@ -282,7 +265,7 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
         {fieldErrors.paidAmount && <p className="overflow-x-scroll text-destructive/80 text-xs">{fieldErrors.paidAmount}</p>}
         {(serverError && serverErrorField === 'paidAmount') && <p className="overflow-x-scroll text-destructive/80 text-xs">{serverError}</p>}
       </TableCell>
-      <TableCell className="text-right text-lg">{toCurrency(subcategory.estimatedCost - subcategory.paidAmount)}</TableCell>
+      <TableCell numeric className="text-lg">{toCurrency(subcategory.estimatedCost - subcategory.paidAmount)}</TableCell>
       <TableCell className="flex flex-col items-end text-right">
         <div className="hidden md:flex">
           <Select
@@ -293,7 +276,7 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
           >
             <SelectTrigger
               align="left"
-              className="border-transparent [&_svg]:text-transparent hover:[&_svg]:text-muted-foreground focus:ring-0! hover:border-border"
+              className="border-transparent [&_svg]:text-transparent hover:[&_svg]:text-muted-foreground hover:border-border"
             >
               <SelectValue />
             </SelectTrigger>
@@ -317,6 +300,9 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
         <div className="mt-3.5 md:hidden">
           <BudgetStatusBadge status={subcategory.status} />
         </div>
+      </TableCell>
+      <TableCell className="hidden md:table-cell">
+        <div className="flex justify-end">{actions}</div>
       </TableCell>
     </TableRow>
   );
