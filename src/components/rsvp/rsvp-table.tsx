@@ -14,7 +14,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import RowActionButton from "@/components/row-action-button";
-import TableEmptyState from "@/components/table-empty-state";
+import EmptyState from "@/components/empty-state";
 import type { Attendance } from "@/generated/prisma/enums";
 import { getMembers, getPlusOnes, isCountedAttending } from "@/lib/rsvp";
 
@@ -80,7 +80,7 @@ export default function RsvpTable ({
   const hasActions = onEditParty !== undefined || onRemoveParty !== undefined;
 
   if (parties.length === 0) {
-    return <TableEmptyState icon={Users} message={emptyMessage} />;
+    return <EmptyState icon={Users} title={emptyMessage} />;
   }
 
   return (

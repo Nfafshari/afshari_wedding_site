@@ -1,11 +1,14 @@
 "use client";
 
 import Link from "next/link";
+import { Gift } from "lucide-react";
 
+import EmptyState from "@/components/empty-state";
+import SummaryCard from "@/components/summary-card";
+import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { countFullyClaimedItems, getLatestClaim } from "@/lib/registry";
 import type { RegistryItem } from "../app/(protected)/planner/registry-manager/page";
-import { ChevronRight } from "lucide-react";
 
 interface RegistryCardProps {
   registryItems: RegistryItem[];
@@ -20,28 +23,14 @@ export default function RegistryCard({ registryItems }: RegistryCardProps) {
   const latestClaim = getLatestClaim(registryItems);
 
   return (
-    <div className="flex flex-col gap-3 p-4 border border-burg/8 rounded-lg bg-olivine/15">
-      <div className="flex items-baseline justify-between gap-2">
-        <p className="section-title pr-2">Registry Manager</p>
-        <Link
-          href={'/planner/budget'}
-          className="flex items-center text-sm text-burg/70 whitespace-nowrap hover:text-burg"
-        >
-          <span className="underline">View Registry</span>
-          <ChevronRight className="w-3.5 h-3.5" />
-        </Link>
-      </div>
+    <SummaryCard title="Registry" href="/planner/registry-manager" linkLabel="View registry">
 
       {totalItems === 0 ? (
-        <div className="flex flex-col flex-1 gap-3 items-center justify-center py-6">
-          <p className="text-center text-sm text-burg/70">Nothing on the registry yet.</p>
-          <Link
-            href={'/planner/registry-manager'}
-            className="text-sm underline text-burg/70 hover:text-burg"
-          >
-            Add your first item
-          </Link>
-        </div>
+        <EmptyState icon={Gift} title="Nothing on the registry yet.">
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/planner/registry-manager">Add your first item</Link>
+          </Button>
+        </EmptyState>
       ) : (
         <div className="flex flex-col flex-1 gap-4 justify-center">
           <div className="flex flex-col items-center">
@@ -66,6 +55,6 @@ export default function RegistryCard({ registryItems }: RegistryCardProps) {
           )}
         </div>
       )}
-    </div>
+    </SummaryCard>
   );
 }

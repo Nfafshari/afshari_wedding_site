@@ -1,4 +1,4 @@
-import { ChevronDown, Plus, Receipt, SquarePen, Trash2 } from "lucide-react";
+import { ChevronDown, CirclePlus, FileUp, Plus, Receipt, SquarePen, Trash2, Users } from "lucide-react";
 
 import { requireUser } from "@/lib/require-user";
 
@@ -12,7 +12,10 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Textarea } from "@/components/ui/textarea";
 
 import RowActionButton from "@/components/row-action-button";
-import TableEmptyState from "@/components/table-empty-state";
+import EmptyState from "@/components/empty-state";
+import PageHeader from "@/components/page-header";
+import { Stat, StatRow } from "@/components/stat";
+import SummaryCard from "@/components/summary-card";
 import TableSkeleton from "@/components/table-skeleton";
 
 import ColorSwatch from "@/components/ui-kit/color-swatch";
@@ -410,9 +413,9 @@ export default async function UiKitPage() {
           <div className="grid gap-6 md:grid-cols-2">
             <div>
               <h3 className="mb-3 font-bold">Empty</h3>
-              <TableEmptyState icon={Receipt} message="Nothing in Flowers yet.">
+              <EmptyState icon={Receipt} title="Nothing in Flowers yet.">
                 <Button variant="ghost" size="sm"><Plus /> Add Subcategory</Button>
-              </TableEmptyState>
+              </EmptyState>
             </div>
             <div>
               <h3 className="mb-3 font-bold">Loading</h3>
@@ -425,8 +428,55 @@ export default async function UiKitPage() {
           <li>Column labels use <code>variant=&quot;label&quot;</code> and are written in sentence case; the variant sets the caps.</li>
           <li>Money and counts take <code>numeric</code>: right-aligned, even-width digits, header included.</li>
           <li>Edit and delete are <code>RowActionButton</code>s at the end of the row, always visible, each labelled with the row&apos;s name.</li>
-          <li>An empty table or group shows <code>TableEmptyState</code>, with the next step when there is one. A loading page shows <code>TableSkeleton</code>.</li>
+          <li>An empty table or group shows <code>EmptyState</code>, with the next step when there is one. A loading page shows <code>TableSkeleton</code>.</li>
           <li>On phones nothing scrolls sideways: columns that don&apos;t fit fold into a subline under the name. Hide their cells with <code>hidden md:table-cell</code> and give their <code>&lt;col&gt;</code> a zero width on mobile.</li>
+        </ul>
+      </KitSection>
+
+      <KitSection
+        id="page-chrome"
+        title="Page chrome"
+        description="Every planner page sits in PlannerPage (max 1152px, centred) and opens with a PageHeader. Summaries use Stat rows, the dashboard uses SummaryCard, and anything with no data yet shows an EmptyState."
+      >
+        <div className="flex flex-col gap-10">
+          <div className="rounded-lg border border-dashed p-4">
+            <PageHeader
+              title="RSVPs"
+              subtitle="12 of 40 parties responded · 96 guests invited"
+              actions={
+                <>
+                  <Button><CirclePlus /> Add party</Button>
+                  <Button variant="secondary"><FileUp /> Import</Button>
+                </>
+              }
+            />
+            <StatRow className="grid-cols-3">
+              <Stat value={96} caption="Invited" />
+              <Stat value={58} caption="Attending" tone="success" />
+              <Stat value={7} caption="Declined" tone="danger" />
+            </StatRow>
+          </div>
+
+          <div className="grid gap-6 md:grid-cols-2">
+            <SummaryCard title="Documents" href="/planner/doc-archive" linkLabel="View documents">
+              <Stat value={14} caption="Documents" className="flex-1 justify-center py-6" />
+            </SummaryCard>
+            <EmptyState
+              size="page"
+              icon={Users}
+              title="No one on the guest list yet"
+              message="Add a party, or import your whole list from a CSV."
+            >
+              <Button><CirclePlus /> Add party</Button>
+            </EmptyState>
+          </div>
+        </div>
+        <ul className="mt-4 flex max-w-prose list-disc flex-col gap-1 pl-5 text-sm">
+          <li>One vocabulary: Dashboard, Checklist, RSVPs, Budget, Registry, Documents. The nav, the page title and the dashboard card all use the same word.</li>
+          <li>The page&apos;s main &ldquo;Add …&rdquo; is the primary button in the header. On phones the actions stack under the title.</li>
+          <li>The subtitle is one line that sums up the page. Bigger numbers go in a StatRow below the header. A page with no actions can put it on the title&apos;s line, right-aligned, with <code>subtitlePlacement=&quot;end&quot;</code> (the Dashboard does).</li>
+          <li>An empty page shows <code>EmptyState size=&quot;page&quot;</code> with the same Add button, never a blank area.</li>
+          <li>The nav marks the current page in gold and with <code>aria-current=&quot;page&quot;</code>, in the header and the phone menu.</li>
         </ul>
       </KitSection>
 

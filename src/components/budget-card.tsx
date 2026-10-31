@@ -2,12 +2,15 @@
 
 import Link from "next/link";
 import { Cell, Pie, PieChart } from "recharts";
+import { Receipt } from "lucide-react";
 
 import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 import { getTopCategoriesWithOther } from "@/lib/budget";
 import { toCurrency } from "@/lib/utils";
+import EmptyState from "@/components/empty-state";
+import { Button } from "@/components/ui/button";
+import SummaryCard from "@/components/summary-card";
 import type { BudgetCategory } from "../app/(protected)/planner/budget/page";
-import { ChevronRight } from "lucide-react";
 
 interface BudgetCardProps {
   budgetCategories: BudgetCategory[];
@@ -42,28 +45,16 @@ export default function BudgetCard({ budgetCategories }: BudgetCardProps) {
   const totalEstimated = slices.reduce((sum, slice) => sum + slice.estimated, 0);
 
   return (
-    <div className="flex flex-col gap-3 p-4 border border-burg/8 rounded-lg bg-olivine/15">
-      <div className="flex items-baseline justify-between gap-2">
-        <p className="section-title">Budget Breakdown</p>
-        <Link
-          href={'/planner/budget'}
-          className="flex items-center text-sm text-burg/70 whitespace-nowrap hover:text-burg"
-        >
-          <span className="underline">View Budget</span>
-          <ChevronRight className="w-3.5 h-3.5" />
-        </Link>
-      </div>
+    <SummaryCard title="Budget" href="/planner/budget" linkLabel="View budget">
 
       {/* Covers both "no categories" and "categories that all cost nothing" — Recharts
           draws nothing for all-zero data, which would leave a silently blank card. */}
       {totalEstimated <= 0 ? (
-        <div className="flex flex-col flex-1 gap-3 items-center justify-center py-6">
-          <div className="size-24 rounded-full border-8 border-(--budget-slice-other)/40" />
-          <p className="text-center text-sm text-burg/70">Nothing budgeted yet.</p>
-          <Link href={'/planner/budget'} className="text-sm underline text-burg/70 hover:text-burg">
-            Add to your budget
-          </Link>
-        </div>
+        <EmptyState icon={Receipt} title="Nothing budgeted yet.">
+          <Button asChild variant="ghost" size="sm">
+            <Link href="/planner/budget">Add to your budget</Link>
+          </Button>
+        </EmptyState>
       ) : (
         <>
           <ChartContainer config={chartConfig} className="w-full max-h-44 aspect-square">
@@ -115,6 +106,6 @@ export default function BudgetCard({ budgetCategories }: BudgetCardProps) {
           </ul>
         </>
       )}
-    </div>
+    </SummaryCard>
   );
 }

@@ -1,13 +1,16 @@
 "use client";
 
 import { useState } from "react";
-import { CirclePlus, LucideIcon, SquarePen } from "lucide-react";
+import { CirclePlus, ListChecks, LucideIcon, SquarePen } from "lucide-react";
 import * as Lucide from "lucide-react"
 
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button"
 import FilterButton from "@/components/filter-button";
+import EmptyState from "@/components/empty-state";
+import PageHeader from "@/components/page-header";
+import PlannerPage from "@/components/planner-page";
 import { Dialog } from "@/components/ui/dialog"
 import AddCategoryDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/add-category-dialog";
 import AddTaskDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/add-task-dialog";
@@ -88,127 +91,137 @@ export default function Checklist({ categories }: ChecklistProps) {
         }
       }}
     >
-      <div className="flex flex-col w-full min-h-full px-6 pt-4 md:py-5 md:px-12 lg:px-16">
-        {/** Header */}
-        <div className="w-full">
-          <div className="flex w-full">
-            <h1 className="page-title text-start">Checklist</h1>
-            <h2 className="page-subtitle ml-auto">{totalTasksDone} of {totalTasks} done</h2>
-          </div>
-          <Field className="w-full">
-            <FieldLabel htmlFor="task-progress" className="text-burg/70 font-bold">
-              <span className="ml-auto uppercase tracking-widest">{progress}% | {daysToWedding} Days Remaining</span>
-            </FieldLabel>
-            <Progress
-              id="task-progress"
-              value={Number(progress)}
-            />
-          </Field>
-          <hr className="flex w-full border border-gold mt-3" />
-        </div>
+      <PlannerPage>
+        <PageHeader
+          title="Checklist"
+          subtitle={`${totalTasksDone} of ${totalTasks} done`}
+          actions={
+            <Button onClick={() => setActiveDialog(DialogType.Category)}>
+              <CirclePlus />
+              Add category
+            </Button>
+          }
+        />
 
-        {/** Filter buttons */}
-        <div className="flex flex-col w-full h-auto mt-2 py-2">
-          <div className="flex flex-wrap w-full justify-center px-5 py-2 gap-2 md:px-10">
-            {categories.map((category, idx) => (
-              <FilterButton
-                isActive={category.name === activeTab}
-                key={`${category.name}-${idx}`}
-                onClick={() => {
-                  setParams((params) => params.set('category', category.name))
-                }}
-              >
-                {category.name}
-              </FilterButton>
-            ))}
-            <FilterButton
-              isActive={activeTab === 'All'}
-              key={'all'}
-              onClick={() => {
-                setParams((params) => params.delete('category'))
-              }}
-            >
-              All
-            </FilterButton>
-          </div>
+        {categories.length === 0 ? (
+          <EmptyState
+            size="page"
+            icon={ListChecks}
+            title="Nothing on the checklist yet"
+            message="Add a category, like Venue or Attire, then the tasks inside it."
+          >
+            <Button onClick={() => setActiveDialog(DialogType.Category)}>
+              <CirclePlus />
+              Add category
+            </Button>
+          </EmptyState>
+        ) : (
+          <>
+            <div className="w-full">
+              <Field className="w-full">
+                <FieldLabel htmlFor="task-progress" className="text-burg/70 font-bold">
+                  <span className="ml-auto uppercase tracking-widest">{progress}% | {daysToWedding} Days Remaining</span>
+                </FieldLabel>
+                <Progress
+                  id="task-progress"
+                  value={Number(progress)}
+                />
+              </Field>
+            </div>
 
-          {/** Category Cards */}
-          <div className="grid gap-3 w-full h-full pt-5 md:grid-cols-2 lg:grid-cols-3">
-            {filteredCategories.map((category, idx) => {
-              const CategoryIcon = (Lucide[category.icon as keyof typeof Lucide] ?? Lucide.Astroid) as LucideIcon;
-              
-              // calculate the number of tasks that are done in this category
-              let numOfTasksDone = 0;
-              for (let i = 0; i < category.tasks.length; i++) {
-                if (category.tasks[i].status) {
-                  numOfTasksDone += 1;
-                }
-              }
-
-              return (
-                <div
-                  key={`${category.name}-${idx}`}
-                  className="flex flex-col mx-5 p-2 rounded-sm border border-olivine/20 "
-                >
-                  <div className="p-2 flex items-center border-b border-b-burg/50">
-                    <CategoryIcon className="mr-2" />
-                    <h2 className="page-title text-2xl">{category.name}</h2>
-                    <h3 className="ml-auto page-subtitle">{numOfTasksDone}/{category.tasks.length}</h3>
-                  </div>
-
-                  {/** Tasks */}
-                  <div className="p-2 flex-col">
-                    {category.tasks.map((task) => (
-                      <Task
-                        key={task.id}
-                        task={task}
-                        onDelete={() => {
-                          onTaskDelete(task.id)
-                        }}
-                      />
-                    ))}
-                  </div>
-                  <div className="ml-1 px-1 flex items-center">
-                    <Button
-                      variant={'ghost'}
-                      onClick={() => {
-                        setActiveDialog(DialogType.Task);
-                        setActiveCategoryId(category.id);
-                      }}
-                    >
-                      Add Task
-                      <CirclePlus/>
-                    </Button>
-                  </div>
-                  <Button
-                    variant={'ghost'}
-                    size={'icon-sm'}
-                    aria-label={`Edit ${category.name}`}
-                    className="ml-auto mt-auto"
+            {/** Filter buttons */}
+            <div className="flex flex-col w-full h-auto mt-2 py-2">
+              <div className="flex flex-wrap w-full justify-center px-5 py-2 gap-2 md:px-10">
+                {categories.map((category, idx) => (
+                  <FilterButton
+                    isActive={category.name === activeTab}
+                    key={`${category.name}-${idx}`}
                     onClick={() => {
-                      setActiveDialog(DialogType.Edit);
-                      setActiveCategoryId(category.id);
+                      setParams((params) => params.set('category', category.name))
                     }}
                   >
-                    <SquarePen />
-                  </Button>
-                </div>
-              )
-            })}
-            <button
-              className="flex justify-center items-center mx-5 border border-olivine/20 rounded-sm p-2 bg-olivine/5 cursor-pointer text-burg/70 hover:text-burg hover:shadow-sm"
-              onClick={() => {
-                setActiveDialog(DialogType.Category)
-              }}
-            >
-              <div className="p-2 flex flex-col items-center justify-center text-center hover:cursor-pointer">
-                <CirclePlus className="w-10 h-10" />
-                <h2 className="page-subtitle text-inherit">Add Category</h2>
+                    {category.name}
+                  </FilterButton>
+                ))}
+                <FilterButton
+                  isActive={activeTab === 'All'}
+                  key={'all'}
+                  onClick={() => {
+                    setParams((params) => params.delete('category'))
+                  }}
+                >
+                  All
+                </FilterButton>
               </div>
-            </button>
-          </div>
-        </div>
-      </div>
+
+              {/** Category Cards */}
+              <div className="grid gap-3 w-full h-full pt-5 md:grid-cols-2 lg:grid-cols-3">
+                {filteredCategories.map((category, idx) => {
+                  const CategoryIcon = (Lucide[category.icon as keyof typeof Lucide] ?? Lucide.Astroid) as LucideIcon;
+              
+                  // calculate the number of tasks that are done in this category
+                  let numOfTasksDone = 0;
+                  for (let i = 0; i < category.tasks.length; i++) {
+                    if (category.tasks[i].status) {
+                      numOfTasksDone += 1;
+                    }
+                  }
+
+                  return (
+                    <div
+                      key={`${category.name}-${idx}`}
+                      className="flex flex-col mx-5 p-2 rounded-sm border border-olivine/20 "
+                    >
+                      <div className="p-2 flex items-center border-b border-b-burg/50">
+                        <CategoryIcon className="mr-2" />
+                        <h2 className="page-title text-2xl">{category.name}</h2>
+                        <h3 className="ml-auto page-subtitle">{numOfTasksDone}/{category.tasks.length}</h3>
+                      </div>
+
+                      {/** Tasks */}
+                      <div className="p-2 flex-col">
+                        {category.tasks.map((task) => (
+                          <Task
+                            key={task.id}
+                            task={task}
+                            onDelete={() => {
+                              onTaskDelete(task.id)
+                            }}
+                          />
+                        ))}
+                      </div>
+                      <div className="ml-1 px-1 flex items-center">
+                        <Button
+                          variant={'ghost'}
+                          onClick={() => {
+                            setActiveDialog(DialogType.Task);
+                            setActiveCategoryId(category.id);
+                          }}
+                        >
+                          Add Task
+                          <CirclePlus/>
+                        </Button>
+                      </div>
+                      <Button
+                        variant={'ghost'}
+                        size={'icon-sm'}
+                        aria-label={`Edit ${category.name}`}
+                        className="ml-auto mt-auto"
+                        onClick={() => {
+                          setActiveDialog(DialogType.Edit);
+                          setActiveCategoryId(category.id);
+                        }}
+                      >
+                        <SquarePen />
+                      </Button>
+                    </div>
+                  )
+                })}
+              </div>
+            </div>
+          </>
+        )}
+      </PlannerPage>
 
       {/* Each dialog owns its own form state; rendering it conditionally mounts/unmounts (and resets) it. */}
       {activeDialog === DialogType.Category && (

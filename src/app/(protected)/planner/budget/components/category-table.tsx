@@ -15,7 +15,7 @@ import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/component
 import { Button } from "@/components/ui/button";
 import BudgetStatusBadge from "@/components/budget-status-badge";
 import RowActionButton from "@/components/row-action-button";
-import TableEmptyState from "@/components/table-empty-state";
+import EmptyState from "@/components/empty-state";
 import { BudgetStatus } from "@/generated/prisma/enums";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { toCurrency } from "@/lib/utils";
@@ -201,9 +201,9 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteCategor
                   <TableRow variant="static">
                     <TableCell colSpan={7}>
                       {budgetCategory.budgetSubcategories.length === 0 ? (
-                        <TableEmptyState icon={Receipt} message={`Nothing in ${budgetCategory.name} yet.`}>
+                        <EmptyState icon={Receipt} title={`Nothing in ${budgetCategory.name} yet.`}>
                           {addSubcategoryButton}
-                        </TableEmptyState>
+                        </EmptyState>
                       ) : (
                         <div className="ml-5">{addSubcategoryButton}</div>
                       )}

@@ -1,18 +1,20 @@
 "use client";
 
+import Link from 'next/link';
 import { Menu } from 'lucide-react';
 import { usePathname } from 'next/navigation';
 
 import NavButton from '@/components/nav-button';
 import { useSidebar } from "@/components/ui/sidebar"
 import LogoSvg from './logo-svg';
+import { PLANNER_NAV_ITEMS } from '@/lib/planner-nav';
 
 export default function PlannerHeader () {
   const { toggleSidebar } = useSidebar();
   const pathname = usePathname();
 
   return(
-    <header className="z-9999 w-screen h-20 flex tracking-wide items-center bg-foreground md:h-25 md:justify-center">
+    <header className="relative z-9999 w-screen h-20 flex tracking-wide items-center bg-foreground md:h-25 md:justify-center">
       {/* Mobile menu */}
       <nav className='pl-5 flex w-full flex-row items-center md:hidden'>
         <Menu
@@ -24,27 +26,14 @@ export default function PlannerHeader () {
         </div>
       </nav>
 
-      {/* Desktop menu */}
+      {/* Desktop menu: three pages either side of the logo. */}
       <nav className='hidden px-7 w-full h-35 flex-row items-center md:flex'>
         <div className='flex w-full gap-3 items-center justify-end'>
-          <NavButton
-            href={'/planner'}
-            isActive={pathname === '/planner'}
-          >
-            Dashboard
-          </NavButton>
-          <NavButton
-            href={'/planner/checklist'}
-            isActive={pathname === '/planner/checklist'}
-          >
-            Checklist
-          </NavButton>
-          <NavButton
-            href={'/planner/rsvp'}
-            isActive={pathname === '/planner/rsvp'}
-          >
-            RSVP Manager
-          </NavButton>
+          {PLANNER_NAV_ITEMS.slice(0, 3).map((item) => (
+            <NavButton key={item.href} href={item.href} isActive={pathname === item.href}>
+              {item.label}
+            </NavButton>
+          ))}
         </div>
 
         <div className='script-title hidden justify-center mx-6 items-center md:flex'>
@@ -54,26 +43,21 @@ export default function PlannerHeader () {
         </div>
 
         <div className='flex w-full gap-3 items-center justify-start'>
-          <NavButton
-            href={'/planner/budget'}
-            isActive={pathname === '/planner/budget'}
-          >
-            Budget
-          </NavButton>
-          <NavButton
-            href={'/planner/registry-manager'}
-            isActive={pathname === '/planner/registry-manager'}
-          >
-            Registry Claims
-          </NavButton>
-          <NavButton
-            href={'/planner/doc-archive'}
-            isActive={pathname === '/planner/doc-archive'}
-          >
-            Documents
-          </NavButton>
+          {PLANNER_NAV_ITEMS.slice(3).map((item) => (
+            <NavButton key={item.href} href={item.href} isActive={pathname === item.href}>
+              {item.label}
+            </NavButton>
+          ))}
         </div>
       </nav>
+
+      {/* Kept apart from the page links so it never reads as a seventh page. */}
+      <Link
+        href='/sign-out'
+        className='absolute top-2 right-4 hidden rounded-sm text-sm text-cream/80 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold md:block'
+      >
+        Sign out
+      </Link>
     </header>
   );
 }
