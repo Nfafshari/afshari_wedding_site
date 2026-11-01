@@ -175,7 +175,7 @@ export default function Checklist({ categories }: ChecklistProps) {
                       <div className="p-2 flex items-center border-b border-b-burg/50">
                         <CategoryIcon className="mr-2" />
                         <h2 className="page-title text-2xl">{category.name}</h2>
-                        <h3 className="ml-auto page-subtitle">{numOfTasksDone}/{category.tasks.length}</h3>
+                        <p className="ml-auto page-subtitle">{numOfTasksDone}/{category.tasks.length}</p>
                       </div>
 
                       {/** Tasks */}
@@ -198,7 +198,7 @@ export default function Checklist({ categories }: ChecklistProps) {
                             setActiveCategoryId(category.id);
                           }}
                         >
-                          Add Task
+                          Add task
                           <CirclePlus/>
                         </Button>
                       </div>

@@ -41,9 +41,58 @@ These are enforced by `tests/auth-guards.test.ts`. A Server Action must start wi
 - Schema changes need a migration: `pnpm prisma migrate dev --name <name>`. Never edit an applied migration.
 - Choose `onDelete` deliberately (Cascade for children meaningless without a parent; Restrict for records of real activity). Index foreign keys.
 
-## Styling
+## UI
 
-Theme colors are defined in `src/app/globals.css` and exposed as Tailwind color tokens: `burg` (= foreground), `cream` (= background), `gold`, `olivine`. Use them as `text-burg`, `bg-cream`, etc. Prefer the semantic roles (`bg-card`, `text-muted-foreground`, `bg-accent`, `text-destructive`); for gold or olivine text and icons on light backgrounds use `text-gold-ink` / `text-olivine-ink`, never the brand shades. No hex values or raw Tailwind palette classes. Fonts: headings, titles and stat numbers use the type utilities (Cormorant); everything else is Lora by default, so don't set a font family by hand. Radius and shadows come from tokens (`rounded-sm`…`rounded-xl`, `shadow-xs`…`shadow-lg`), never bare `rounded`/`shadow` or arbitrary values; form fields get `bg-field` from the base components, so don't override their background. Buttons and badges: pick a `variant` by purpose (`ghost` for quiet actions, `ghost-destructive` for trash icons, `destructive` to confirm a delete, `outline` with `aria-pressed` for toggles; badge tones `neutral`/`success`/`warning`/`danger`) and don't add color classes to `Button`, `Badge` or fields. Icon-only buttons need an `aria-label`. Dialogs: forms use `FormDialog` (inside the page's `<Dialog>` root; inner non-submit buttons need `type="button"`), deletes use `ConfirmDialog`; titles are noun phrases ("Add Category"), buttons say what happens ("Save changes", "Delete"), and field errors use `aria-invalid` on the field. Planner pages wrap their content in `PlannerPage` and open with `PageHeader` (the main "Add …" goes in its `actions`); data that isn't there yet shows `EmptyState`, never a blank area. Nav labels, page titles and card titles use one word per page, from `src/lib/planner-nav.ts`. Every color, role, type style, radius and shadow is shown live at `/planner/ui-kit`. Mobile-first with `md:`/`lg:`. Use existing utility classes (`page-title`, `section-title`, `stat-number`). (The README still describes the older `bg-(--burg)` form; treat the code as correct.)
+Every rule below is shown live at [`/planner/ui-kit`](../src/app/(protected)/planner/ui-kit/page.tsx); each heading names its section anchor. Check the kit before adding anything new, and add a kit example when you add a variant.
+
+### Tokens (`#palette`, `#roles`, `#contrast`)
+
+- Colors come from tokens in `src/app/globals.css`. Use the semantic roles (`bg-card`, `text-muted-foreground`, `bg-accent`, `text-destructive`) or the brand tokens (`text-burg`, `bg-cream`, `gold`, `olivine`). **No hex values and no raw Tailwind palette classes** (`text-gray-500`, `bg-white`).
+- Gold or olivine text and icons on a light background use `text-gold-ink` / `text-olivine-ink`, never the brand shades. Brand gold works as text only on burgundy and in the logo and script title.
+- `text-muted` is a surface, not a text color: secondary text is `text-muted-foreground` or `text-burg/70`. Text opacity stops at `/70`, and error text is solid `text-destructive`.
+- Every text/background pairing in use is listed in the kit's contrast table and must pass WCAG AA (4.5:1 text, 3:1 large text and UI parts). A new pairing, including a see-through one like `bg-olivine/15`, gets a row there.
+- Allowed exceptions (from the NFA-40 scan): Google's brand colors in `google-sign-in-button.tsx`, the Recharts selectors in `ui/chart.tsx`, and `bg-black/…` scrims behind overlays (sheet, lightbox, image hover).
+
+### Type, radius, elevation (`#type`, `#radius`, `#elevation`)
+
+- Headings, titles and stat numbers use the type utilities (`page-title`, `page-subtitle`, `section-title`, `stat-number`, `muted-caption`); everything else is Lora by default. Don't set a font family by hand.
+- Radius and shadows come from tokens (`rounded-sm`…`rounded-xl`, `shadow-xs`…`shadow-lg`), never bare `rounded`/`shadow` or arbitrary values.
+
+### Components (`#primitives`)
+
+- Pick a `variant` by purpose and don't add color classes to `Button`, `Badge` or fields: `default` for the page's one main action, `secondary` beside it, `ghost` for quiet actions and edit icons, `ghost-destructive` for trash icons, `destructive` only to confirm a delete, `outline` with `aria-pressed` for toggles. Badge tones are `neutral`/`success`/`warning`/`danger`.
+- Form fields are see-through with a `border-input` outline, from the base components; don't give them a background. Mark an invalid field with `aria-invalid` and put its message right under it.
+
+### Dialogs (`#modals`)
+
+- Forms use `FormDialog`, inside the page's `<Dialog>` root (inner non-submit buttons need `type="button"`). Deletes use `ConfirmDialog`. Nothing else uses `AlertDialog`.
+- Titles are noun phrases in title case ("Add Category", "Edit Flowers"); confirms ask ("Delete Flowers?") and say the consequence. Buttons say what happens ("Add", "Save changes", "Delete"), and the toast repeats the verb ("Category added").
+- Esc and a click outside close a form, never while it saves. After a delete, focus moves to the page header's main action (handled by `ConfirmDialog`).
+
+### Tables (`#tables`)
+
+- Each table keeps its own markup and `<colgroup>`; styling comes from the variants on `ui/table.tsx`: rows `heading` / `group` / `default` / `static`, `<TableBody variant="group">` to close a group, `<TableHead variant="label">` for column labels (written in sentence case), and `numeric` on money and count cells.
+- Row actions are `RowActionButton`s at the end of the row, always visible, each labelled with the row's name.
+- On phones nothing scrolls sideways: columns that don't fit fold into a subline under the name (`hidden md:table-cell` on the cell, a zero-width `<col>` on mobile).
+
+### Page chrome (`#page-chrome`)
+
+- Planner pages wrap their content in `PlannerPage` and open with `PageHeader`; the main "Add …" goes in its `actions`. Data that isn't there yet shows `EmptyState` with that same action, never a blank area. Loading routes show `TableSkeleton` (or a skeleton of the page's shape).
+- Nav labels, page titles and card titles use one word per page, from `src/lib/planner-nav.ts`: Dashboard, Checklist, RSVPs, Budget, Registry, Documents.
+
+### Copy
+
+- Buttons and labels in sentence case ("Add party", "Save changes"); dialog and page titles in title case.
+- Say what happens or what to fix: "Enter an email like name@example.com", not "Invalid input". Empty states say what will show up and offer the next step.
+
+### Accessibility
+
+- Every interactive element is a real `<button>` or `<a>` (never an icon or `div` with `onClick`) and shows a visible focus ring when reached by keyboard.
+- Icon-only buttons need an `aria-label` that names the row or thing they act on. Toggles use `aria-pressed`; the current nav link uses `aria-current="page"`.
+- Never rely on color alone: pair a status color with a word or an icon.
+- Mobile-first with `md:`/`lg:`; every planner page must work at 320px with no sideways scroll.
+
+(The README still describes the older `bg-(--burg)` form; treat the code as correct.)
 
 ## Tests
 

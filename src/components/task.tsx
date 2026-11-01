@@ -31,8 +31,12 @@ export default function Task ({ task, onDelete }: TaskProps) {
   }
 
   return(
-    <div className={`flex py-2 w-full border-b border-b-burg/50 items-center ${task?.status ? 'text-burg/65' : 'text-burg'}`}>
+    <div className={`flex py-2 w-full border-b border-b-burg/50 items-center ${task?.status ? 'text-burg/70' : 'text-burg'}`}>
       <button
+        type="button"
+        aria-label={`Mark ${task?.name} done`}
+        aria-pressed={Boolean(task?.status)}
+        className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         onClick={() => {
           toggleTaskDone(!task?.status);
         }}

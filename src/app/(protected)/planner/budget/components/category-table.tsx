@@ -149,7 +149,7 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteCategor
               onAddSubcategory(budgetCategory.id)
             }}
           >
-            Add Subcategory
+            Add subcategory
             <CirclePlus/>
           </Button>
         );

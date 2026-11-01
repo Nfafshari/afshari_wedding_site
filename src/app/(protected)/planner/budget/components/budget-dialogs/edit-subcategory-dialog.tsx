@@ -188,8 +188,8 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
                 }
               }}
             />
-            {fieldErrors.name && <p className="text-destructive/80 text-xs">{fieldErrors.name}</p>}
-            {(serverError && serverErrorField === 'name') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+            {fieldErrors.name && <p className="text-destructive text-xs">{fieldErrors.name}</p>}
+            {(serverError && serverErrorField === 'name') && <p className="text-destructive text-xs">{serverError}</p>}
           </Field>
 
           <Field className="flex w-full text-burg mt-2">
@@ -226,8 +226,8 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
                 }}
               />
             </InputGroup>
-            {fieldErrors.estimatedCost && <p className="text-destructive/80 text-xs">{fieldErrors.estimatedCost}</p>}
-            {(serverError && serverErrorField === 'estimatedCost') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+            {fieldErrors.estimatedCost && <p className="text-destructive text-xs">{fieldErrors.estimatedCost}</p>}
+            {(serverError && serverErrorField === 'estimatedCost') && <p className="text-destructive text-xs">{serverError}</p>}
           </Field>
 
           <Field className="flex w-full text-burg mt-2">
@@ -264,8 +264,8 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
                 }}
               />
             </InputGroup>
-            {fieldErrors.paidAmount && <p className="text-destructive/80 text-xs">{fieldErrors.paidAmount}</p>}
-            {(serverError && serverErrorField === 'paidAmount') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+            {fieldErrors.paidAmount && <p className="text-destructive text-xs">{fieldErrors.paidAmount}</p>}
+            {(serverError && serverErrorField === 'paidAmount') && <p className="text-destructive text-xs">{serverError}</p>}
           </Field>
 
           <Field className="flex w-full text-burg mt-2">

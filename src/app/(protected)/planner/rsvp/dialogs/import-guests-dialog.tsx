@@ -108,8 +108,8 @@ export default function ImportGuestsDialog({ onSuccess }: ImportGuestsDialogProp
           className="cursor-pointer"
           onChange={(e) => onFileChosen(e.target.files?.[0])}
         />
-        {fileError && <p className="text-destructive/80 text-xs">{fileError}</p>}
-        {(serverError && serverErrorField === 'file') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {fileError && <p className="text-destructive text-xs">{fileError}</p>}
+        {(serverError && serverErrorField === 'file') && <p className="text-destructive text-xs">{serverError}</p>}
         {preview && (
           <p className="text-xs text-burg/70">
             Ready to import {preview.length === 1 ? '1 party' : `${preview.length} parties`} with{' '}
@@ -120,7 +120,7 @@ export default function ImportGuestsDialog({ onSuccess }: ImportGuestsDialogProp
 
       {/* general / no-field errors show at the bottom */}
       {(serverError && serverErrorField !== 'file') && (
-        <p className="text-destructive/80 text-xs">{serverError}</p>
+        <p className="text-destructive text-xs">{serverError}</p>
       )}
     </FormDialog>
   );

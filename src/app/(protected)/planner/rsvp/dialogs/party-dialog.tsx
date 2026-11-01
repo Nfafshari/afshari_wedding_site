@@ -212,8 +212,8 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
             }
           }}
         />
-        {fieldErrors.partyName && <p className="text-destructive/80 text-xs">{fieldErrors.partyName}</p>}
-        {(serverError && serverErrorField === 'partyName') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.partyName && <p className="text-destructive text-xs">{fieldErrors.partyName}</p>}
+        {(serverError && serverErrorField === 'partyName') && <p className="text-destructive text-xs">{serverError}</p>}
       </Field>
 
       <Field className="flex w-full text-burg mt-2">
@@ -254,8 +254,8 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
         >
           Add guest <CirclePlus />
         </Button>
-        {fieldErrors.members && <p className="text-destructive/80 text-xs">{fieldErrors.members}</p>}
-        {(serverError && serverErrorField === 'members') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.members && <p className="text-destructive text-xs">{fieldErrors.members}</p>}
+        {(serverError && serverErrorField === 'members') && <p className="text-destructive text-xs">{serverError}</p>}
       </Field>
 
       <Field className="flex w-full text-burg mt-2">
@@ -283,13 +283,13 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
             }
           }}
         />
-        {fieldErrors.plusOnesAllowed && <p className="text-destructive/80 text-xs">{fieldErrors.plusOnesAllowed}</p>}
-        {(serverError && serverErrorField === 'plusOnesAllowed') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.plusOnesAllowed && <p className="text-destructive text-xs">{fieldErrors.plusOnesAllowed}</p>}
+        {(serverError && serverErrorField === 'plusOnesAllowed') && <p className="text-destructive text-xs">{serverError}</p>}
       </Field>
 
       {/* general / no-field errors show at the bottom */}
       {(serverError && (serverErrorField === null || serverErrorField === 'invitation' || serverErrorField === 'guest')) && (
-        <p className="text-destructive/80 text-xs">{serverError}</p>
+        <p className="text-destructive text-xs">{serverError}</p>
       )}
     </FormDialog>
   );

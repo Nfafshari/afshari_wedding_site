@@ -89,9 +89,9 @@ export default function EditCategoryDialog({ categories, categoryToUpdate, onSuc
               clearServerError();
             }}
           />
-          {isEmptyInput && <p className="text-destructive/80 text-xs">Category name cannot be empty</p>}
-          {!isUniqueCategory && <p className="text-destructive/80 text-xs">Category already exists!</p>}
-          {serverError && !isDeleteCategoryActive && <p className="text-destructive/80 text-xs">{serverError}</p>}
+          {isEmptyInput && <p className="text-destructive text-xs">Category name cannot be empty</p>}
+          {!isUniqueCategory && <p className="text-destructive text-xs">Category already exists!</p>}
+          {serverError && !isDeleteCategoryActive && <p className="text-destructive text-xs">{serverError}</p>}
         </Field>
         <div className="flex flex-col w-full items-start text-burg">
           Icon:

@@ -30,3 +30,12 @@ export function contrastRatio(a: Rgb, b: Rgb) {
 export function meetsAA(ratio: number, kind: ContrastKind) {
   return ratio >= MIN_RATIO[kind];
 }
+
+/**
+ * The color you see when `foreground` is painted at `alpha` (0-1) over `background`,
+ * like `text-burg/70` on the page. Contrast is measured against this, not the solid color.
+ */
+export function blend(foreground: Rgb, background: Rgb, alpha: number): Rgb {
+  const mix = (f: number, b: number) => Math.round(f * alpha + b * (1 - alpha));
+  return [mix(foreground[0], background[0]), mix(foreground[1], background[1]), mix(foreground[2], background[2])];
+}

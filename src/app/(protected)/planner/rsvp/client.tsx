@@ -129,13 +129,13 @@ export default function Rsvp({ invitations }: RsvpProps) {
           <>
             <PendingPlusOnes parties={invitations} onSetPlusOneStatus={onSetPlusOneStatus} />
 
-            <h3 className="text-xl font-bold text-left text-olivine-ink">ATTENDING</h3>
+            <h2 className="text-xl font-bold text-left uppercase text-olivine-ink">Attending</h2>
             <RsvpTable parties={attending} emptyMessage="No one has said yes yet." {...handlers} />
 
-            <h3 className="text-xl font-bold text-left text-destructive mt-10">DECLINED</h3>
+            <h2 className="text-xl font-bold text-left uppercase text-destructive mt-10">Declined</h2>
             <RsvpTable parties={declined} emptyMessage="No one has declined." {...handlers} />
 
-            <h3 className="text-xl font-bold text-left text-burg/70 mt-10">AWAITING RESPONSE</h3>
+            <h2 className="text-xl font-bold text-left uppercase text-burg/70 mt-10">Awaiting response</h2>
             <RsvpTable parties={awaiting} emptyMessage="Everyone has responded!" {...handlers} />
           </>
         )}

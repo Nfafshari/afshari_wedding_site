@@ -2,7 +2,7 @@
 
 Manual verification checklist. Run this **against the deployed production URL** after every release — not against `localhost`, and not before the deploy. A gate that only ran pre-deploy has not proven the deploy worked.
 
-**Time:** ~15 minutes
+**Time:** ~20 minutes
 **Run on:** desktop browser + a real phone (or devtools mobile emulation at 375px)
 
 ---
@@ -99,7 +99,7 @@ Observed destination: `________________`
 |---|---|---|
 | 3.1 | Load `/planner` | Renders with real data, not placeholder numbers |
 | 3.2 | Check task progress indicator | Reflects actual completed/total counts |
-| 3.3 | Click the arrow beside **Up Next** tasks | Navigates to `/planner/checklist` |
+| 3.3 | Click a **Next Tasks** tile | Navigates to `/planner/checklist` |
 | 3.4 | Click through to each section card | Each lands on the right page |
 
 - [ ] Section 3 complete
@@ -206,21 +206,42 @@ Real phone preferred. Otherwise devtools at **375px**.
 
 ---
 
-## 10. Error handling & sign-out
+## 10. Keyboard, focus and the UI kit
+
+Keyboard only: no mouse from 10.1 to 10.7. Run the reflow steps in devtools at **320px**.
 
 | # | Action | Expected |
 |---|---|---|
-| 10.1 | Trigger any validation error | Error appears inline on the right field |
-| 10.2 | Confirm a success toast from any mutation | Toast appears and auto-dismisses |
-| 10.3 | Load a nonsense URL, e.g. `/planner/nope` | 404 page, not a crash or stack trace |
-| 10.4 | Sign out | Lands on `/sign-out`, session cleared |
-| 10.5 | After signing out, load `/planner` | Redirected to `/sign-in` — session really is gone |
+| 10.1 | On any planner page press Tab from the top | Focus ring visible on every stop, in reading order; the current page's nav link is announced as current (`aria-current="page"`) |
+| 10.2 | At 320px, Tab to the menu button and press Enter | Menu opens; the current page is marked with a gold bar; Esc closes it |
+| 10.3 | On Budget, Tab to a header "Add category", press Enter, then Tab through the form | Dialog opens with focus inside; Tab cycles within it (no trap, no escape to the page) |
+| 10.4 | Press Esc | Dialog closes and focus returns to "Add category" |
+| 10.5 | Tab to a row's trash icon (`ZZTEST` row), press Enter, then Enter on Delete | Confirm names the row; after the delete, focus lands on the header's main button, not the top of the page |
+| 10.6 | On Checklist, Tab to a task's circle and press Space | Task toggles; a screen reader hears "Mark … done, toggle button" |
+| 10.7 | On Documents, Tab to a document card | Card shows a focus ring; Enter opens the PDF in a new tab |
+| 10.8 | Load each planner page at 320, 768 and 1280px | No sideways scroll; header buttons stack under the title on phones; tables fold extra columns into the name's subline |
+| 10.9 | Load `/planner/ui-kit` and scroll to **Contrast** | Every row says Pass or a written Exception; no Fail |
+| 10.10 | On the kit page, check Modals, Tables and Page chrome | Each demo renders and its dialogs open and close |
 
 - [ ] Section 10 complete
 
 ---
 
-## 11. Cleanup
+## 11. Error handling & sign-out
+
+| # | Action | Expected |
+|---|---|---|
+| 11.1 | Trigger any validation error | Error appears inline on the right field |
+| 11.2 | Confirm a success toast from any mutation | Toast appears and auto-dismisses |
+| 11.3 | Load a nonsense URL, e.g. `/planner/nope` | 404 page, not a crash or stack trace |
+| 11.4 | Sign out from the header link (desktop) and from the menu's footer (phone) | Each lands on `/sign-out`, session cleared |
+| 11.5 | After signing out, load `/planner` | Redirected to `/sign-in` — session really is gone |
+
+- [ ] Section 11 complete
+
+---
+
+## 12. Cleanup
 
 - [ ] Search each planner page for `ZZTEST` — **zero results remain**
 - [ ] Budget totals match their pre-test values

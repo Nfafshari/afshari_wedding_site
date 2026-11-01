@@ -71,7 +71,7 @@ export default function DocArchive({ docs }: DocArchiveProps) {
                   <div key={doc.id} className="relative flex flex-col w-full h-45 rounded-lg bg-muted/20 border border-border hover:shadow-sm has-[a:active]:translate-y-px has-[a:active]:-translate-x-px md:h-60 lg:h-80">
                     {/* Cover div with link underneath edit button so that the edit button does not trigger opening the pdf */}
                     <a
-                      className="absolute inset-0 z-10"
+                      className="absolute inset-0 z-10 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                       href={doc.link}
                       target='_blank'
                       rel='noopener noreferrer'
@@ -84,7 +84,7 @@ export default function DocArchive({ docs }: DocArchiveProps) {
                     {/* Icon area */}
                     <div className="flex flex-col w-full h-3/5 md:h-2/3 mt-2 justify-center items-center ">
                       <Icon className="w-20 h-20 md:w-30 md:h-30 lg:w-40 lg:h-40" strokeWidth={0.5}/>
-                      <p className="text-muted text-sm md:text-base mt-2">Created On: {doc.createdAt.toLocaleDateString()}</p>
+                      <p className="text-muted-foreground text-sm md:text-base mt-2">Added {doc.createdAt.toLocaleDateString()}</p>
                     </div>
 
                     {/* footer text area */}

@@ -199,10 +199,10 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
               }}
             />
           </InputGroup>
-          {fieldErrors.name && <p className="text-destructive/80 text-xs">{fieldErrors.name}</p>}
-          {(serverError && serverErrorField === 'name') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+          {fieldErrors.name && <p className="text-destructive text-xs">{fieldErrors.name}</p>}
+          {(serverError && serverErrorField === 'name') && <p className="text-destructive text-xs">{serverError}</p>}
           {/* Unexpected server failures come back with no field (see action.ts), so they'd otherwise be invisible. Fall back to showing them on the row's widest cell. */}
-          {(serverError && serverErrorField === null) && <p className="text-destructive/80 text-xs">{serverError}</p>}
+          {(serverError && serverErrorField === null) && <p className="text-destructive text-xs">{serverError}</p>}
         </div>
       </TableCell>
       <TableCell numeric className="hidden md:table-cell">
@@ -232,8 +232,8 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
             }}
           />
         </InputGroup>
-        {fieldErrors.estimatedCost && <p className="overflow-x-scroll text-destructive/80 text-xs">{fieldErrors.estimatedCost}</p>}
-        {(serverError && serverErrorField === 'estimatedCost') && <p className="overflow-x-scroll text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.estimatedCost && <p className="overflow-x-scroll text-destructive text-xs">{fieldErrors.estimatedCost}</p>}
+        {(serverError && serverErrorField === 'estimatedCost') && <p className="overflow-x-scroll text-destructive text-xs">{serverError}</p>}
       </TableCell>
       <TableCell numeric className="hidden md:table-cell">
         <InputGroup className="ml-auto border-transparent rounded-sm hover:border-border w-fit min-w-20">
@@ -262,8 +262,8 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
             }}
           />
         </InputGroup>
-        {fieldErrors.paidAmount && <p className="overflow-x-scroll text-destructive/80 text-xs">{fieldErrors.paidAmount}</p>}
-        {(serverError && serverErrorField === 'paidAmount') && <p className="overflow-x-scroll text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.paidAmount && <p className="overflow-x-scroll text-destructive text-xs">{fieldErrors.paidAmount}</p>}
+        {(serverError && serverErrorField === 'paidAmount') && <p className="overflow-x-scroll text-destructive text-xs">{serverError}</p>}
       </TableCell>
       <TableCell numeric className="text-lg">{toCurrency(subcategory.estimatedCost - subcategory.paidAmount)}</TableCell>
       <TableCell className="flex flex-col items-end text-right">
@@ -295,7 +295,7 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
           </Select>
           {/* The Select can't hold a client-side error (its values are enum-constrained),
               so only a server rejection can surface here. */}
-          {(serverError && serverErrorField === 'status') && <p className="overflow-x-scroll text-destructive/80 text-xs">{serverError}</p>}
+          {(serverError && serverErrorField === 'status') && <p className="overflow-x-scroll text-destructive text-xs">{serverError}</p>}
         </div>
         <div className="mt-3.5 md:hidden">
           <BudgetStatusBadge status={subcategory.status} />

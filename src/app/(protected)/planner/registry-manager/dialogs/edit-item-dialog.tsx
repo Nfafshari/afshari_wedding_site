@@ -215,8 +215,8 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
                 }
               }}
             />
-            {fieldErrors.name && <p className="text-destructive/80 text-xs">{fieldErrors.name}</p>}
-            {(serverError && serverErrorField === 'name') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+            {fieldErrors.name && <p className="text-destructive text-xs">{fieldErrors.name}</p>}
+            {(serverError && serverErrorField === 'name') && <p className="text-destructive text-xs">{serverError}</p>}
           </Field>
 
           <Field className="flex w-full text-burg mt-2">
@@ -243,8 +243,8 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
                 }
               }}
             />
-            {fieldErrors.link && <p className="text-destructive/80 text-xs">{fieldErrors.link}</p>}
-            {(serverError && serverErrorField === 'link') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+            {fieldErrors.link && <p className="text-destructive text-xs">{fieldErrors.link}</p>}
+            {(serverError && serverErrorField === 'link') && <p className="text-destructive text-xs">{serverError}</p>}
           </Field>
 
           <Field className="flex w-full text-burg mt-2">
@@ -274,8 +274,8 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
             {hasClaims && !fieldErrors.quantityWanted && (
               <p className="text-muted-foreground text-xs">{claimedTotal} already claimed.</p>
             )}
-            {fieldErrors.quantityWanted && <p className="text-destructive/80 text-xs">{fieldErrors.quantityWanted}</p>}
-            {(serverError && serverErrorField === 'quantityWanted') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+            {fieldErrors.quantityWanted && <p className="text-destructive text-xs">{fieldErrors.quantityWanted}</p>}
+            {(serverError && serverErrorField === 'quantityWanted') && <p className="text-destructive text-xs">{serverError}</p>}
           </Field>
 
           <Field className="flex w-full text-burg mt-2">
@@ -317,8 +317,8 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
                 }}
               />
             </div>
-            {fieldErrors.image && <p className="text-destructive/80 text-xs">{fieldErrors.image}</p>}
-            {(serverError && serverErrorField === 'image') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+            {fieldErrors.image && <p className="text-destructive text-xs">{fieldErrors.image}</p>}
+            {(serverError && serverErrorField === 'image') && <p className="text-destructive text-xs">{serverError}</p>}
           </Field>
 
           <Button
