@@ -75,7 +75,7 @@ export default function AddTaskDialog({ categoryId, onSuccess }: AddTaskDialogPr
                 variant="outline"
                 id="date-picker-simple"
                 aria-invalid={Boolean(serverErrorField === 'date')}
-          className="justify-start font-normal bg-field rounded-sm"
+          className="justify-start font-normal rounded-sm"
               >
                 {taskDate ? format(taskDate, "PPP") : <span>Pick a date</span>}
               </Button>

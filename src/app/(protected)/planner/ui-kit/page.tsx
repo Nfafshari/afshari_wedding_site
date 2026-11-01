@@ -41,7 +41,7 @@ const RAMPS = [
   {
     name: "Olivine",
     steps: [
-      { name: "olivine-50", note: "Input fields, sidebar", textVar: "--burgundy-800" },
+      { name: "olivine-50", note: "Sidebar", textVar: "--burgundy-800" },
       { name: "olivine-100", note: "Cards", textVar: "--burgundy-800" },
       { name: "olivine-200", note: "Borders, hover and selected", textVar: "--burgundy-800" },
       { name: "olivine-500", note: "Brand olivine. Fills only, never text", textVar: "--burgundy-800" },
@@ -70,7 +70,6 @@ const ROLES = [
   { name: "background", fg: "--foreground", note: "Page canvas" },
   { name: "card", fg: "--card-foreground", note: "Cards and panels" },
   { name: "popover", fg: "--popover-foreground", note: "Dialogs and menus" },
-  { name: "field", fg: "--foreground", note: "Inputs, textareas, selects" },
   { name: "primary", fg: "--primary-foreground", note: "Main actions" },
   { name: "secondary", fg: "--secondary-foreground", note: "Supporting actions, highlights" },
   { name: "accent", fg: "--accent-foreground", note: "Hover and selected states" },
@@ -83,8 +82,7 @@ const ROLES = [
 const PAIRS: ContrastPair[] = [
   { label: "Text on page (foreground on background)", foreground: "--foreground", background: "--background", kind: "text" },
   { label: "Text on card", foreground: "--card-foreground", background: "--card", kind: "text" },
-  { label: "Text in a field", foreground: "--foreground", background: "--field", kind: "text" },
-  { label: "Placeholder in a field", foreground: "--muted-foreground", background: "--field", kind: "text" },
+  { label: "Placeholder in a field on a dialog", foreground: "--muted-foreground", background: "--popover", kind: "text" },
   { label: "Text on muted surface", foreground: "--foreground", background: "--muted", kind: "text" },
   { label: "Text on hover and selected (accent)", foreground: "--accent-foreground", background: "--accent", kind: "text" },
   { label: "Secondary text on page", foreground: "--muted-foreground", background: "--background", kind: "text" },
@@ -113,7 +111,6 @@ const PAIRS: ContrastPair[] = [
   { label: "Input border on page", foreground: "--input", background: "--background", kind: "ui" },
   { label: "Input border on dialog", foreground: "--input", background: "--popover", kind: "ui" },
   { label: "Input border on card", foreground: "--input", background: "--card", kind: "ui" },
-  { label: "Input border on field", foreground: "--input", background: "--field", kind: "ui" },
   { label: "Focus ring on page", foreground: "--ring", background: "--background", kind: "ui" },
   { label: "Badge: neutral", foreground: "--muted-foreground", background: "--neutral-soft", kind: "text" },
   { label: "Badge: success", foreground: "--olivine-ink", background: "--success-soft", kind: "text" },
@@ -328,7 +325,7 @@ export default async function UiKitPage() {
                 <Textarea placeholder="Dietary notes" />
               </label>
             </div>
-            <p className="mt-2 text-xs text-burg/70">Fields get their olivine fill from the component; focus turns the border burgundy. Mark errors with aria-invalid.</p>
+            <p className="mt-2 text-xs text-burg/70">Fields are see-through with an olivine border, so they sit on any surface; focus turns the border burgundy. Mark errors with aria-invalid.</p>
           </div>
 
           <div>

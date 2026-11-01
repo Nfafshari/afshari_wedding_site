@@ -61,7 +61,7 @@ Every rule below is shown live at [`/planner/ui-kit`](../src/app/(protected)/pla
 ### Components (`#primitives`)
 
 - Pick a `variant` by purpose and don't add color classes to `Button`, `Badge` or fields: `default` for the page's one main action, `secondary` beside it, `ghost` for quiet actions and edit icons, `ghost-destructive` for trash icons, `destructive` only to confirm a delete, `outline` with `aria-pressed` for toggles. Badge tones are `neutral`/`success`/`warning`/`danger`.
-- Form fields get `bg-field` from the base components; don't override their background. Mark an invalid field with `aria-invalid` and put its message right under it.
+- Form fields are see-through with a `border-input` outline, from the base components; don't give them a background. Mark an invalid field with `aria-invalid` and put its message right under it.
 
 ### Dialogs (`#modals`)
 

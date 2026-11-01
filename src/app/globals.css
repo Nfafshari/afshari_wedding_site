@@ -17,7 +17,7 @@
   --stone-100: oklch(0.93 0.005 95);        /* neutral badge */
   --stone-300: oklch(0.84 0.007 95);        /* muted surfaces: neutral warm grey */
 
-  --olivine-50: oklch(0.968 0.016 115);       /* input fields, sidebar */
+  --olivine-50: oklch(0.968 0.016 115);       /* sidebar */
   --olivine-100: oklch(0.9336 0.0317 107.39); /* cards */
   --olivine-200: oklch(0.8796 0.043 113.65);  /* borders, hover and selected */
   --olivine-500: oklch(0.7139 0.0792 122.14); /* brand olivine: fills, never text */
@@ -67,7 +67,6 @@
   --warning-soft: var(--gold-100);
   --destructive-soft: oklch(0.94 0.03 25);
   --border: var(--olivine-200);
-  --field: var(--olivine-50);
   --input: var(--olivine-600);
   --ring: var(--olivine-600);
   --chart-1: oklch(87.156% 0.10299 122.113);
@@ -130,7 +129,6 @@
   --color-gold-100: var(--gold-100);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --color-field: var(--field);
   /* Fonts. next/font sets the --font-lora / --font-cormorant variables on <html>.
      Lora: body, tables, forms, buttons. Cormorant: headings, titles, stat numbers. */
   --font-body: var(--font-lora), ui-serif, Georgia, serif;
