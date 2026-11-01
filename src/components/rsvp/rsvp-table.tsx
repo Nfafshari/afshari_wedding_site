@@ -17,6 +17,7 @@ import RowActionButton from "@/components/row-action-button";
 import EmptyState from "@/components/empty-state";
 import type { Attendance } from "@/generated/prisma/enums";
 import { getMembers, getPlusOnes, isCountedAttending } from "@/lib/rsvp";
+import { formatDate } from "@/lib/utils";
 
 import { ATTENDANCE_LABEL, AttendanceChip, PLUS_ONE_LABEL, PlusOneChip } from "./status-chips";
 import type { RsvpGuestRow, RsvpHandlers, RsvpPartyRow } from "./types";
@@ -189,7 +190,7 @@ export default function RsvpTable ({
                       <TableCell/>
                       {/* pl-8 lines this up with the guest names, which sit after a tree icon. */}
                       <TableCell colSpan={5} className="pt-1 pb-3 pl-8 text-xs text-muted-foreground whitespace-normal">
-                        Responded {party.respondedByName ? `by ${party.respondedByName} ` : ''}on {party.respondedAt.toLocaleDateString()}
+                        Responded {party.respondedByName ? `by ${party.respondedByName} ` : ''}on {formatDate(party.respondedAt)}
                         {party.plusOnesAllowed > 0 && ` · ${party.plusOnesAllowed} plus-one${party.plusOnesAllowed === 1 ? '' : 's'} allowed`}
                       </TableCell>
                     </TableRow>

@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 
 import ImageLightbox from "@/components/image-lightbox";
 import type { RegistryClaim, RegistryItem } from "../page";
@@ -193,7 +193,7 @@ export default function RegistryRow({ item, onEdit, onAddClaim, onRemoveClaim }:
               <span className="font-bold text-burg truncate">{claim.claimedBy}</span>
               <span className="text-muted-foreground shrink-0">×{claim.quantity}</span>
               <span className="ml-auto shrink-0 text-xs text-muted-foreground sm:inline">
-                {claim.createdAt.toLocaleDateString()}
+                {formatDate(claim.createdAt)}
               </span>
               <Button
                 variant={'ghost-destructive'}

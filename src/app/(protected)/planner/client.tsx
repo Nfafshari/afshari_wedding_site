@@ -6,7 +6,7 @@ import Link from "next/link";
 
 import { Progress } from "@/components/ui/progress";
 import { Field, FieldLabel } from "@/components/ui/field"
-import { getDaysRemaining } from "@/lib/utils";
+import { formatDate, getDaysRemaining } from "@/lib/utils";
 import { getRsvpStats } from "@/lib/rsvp";
 import { CategoryWithTasks } from "./checklist/page";
 import { BudgetCategory } from "./budget/page";
@@ -109,7 +109,7 @@ export default function Planner({
                             strokeWidth={1}
                           />
                         </div>
-                        <p className="text-center">{task.goalDate.toLocaleDateString()}</p>
+                        <p className="text-center">{formatDate(task.goalDate)}</p>
                       </Link>
                     );
                   })}
@@ -128,7 +128,7 @@ export default function Planner({
                     />
                     <div className="mt-1 pr-2">
                       <p className="page-subtitle row-span-2 text-burg text-center">{nextTask.task.name}</p>
-                      <p className="text-center pb-2">{nextTask.task.goalDate.toLocaleDateString()}</p>
+                      <p className="text-center pb-2">{formatDate(nextTask.task.goalDate)}</p>
                     </div>
                   </Link>
                 </div>

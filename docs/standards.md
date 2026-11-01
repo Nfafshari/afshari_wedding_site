@@ -83,6 +83,7 @@ Every rule below is shown live at [`/planner/ui-kit`](../src/app/(protected)/pla
 ### Copy
 
 - Buttons and labels in sentence case ("Add party", "Save changes"); dialog and page titles in title case.
+- Dates read like "Oct 3, 2026" and come from `formatDate` in `src/lib/utils.ts` (pinned to Central time so server and browser agree). Don't call `toLocaleDateString()` in a component.
 - Say what happens or what to fix: "Enter an email like name@example.com", not "Invalid input". Empty states say what will show up and offer the next step.
 
 ### Accessibility

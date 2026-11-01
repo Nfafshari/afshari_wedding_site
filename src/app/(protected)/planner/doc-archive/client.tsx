@@ -4,6 +4,7 @@ import { useState } from "react";
 import { CirclePlus, ExternalLink, FileText, SquarePen } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
+import { formatDate } from "@/lib/utils";
 import EmptyState from "@/components/empty-state";
 import PageHeader from "@/components/page-header";
 import PlannerPage from "@/components/planner-page";
@@ -84,7 +85,7 @@ export default function DocArchive({ docs }: DocArchiveProps) {
                     {/* Icon area */}
                     <div className="flex flex-col w-full h-3/5 md:h-2/3 mt-2 justify-center items-center ">
                       <Icon className="w-20 h-20 md:w-30 md:h-30 lg:w-40 lg:h-40" strokeWidth={0.5}/>
-                      <p className="text-muted-foreground text-sm md:text-base mt-2">Added {doc.createdAt.toLocaleDateString()}</p>
+                      <p className="text-muted-foreground text-sm md:text-base mt-2">Added {formatDate(doc.createdAt)}</p>
                     </div>
 
                     {/* footer text area */}
