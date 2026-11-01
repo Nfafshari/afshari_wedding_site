@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { CirclePlus, ListChecks, LucideIcon, SquarePen } from "lucide-react";
+import { CirclePlus, ListChecks, LucideIcon } from "lucide-react";
 import * as Lucide from "lucide-react"
 
 import { Field, FieldLabel } from "@/components/ui/field";
@@ -15,10 +15,12 @@ import { Dialog } from "@/components/ui/dialog"
 import AddCategoryDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/add-category-dialog";
 import AddTaskDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/add-task-dialog";
 import EditCategoryDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/edit-category-dialog";
+import RemoveCategoryDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/remove-category-dialog";
 import RemoveTaskDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/remove-task-dialog";
 
 import { getDaysRemaining } from "@/lib/utils";
 import { CategoryWithTasks } from "./page";
+import RowActionButton from "@/components/row-action-button";
 import Task from "@/components/task";
 import { useQueryParams } from "@/hooks/use-query-params";
 
@@ -31,7 +33,8 @@ enum DialogType {
   Category = 'category',
   Task =     'task',
   Edit =     'edit',
-  Delete =   'delete'
+  Delete =   'delete',
+  DeleteCategory = 'deleteCategory'
 }
 
 export default function Checklist({ categories }: ChecklistProps) {
@@ -42,7 +45,9 @@ export default function Checklist({ categories }: ChecklistProps) {
 
   
   const { searchParams, setParams } = useQueryParams();
-  const activeTab = searchParams.get('category') ?? 'All';
+  // A filter can outlive its category (renamed or deleted), which would leave the page blank; fall back to All.
+  const requestedTab = searchParams.get('category');
+  const activeTab = categories.some((category) => category.name === requestedTab) ? requestedTab! : 'All';
 
   const WEDDING_DATE = '2027-09-11';
   const daysToWedding = getDaysRemaining(WEDDING_DATE);
@@ -83,7 +88,7 @@ export default function Checklist({ categories }: ChecklistProps) {
   return (
     <Dialog
       // Form dialogs share this root. Delete confirmations bring their own (ConfirmDialog).
-      open={activeDialog !== DialogType.None && activeDialog !== DialogType.Delete}
+      open={activeDialog !== DialogType.None && activeDialog !== DialogType.Delete && activeDialog !== DialogType.DeleteCategory}
       onOpenChange={(open) => {
         // Radix calls this with the *next* open state. Only act on close.
         if (!open) {
@@ -172,10 +177,28 @@ export default function Checklist({ categories }: ChecklistProps) {
                       key={`${category.name}-${idx}`}
                       className="flex flex-col mx-5 p-2 rounded-sm border border-olivine/20 "
                     >
-                      <div className="p-2 flex items-center border-b border-b-burg/50">
-                        <CategoryIcon className="mr-2" />
-                        <h2 className="page-title text-2xl">{category.name}</h2>
+                      <div className="p-2 flex items-center gap-2 border-b border-b-burg/50">
+                        <CategoryIcon className="shrink-0" />
+                        <h2 className="page-title min-w-0 truncate text-2xl">{category.name}</h2>
                         <p className="ml-auto page-subtitle">{numOfTasksDone}/{category.tasks.length}</p>
+                        <div className="flex shrink-0">
+                          <RowActionButton
+                            action="edit"
+                            aria-label={`Edit ${category.name}`}
+                            onClick={() => {
+                              setActiveDialog(DialogType.Edit);
+                              setActiveCategoryId(category.id);
+                            }}
+                          />
+                          <RowActionButton
+                            action="delete"
+                            aria-label={`Delete ${category.name}`}
+                            onClick={() => {
+                              setActiveDialog(DialogType.DeleteCategory);
+                              setActiveCategoryId(category.id);
+                            }}
+                          />
+                        </div>
                       </div>
 
                       {/** Tasks */}
@@ -202,18 +225,6 @@ export default function Checklist({ categories }: ChecklistProps) {
                           <CirclePlus/>
                         </Button>
                       </div>
-                      <Button
-                        variant={'ghost'}
-                        size={'icon-sm'}
-                        aria-label={`Edit ${category.name}`}
-                        className="ml-auto mt-auto"
-                        onClick={() => {
-                          setActiveDialog(DialogType.Edit);
-                          setActiveCategoryId(category.id);
-                        }}
-                      >
-                        <SquarePen />
-                      </Button>
                     </div>
                   )
                 })}
@@ -243,6 +254,14 @@ export default function Checklist({ categories }: ChecklistProps) {
           categories={categories}
           categoryToUpdate={categories.find((category) => category.id === activeCategoryId)}
           onSuccess={closeDialog}
+        />
+      )}
+
+      {activeDialog === DialogType.DeleteCategory && (
+        <RemoveCategoryDialog
+          categoryToRemove={categories.find((category) => category.id === activeCategoryId)}
+          onSuccess={closeDialog}
+          onCancel={closeDialog}
         />
       )}
 
