@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { parseHttpUrl } from "@/lib/utils";
+import { formatDate, parseHttpUrl } from "@/lib/utils";
 
 describe("parseHttpUrl", () => {
   it("accepts http and https URLs and returns the normalized href", () => {
@@ -20,5 +20,16 @@ describe("parseHttpUrl", () => {
   it("rejects strings that are not URLs", () => {
     expect(parseHttpUrl("not a url")).toBeNull();
     expect(parseHttpUrl("")).toBeNull();
+  });
+});
+
+describe("formatDate", () => {
+  it("reads like \"Oct 3, 2026\"", () => {
+    expect(formatDate(new Date("2026-10-03T17:00:00Z"))).toBe("Oct 3, 2026");
+  });
+
+  it("uses Central time, so an evening timestamp keeps its Central date", () => {
+    // 9:30pm Central on Oct 3 is already Oct 4 in UTC, where the server renders.
+    expect(formatDate(new Date("2026-10-04T02:30:00Z"))).toBe("Oct 3, 2026");
   });
 });

@@ -8,6 +8,7 @@ import SummaryCard from "@/components/summary-card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { countFullyClaimedItems, getLatestClaim } from "@/lib/registry";
+import { formatDate } from "@/lib/utils";
 import type { RegistryItem } from "../app/(protected)/planner/registry-manager/page";
 
 interface RegistryCardProps {
@@ -50,7 +51,7 @@ export default function RegistryCard({ registryItems }: RegistryCardProps) {
               <span className="font-bold text-burg/80">{latestClaim.claimedBy}</span>
               {' claimed '}
               <span className="font-bold text-burg/80">{latestClaim.itemName}</span>
-              <span className="text-burg/70"> · {latestClaim.createdAt.toLocaleDateString()}</span>
+              <span className="text-burg/70"> · {formatDate(latestClaim.createdAt)}</span>
             </p>
           )}
         </div>

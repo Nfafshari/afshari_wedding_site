@@ -6,6 +6,7 @@ import { CategoryWithTasks } from "@/app/(protected)/planner/checklist/page";
 import { Button } from "./ui/button";
 import { toggleTaskStatus } from "@/app/(protected)/planner/checklist/action";
 import { notifyError, notifySuccess } from "@/lib/toast";
+import { formatDate } from "@/lib/utils";
 
 type TaskItem = CategoryWithTasks["tasks"][number];
 
@@ -15,12 +16,6 @@ interface TaskProps {
 }
 
 export default function Task ({ task, onDelete }: TaskProps) {
-  const dateOptions = {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric'
-  } as const;
-
   async function toggleTaskDone (status: boolean) {
     const result = await toggleTaskStatus(task?.id, status);
     if (!result.ok) {
@@ -44,7 +39,7 @@ export default function Task ({ task, onDelete }: TaskProps) {
         {task?.status ? <CircleCheck className="mx-3 cursor-pointer w-5 h-5"/> : <Circle className="mx-3 cursor-pointer w-5 h-5"/>}
       </button>
       <p className={`${task?.status ? 'line-through' : ''}`}>{task?.name}</p>
-      <p className={`text-burg/70 ml-auto ${task?.status ? 'line-through' : ''}`}>{task?.goalDate.toLocaleDateString('en-US', dateOptions)}</p>
+      <p className={`text-burg/70 ml-auto ${task?.status ? 'line-through' : ''}`}>{task && formatDate(task.goalDate)}</p>
       <Button
         variant={'ghost-destructive'}
         size={'icon-sm'}

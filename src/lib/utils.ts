@@ -53,6 +53,23 @@ export function toAmount (num: number) {
   return amountFormatter.format(num);
 }
 
+// Pinned to Central so the server (which renders in UTC) and the browser agree on the day.
+const dateFormatter = Intl.DateTimeFormat('en-us', {
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+  timeZone: 'America/Chicago',
+});
+
+/**
+ * The one date format for the planner. Use for every date a person reads.
+ * @param date - any Date
+ * @returns the date in Central time, e.g. "Oct 3, 2026"
+ */
+export function formatDate (date: Date) {
+  return dateFormatter.format(date);
+}
+
 /** Parses a currency string into a usable number */
 export function parseMoneyString (value: string): number | null {
   // regex for Decimal(10,2) i.e. 0.00 to 100000000.00

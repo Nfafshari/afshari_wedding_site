@@ -25,7 +25,7 @@ export async function getRegistryItems () {
   // page there is no Decimal to unwrap here — quantities are Int — but the explicit
   // mapping still keeps the client's props from silently tracking schema columns.
   // createdAt stays a Date: Next serializes those across the boundary fine, and
-  // components already call .toLocaleDateString() on Dates elsewhere.
+  // components format it with formatDate.
   return registryItems.map((registryItem) => ({
     id: registryItem.id,
     name: registryItem.name,

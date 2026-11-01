@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { format } from "date-fns";
 
 import FormDialog from "@/components/form-dialog";
 import { Field, FieldLabel } from "@/components/ui/field";
@@ -12,6 +11,7 @@ import { Calendar } from "@/components/ui/calendar";
 
 import { createTask, type ErrorField } from "@/app/(protected)/planner/checklist/action";
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
+import { formatDate } from "@/lib/utils";
 
 interface AddTaskDialogProps {
   /** The category the new task belongs to. */
@@ -77,7 +77,7 @@ export default function AddTaskDialog({ categoryId, onSuccess }: AddTaskDialogPr
                 aria-invalid={Boolean(serverErrorField === 'date')}
           className="justify-start font-normal rounded-sm"
               >
-                {taskDate ? format(taskDate, "PPP") : <span>Pick a date</span>}
+                {taskDate ? formatDate(taskDate) : <span>Pick a date</span>}
               </Button>
             </PopoverTrigger>
             <PopoverContent className="w-auto p-0" align="start">
