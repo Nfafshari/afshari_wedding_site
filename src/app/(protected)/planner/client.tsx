@@ -1,6 +1,6 @@
 "use client";
 
-import { LucideIcon } from "lucide-react";
+import { CalendarCheck, LucideIcon } from "lucide-react";
 import * as Lucide from "lucide-react"
 import Link from "next/link";
 
@@ -13,6 +13,8 @@ import { BudgetCategory } from "./budget/page";
 import { Invitations } from "./rsvp/page";
 import { RegistryItem } from "./registry-manager/page";
 import BudgetCard from "../../../components/budget-card";
+import EmptyState from "@/components/empty-state";
+import { Button } from "@/components/ui/button";
 import PageHeader from "@/components/page-header";
 import PlannerPage from "@/components/planner-page";
 import RegistryCard from "@/components/registry-card";
@@ -63,10 +65,7 @@ export default function Planner({
       a.task.goalDate.getTime() - b.task.goalDate.getTime() || a.task.id - b.task.id
     )
     .slice(0, 3)
-    .map(({ task, category }) => ({ task, icon: resolveIcon(category.icon) }));
-
-  const nextTask = upNextTasks[0];
-  const NextTaskIcon = nextTask?.icon;
+    .map(({ task, category }) => ({ task, categoryName: category.name, icon: resolveIcon(category.icon) }));
 
   const rsvpStats = getRsvpStats(invitations);
 
@@ -75,76 +74,45 @@ export default function Planner({
   return (
     <PlannerPage>
       <PageHeader title="Dashboard" subtitle={`Sept. 11, 2027 · ${daysTilWedding} days to go`} subtitlePlacement="end" />
-      <div className="flex-col w-full h-auto">
-        <div className="flex flex-col items-center w-full h-full pt-2">
-          <Field className="w-2/3">
-            <FieldLabel htmlFor="task-progress" className="text-burg/70 font-bold">
-              <span className="section-title">Checklist Progress</span>
-              <span className="ml-auto">{Math.round(progress)}%</span>
-            </FieldLabel>
-            <Progress
-              id="task-progress"
-              value={progress}
-            />
-          </Field>
-          {nextTask && NextTaskIcon ? (
-            <>
-              <div className="flex w-1/2">
-                <p className="section-title hidden mt-3 md:flex">Next Tasks:</p>
-              </div>
-              <div className="hidden w-full h-full justify-center items-center md:flex">
-                <div className="w-1/2 h-full pt-2 m-1 grid grid-cols-3 gap-3 mt-1">
-                  {upNextTasks.map(({task, icon}) => {
-                    const Icon = icon;
-                    return (
-                      <Link
-                        className="grid grid-rows-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/70 cursor-pointer hover:shadow-sm active:bg-olivine/20"
-                        href={'/planner/checklist'}
-                        key={task.id}
-                      >
-                        <p className="text-center text-foreground">{task.name}</p>
-                        <div className="flex w-full h-auto justify-center items-center">
-                          <Icon
-                            className="w-10 h-10 text-gold-ink"
-                            strokeWidth={1}
-                          />
-                        </div>
-                        <p className="text-center">{formatDate(task.goalDate)}</p>
-                      </Link>
-                    );
-                  })}
-                </div>
-              </div>
-              <div className="flex flex-col w-full h-full justify-center items-center md:hidden">
-                <p className="section-title mt-3">Next Tasks:</p>
-                <div className="w-1/2 h-full pt-2 m-1 grid grid-cols-3 gap-3 mt-1">
-                  <Link
-                    className="flex col-span-3 w-full h-full justify-center items-center border border-burg/10 bg-olivine/15 rounded-md text-burg/70 cursor-pointer hover:shadow-sm active:bg-olivine/20"
-                    href={'/planner/checklist'}
-                  >
-                    <NextTaskIcon
-                      className="w-10 h-10 mr-5 text-gold-ink"
-                      strokeWidth={1}
-                    />
-                    <div className="mt-1 pr-2">
-                      <p className="page-subtitle row-span-2 text-burg text-center">{nextTask.task.name}</p>
-                      <p className="text-center pb-2">{formatDate(nextTask.task.goalDate)}</p>
-                    </div>
-                  </Link>
-                </div>
-              </div>
-            </>
-          ) : (
-            <p className="mt-3 text-center text-burg/70">
-              Nothing due yet —{" "}
-              <Link href={'/planner/checklist'} className="underline hover:text-burg">
-                add a task
-              </Link>
-              .
-            </p>
-          )}
-        </div>
-      </div>
+      <Field>
+        <FieldLabel htmlFor="task-progress" className="text-burg/70 font-bold">
+          <span className="section-title">Checklist Progress</span>
+          <span className="ml-auto">{Math.round(progress)}%</span>
+        </FieldLabel>
+        <Progress
+          id="task-progress"
+          value={progress}
+        />
+      </Field>
+
+      <section aria-labelledby="next-tasks-title" className="mt-6">
+        <h2 id="next-tasks-title" className="section-title mb-2">Next Tasks</h2>
+        {upNextTasks.length > 0 ? (
+          // One layout at every width: stacked on phones, three across from md.
+          <ul className="grid gap-3 md:grid-cols-3">
+            {upNextTasks.map(({ task, categoryName, icon: Icon }) => (
+              <li key={task.id}>
+                <Link
+                  href={`/planner/checklist?category=${encodeURIComponent(categoryName)}`}
+                  className="flex h-full items-center gap-3 rounded-lg border border-burg/8 bg-olivine/15 p-3 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                >
+                  <Icon className="size-8 shrink-0 text-gold-ink" strokeWidth={1} aria-hidden />
+                  <div className="min-w-0">
+                    <p className="truncate text-foreground">{task.name}</p>
+                    <p className="text-sm text-burg/70">{formatDate(task.goalDate)}</p>
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <EmptyState icon={CalendarCheck} title="Nothing due yet.">
+            <Button asChild variant="ghost" size="sm">
+              <Link href="/planner/checklist">Go to checklist</Link>
+            </Button>
+          </EmptyState>
+        )}
+      </section>
 
       <div className="flex flex-col w-full justify-center py-5">
         <p className="uppercase tracking-[0.16em]">RSVPs</p>
