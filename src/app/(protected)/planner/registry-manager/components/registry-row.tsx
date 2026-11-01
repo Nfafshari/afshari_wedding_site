@@ -46,7 +46,7 @@ function ClaimMeter({ claimedTotal, quantityWanted, className }: ClaimMeterProps
         // shared component and rippling into checklist/planner.
         className={isOverClaimed ? '**:data-[slot=progress-indicator]:bg-destructive' : ''}
       />
-      <p className="text-xs text-muted">
+      <p className="text-xs text-muted-foreground">
         {claimedTotal} of {quantityWanted}
         {isOverClaimed
           ? <span className="text-destructive"> · over-claimed by {Math.abs(remaining)}</span>
@@ -133,11 +133,11 @@ export default function RegistryRow({ item, onEdit, onAddClaim, onRemoveClaim }:
             aria-label={`${item.name} (opens in a new tab)`}
           >
             <span className="truncate">{item.name}</span>
-            <ExternalLink className="w-5 h-5 ml-1 shrink-0 text-muted" />
+            <ExternalLink className="w-5 h-5 ml-1 shrink-0 text-muted-foreground" />
           </a>
 
           {item.claimed.length === 0 ? (
-            <p className="text-xs text-muted">Nobody has claimed this yet</p>
+            <p className="text-xs text-muted-foreground">Nobody has claimed this yet</p>
           ) : (
             <div className="flex flex-wrap gap-1">
               {item.claimed.map((claim) => (

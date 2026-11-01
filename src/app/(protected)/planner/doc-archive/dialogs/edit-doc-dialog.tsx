@@ -104,8 +104,8 @@ export default function EditDocDialog({ docs, docToUpdate, onSuccess }: EditDocD
                 }
               }}
             />
-            {fieldErrors.name && <p className="text-destructive/80 text-xs">{fieldErrors.name}</p>}
-            {(serverError && serverErrorField === 'name') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+            {fieldErrors.name && <p className="text-destructive text-xs">{fieldErrors.name}</p>}
+            {(serverError && serverErrorField === 'name') && <p className="text-destructive text-xs">{serverError}</p>}
           </Field>
           <div className="flex flex-col w-full items-start gap-2 mt-2 text-burg">
             <p className="text-sm font-medium">Icon</p>

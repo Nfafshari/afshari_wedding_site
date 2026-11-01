@@ -170,8 +170,8 @@ export default function AddItemDialog({ items, onSuccess }: AddItemDialogProps) 
             }
           }}
         />
-        {fieldErrors.name && <p className="text-destructive/80 text-xs">{fieldErrors.name}</p>}
-        {(serverError && serverErrorField === 'name') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.name && <p className="text-destructive text-xs">{fieldErrors.name}</p>}
+        {(serverError && serverErrorField === 'name') && <p className="text-destructive text-xs">{serverError}</p>}
       </Field>
 
       <Field className="flex w-full text-burg mt-2">
@@ -198,8 +198,8 @@ export default function AddItemDialog({ items, onSuccess }: AddItemDialogProps) 
             }
           }}
         />
-        {fieldErrors.link && <p className="text-destructive/80 text-xs">{fieldErrors.link}</p>}
-        {(serverError && serverErrorField === 'link') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.link && <p className="text-destructive text-xs">{fieldErrors.link}</p>}
+        {(serverError && serverErrorField === 'link') && <p className="text-destructive text-xs">{serverError}</p>}
       </Field>
 
       <Field className="flex w-full text-burg mt-2">
@@ -227,12 +227,12 @@ export default function AddItemDialog({ items, onSuccess }: AddItemDialogProps) 
             }
           }}
         />
-        {fieldErrors.quantityWanted && <p className="text-destructive/80 text-xs">{fieldErrors.quantityWanted}</p>}
-        {(serverError && serverErrorField === 'quantityWanted') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.quantityWanted && <p className="text-destructive text-xs">{fieldErrors.quantityWanted}</p>}
+        {(serverError && serverErrorField === 'quantityWanted') && <p className="text-destructive text-xs">{serverError}</p>}
       </Field>
 
       <Field className="flex w-full text-burg mt-2">
-        <FieldLabel htmlFor="item-image">Image Link <span className="text-muted font-normal">(optional)</span></FieldLabel>
+        <FieldLabel htmlFor="item-image">Image Link <span className="text-muted-foreground font-normal">(optional)</span></FieldLabel>
         <Input
           id="item-image"
           type="url"
@@ -253,13 +253,13 @@ export default function AddItemDialog({ items, onSuccess }: AddItemDialogProps) 
             }
           }}
         />
-        {fieldErrors.image && <p className="text-destructive/80 text-xs">{fieldErrors.image}</p>}
-        {(serverError && serverErrorField === 'image') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.image && <p className="text-destructive text-xs">{fieldErrors.image}</p>}
+        {(serverError && serverErrorField === 'image') && <p className="text-destructive text-xs">{serverError}</p>}
       </Field>
 
       {/* general / no-field errors show at the bottom */}
       {(serverError && (serverErrorField === null || serverErrorField === 'item')) && (
-        <p className="text-destructive/80 text-xs">{serverError}</p>
+        <p className="text-destructive text-xs">{serverError}</p>
       )}
     </FormDialog>
   );

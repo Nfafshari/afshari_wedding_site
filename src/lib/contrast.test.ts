@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { contrastRatio, meetsAA } from "@/lib/contrast";
+import { blend, contrastRatio, meetsAA } from "@/lib/contrast";
 
 describe("contrastRatio", () => {
   it("is 21 for black on white and 1 for identical colors", () => {
@@ -29,5 +29,20 @@ describe("meetsAA", () => {
     expect(meetsAA(2.99, "large-text")).toBe(false);
     expect(meetsAA(3, "ui")).toBe(true);
     expect(meetsAA(2.99, "ui")).toBe(false);
+  });
+});
+
+describe("blend", () => {
+  it("paints a color at partial opacity over a background, like the browser does", () => {
+    expect(blend([0, 0, 0], [255, 255, 255], 0.5)).toEqual([128, 128, 128]);
+    expect(blend([68, 22, 31], [255, 251, 235], 1)).toEqual([68, 22, 31]);
+    expect(blend([68, 22, 31], [255, 251, 235], 0)).toEqual([255, 251, 235]);
+  });
+
+  it("lowers contrast: 70% black on white is lighter than solid black", () => {
+    const solid = contrastRatio([0, 0, 0], [255, 255, 255]);
+    const faded = contrastRatio(blend([0, 0, 0], [255, 255, 255], 0.7), [255, 255, 255]);
+    expect(faded).toBeLessThan(solid);
+    expect(faded).toBeCloseTo(8.4, 0);
   });
 });

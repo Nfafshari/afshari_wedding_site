@@ -33,7 +33,8 @@ export default function PageHeader({ title, subtitle, subtitlePlacement = "below
         {!subtitleAtEnd && subtitleLine}
       </div>
       {subtitleAtEnd && subtitleLine}
-      {actions && <div className="flex flex-wrap gap-2">{actions}</div>}
+      {/* ConfirmDialog sends focus here after a delete; see confirm-dialog.tsx. */}
+      {actions && <div data-page-actions className="flex flex-wrap gap-2">{actions}</div>}
     </header>
   );
 }

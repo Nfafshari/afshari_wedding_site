@@ -130,14 +130,14 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
         />
 
         <div className="flex flex-col justify-center items-center md:hidden">
-          <h2 className="page-title text-6xl text-olivine-ink">{toCurrency(totalPaidAmount)}</h2>
-          <h3 className="section-title text-sm text-muted-foreground font-normal">Paid of {toCurrency(totalEstimatedCost)} Estimated</h3>
+          <p className="page-title text-6xl text-olivine-ink">{toCurrency(totalPaidAmount)}</p>
+          <p className="section-title text-sm text-muted-foreground font-normal">Paid of {toCurrency(totalEstimatedCost)} Estimated</p>
         </div>
 
         {/** overview */}
         <div className="grid pt-3 lg:grid-cols-2 lg:gap-10">
           <div className="flex flex-col w-full px-2">
-            <h3 className="hidden section-title font-normal text-muted-foreground ml-1 mb-3 md:flex">Estimated/Spent vs. Soft/Hard Caps</h3>
+            <h2 className="hidden section-title font-normal text-muted-foreground ml-1 mb-3 md:flex">Estimated/Spent vs. Soft/Hard Caps</h2>
             <StackedProgressBar
               limits={LIMITS}
               legend={progressLegend}
@@ -161,7 +161,7 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
 
         {/** Category breakdown */}
         <div className="mt-10 w-full">
-          <h3 className="text-muted-foreground text-lg mb-2">By Category Breakdown</h3>
+          <h2 className="text-muted-foreground text-lg mb-2">By category</h2>
           {budgetCategories.length === 0 ? (
             <EmptyState
               size="page"

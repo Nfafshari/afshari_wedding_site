@@ -3,13 +3,17 @@
 import { useEffect, useState } from "react";
 import { Check, Info, X } from "lucide-react";
 
-import { contrastRatio, meetsAA, type ContrastKind, type Rgb } from "@/lib/contrast";
+import { blend, contrastRatio, meetsAA, type ContrastKind, type Rgb } from "@/lib/contrast";
 
 export interface ContrastPair {
   label: string;
   /** Custom property names, for example "--foreground". */
   foreground: string;
   background: string;
+  /** Opacity of the foreground, for classes like `text-burg/70`. 0-1, defaults to solid. */
+  foregroundAlpha?: number;
+  /** Opacity of a see-through background, like `bg-olivine/15`. It is painted over `--background`. */
+  backgroundAlpha?: number;
   kind: ContrastKind;
   /** Set when a failing pairing is deliberate. Shown instead of "Fail", with this reason. */
   exception?: string;
@@ -32,11 +36,20 @@ function readRgb(cssVar: string, ctx: CanvasRenderingContext2D): Rgb | null {
 function measure(pairs: ContrastPair[]): (number | null)[] {
   const ctx = document.createElement("canvas").getContext("2d", { willReadFrequently: true });
   if (!ctx) return pairs.map(() => null);
+  const page = readRgb("--background", ctx);
   return pairs.map((pair) => {
     const fg = readRgb(pair.foreground, ctx);
-    const bg = readRgb(pair.background, ctx);
-    return fg && bg ? contrastRatio(fg, bg) : null;
+    const solidBg = readRgb(pair.background, ctx);
+    if (!fg || !solidBg || !page) return null;
+    // Composite the way the browser paints it: the background over the page, then the text over that.
+    const bg = blend(solidBg, page, pair.backgroundAlpha ?? 1);
+    return contrastRatio(blend(fg, bg, pair.foregroundAlpha ?? 1), bg);
   });
+}
+
+// The sample swatch, painted the way the page paints it (`text-burg/70` is a color-mix too).
+function withAlpha(cssVar: string, alpha = 1) {
+  return alpha === 1 ? `var(${cssVar})` : `color-mix(in srgb, var(${cssVar}) ${alpha * 100}%, transparent)`;
 }
 
 function Result({ pair, ratio }: { pair: ContrastPair; ratio: number | null }) {
@@ -98,7 +111,10 @@ export default function ContrastTable({ pairs }: { pairs: ContrastPair[] }) {
               <td className="py-2 pr-4">
                 <span
                   className="inline-block rounded-sm px-2 py-0.5 font-bold"
-                  style={{ color: `var(${pair.foreground})`, backgroundColor: `var(${pair.background})` }}
+                  style={{
+                    color: withAlpha(pair.foreground, pair.foregroundAlpha),
+                    backgroundColor: withAlpha(pair.background, pair.backgroundAlpha),
+                  }}
                 >
                   Aa
                 </span>

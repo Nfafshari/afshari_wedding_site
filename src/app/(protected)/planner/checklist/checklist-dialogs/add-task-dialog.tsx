@@ -61,9 +61,9 @@ export default function AddTaskDialog({ categoryId, onSuccess }: AddTaskDialogPr
             clearServerError();
           }}
         />
-        {isEmptyInput && <p className="text-destructive/80 text-xs">Task name cannot be empty</p>}
+        {isEmptyInput && <p className="text-destructive text-xs">Task name cannot be empty</p>}
         {/* name-specific or general (no field) errors show here */}
-        {(serverError && (serverErrorField === 'name' || serverErrorField === null)) && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {(serverError && (serverErrorField === 'name' || serverErrorField === null)) && <p className="text-destructive text-xs">{serverError}</p>}
       </Field>
       <div className="flex flex-col w-full items-start overflow-y overflow-y-scroll mt-2 text-burg">
         <Field>
@@ -94,7 +94,7 @@ export default function AddTaskDialog({ categoryId, onSuccess }: AddTaskDialogPr
           </Popover>
         </Field>
         {/* date- or category-specific errors show here */}
-        {(serverError && (serverErrorField === 'date' || serverErrorField === 'category')) && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {(serverError && (serverErrorField === 'date' || serverErrorField === 'category')) && <p className="text-destructive text-xs">{serverError}</p>}
       </div>
     </FormDialog>
   );

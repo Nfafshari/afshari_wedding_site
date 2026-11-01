@@ -127,7 +127,7 @@ export default function Planner({
                       strokeWidth={1}
                     />
                     <div className="mt-1 pr-2">
-                      <h1 className="page-subtitle row-span-2 text-burg text-center">{nextTask.task.name}</h1>
+                      <p className="page-subtitle row-span-2 text-burg text-center">{nextTask.task.name}</p>
                       <p className="text-center pb-2">{nextTask.task.goalDate.toLocaleDateString()}</p>
                     </div>
                   </Link>

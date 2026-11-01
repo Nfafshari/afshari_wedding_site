@@ -103,7 +103,13 @@ const PAIRS: ContrastPair[] = [
   { label: "Olivine ink on card", foreground: "--olivine-ink", background: "--card", kind: "text" },
   { label: "Gold ink on page", foreground: "--gold-ink", background: "--background", kind: "text" },
   { label: "Gold ink on card", foreground: "--gold-ink", background: "--card", kind: "text" },
-  { label: "Gold text on burgundy (footer)", foreground: "--gold", background: "--foreground", kind: "text" },
+  { label: "Gold text on burgundy (footer, current nav link)", foreground: "--gold", background: "--foreground", kind: "text" },
+  { label: "Secondary text on page (text-burg/70)", foreground: "--foreground", foregroundAlpha: 0.7, background: "--background", kind: "text" },
+  { label: "Secondary text on card (text-burg/70)", foreground: "--foreground", foregroundAlpha: 0.7, background: "--card", kind: "text" },
+  { label: "Secondary text on dialog (text-burg/70)", foreground: "--foreground", foregroundAlpha: 0.7, background: "--popover", kind: "text" },
+  { label: "Text on dashboard card (bg-olivine/15)", foreground: "--foreground", background: "--olivine", backgroundAlpha: 0.15, kind: "text" },
+  { label: "Secondary text on dashboard card", foreground: "--foreground", foregroundAlpha: 0.7, background: "--olivine", backgroundAlpha: 0.15, kind: "text" },
+  { label: "Sign out link on burgundy (text-cream/80)", foreground: "--cream-50", foregroundAlpha: 0.8, background: "--foreground", kind: "text" },
   { label: "Input border on page", foreground: "--input", background: "--background", kind: "ui" },
   { label: "Input border on dialog", foreground: "--input", background: "--popover", kind: "ui" },
   { label: "Input border on card", foreground: "--input", background: "--card", kind: "ui" },
@@ -414,7 +420,7 @@ export default async function UiKitPage() {
             <div>
               <h3 className="mb-3 font-bold">Empty</h3>
               <EmptyState icon={Receipt} title="Nothing in Flowers yet.">
-                <Button variant="ghost" size="sm"><Plus /> Add Subcategory</Button>
+                <Button variant="ghost" size="sm"><Plus /> Add subcategory</Button>
               </EmptyState>
             </div>
             <div>

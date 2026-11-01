@@ -102,7 +102,7 @@ export default function AddClaimDialog({ itemToClaim, onSuccess }: AddClaimDialo
       isLoading={isLoading}
       onSubmit={addClaim}
     >
-      <p className="text-muted text-sm">
+      <p className="text-muted-foreground text-sm">
         {remaining} of {itemToClaim?.quantityWanted} still available.
       </p>
 
@@ -130,8 +130,8 @@ export default function AddClaimDialog({ itemToClaim, onSuccess }: AddClaimDialo
             }
           }}
         />
-        {fieldErrors.claimedBy && <p className="text-destructive/80 text-xs">{fieldErrors.claimedBy}</p>}
-        {(serverError && serverErrorField === 'claimedBy') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.claimedBy && <p className="text-destructive text-xs">{fieldErrors.claimedBy}</p>}
+        {(serverError && serverErrorField === 'claimedBy') && <p className="text-destructive text-xs">{serverError}</p>}
       </Field>
 
       <Field className="flex w-full text-burg mt-2">
@@ -159,13 +159,13 @@ export default function AddClaimDialog({ itemToClaim, onSuccess }: AddClaimDialo
             }
           }}
         />
-        {fieldErrors.quantity && <p className="text-destructive/80 text-xs">{fieldErrors.quantity}</p>}
-        {(serverError && serverErrorField === 'quantity') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.quantity && <p className="text-destructive text-xs">{fieldErrors.quantity}</p>}
+        {(serverError && serverErrorField === 'quantity') && <p className="text-destructive text-xs">{serverError}</p>}
       </Field>
 
       {/* general / no-field errors (e.g. the item vanished) show at the bottom */}
       {(serverError && (serverErrorField === null || serverErrorField === 'item')) && (
-        <p className="text-destructive/80 text-xs">{serverError}</p>
+        <p className="text-destructive text-xs">{serverError}</p>
       )}
     </FormDialog>
   );

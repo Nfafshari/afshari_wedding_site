@@ -88,8 +88,8 @@ export default function AddCategoryDialog({ budgetCategories, onSuccess }: AddCa
             }
           }}
         />
-        {fieldErrors.name && <p className="text-destructive/80 text-xs">{fieldErrors.name}</p>}
-        {(serverError && serverErrorField === 'name') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.name && <p className="text-destructive text-xs">{fieldErrors.name}</p>}
+        {(serverError && serverErrorField === 'name') && <p className="text-destructive text-xs">{serverError}</p>}
       </Field>
     </FormDialog>
   );

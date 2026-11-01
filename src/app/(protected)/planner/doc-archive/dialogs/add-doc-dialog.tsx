@@ -141,8 +141,8 @@ export default function AddDocDialog({ docs, onSuccess }: AddDocDialogProps) {
             </div>
           )}
         </Dropzone>
-        {fieldErrors.file && <p className="text-destructive/80 text-xs">{fieldErrors.file}</p>}
-        {(serverError && serverErrorField === 'file') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.file && <p className="text-destructive text-xs">{fieldErrors.file}</p>}
+        {(serverError && serverErrorField === 'file') && <p className="text-destructive text-xs">{serverError}</p>}
 
         <FieldLabel htmlFor="document-name">Document Name</FieldLabel>
         <Input
@@ -167,8 +167,8 @@ export default function AddDocDialog({ docs, onSuccess }: AddDocDialogProps) {
             }
           }}
         />
-        {fieldErrors.name && <p className="text-destructive/80 text-xs">{fieldErrors.name}</p>}
-        {(serverError && (serverErrorField === 'name' || serverErrorField === null)) && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.name && <p className="text-destructive text-xs">{fieldErrors.name}</p>}
+        {(serverError && (serverErrorField === 'name' || serverErrorField === null)) && <p className="text-destructive text-xs">{serverError}</p>}
 
         <FieldLabel htmlFor="document-company">Company Name</FieldLabel>
         <Input
@@ -184,8 +184,8 @@ export default function AddDocDialog({ docs, onSuccess }: AddDocDialogProps) {
             clearServerError();
           }}
         />
-        {fieldErrors.companyName && <p className="text-destructive/80 text-xs">{fieldErrors.companyName}</p>}
-        {(serverError && serverErrorField === 'companyName') && <p className="text-destructive/80 text-xs">{serverError}</p>}
+        {fieldErrors.companyName && <p className="text-destructive text-xs">{fieldErrors.companyName}</p>}
+        {(serverError && serverErrorField === 'companyName') && <p className="text-destructive text-xs">{serverError}</p>}
       </Field>
       <div className="flex flex-col w-full items-start gap-2 mt-2 text-burg">
         <p className="text-sm font-medium">Icon</p>

@@ -216,9 +216,9 @@ function GuestRow ({ guest, isLast, onSetAttendance, onSetPlusOneStatus }: Guest
       <TableCell className="font-bold text-lg pb-1">
         <div className="flex items-center">
           {isLast ? (
-            <LineDotRightHorizontal strokeWidth={2} className="h-5 mb-2 rotate-90 text-muted shrink-0" />
+            <LineDotRightHorizontal strokeWidth={2} className="h-5 mb-2 rotate-90 text-muted-foreground shrink-0" />
           ) : (
-            <GitCommitVertical strokeWidth={2} className="h-5 text-muted shrink-0" />
+            <GitCommitVertical strokeWidth={2} className="h-5 text-muted-foreground shrink-0" />
           )}
           <div className="flex flex-col min-w-0">
             <span className="truncate">
@@ -279,7 +279,7 @@ function GuestRow ({ guest, isLast, onSetAttendance, onSetPlusOneStatus }: Guest
         )}
       </TableCell>
       <TableCell className="p-0 md:p-2">
-        <span className="hidden truncate text-sm md:block">{guest.dietary ?? <span className="text-muted">No dietary notes</span>}</span>
+        <span className="hidden truncate text-sm md:block">{guest.dietary ?? <span className="text-muted-foreground">No dietary notes</span>}</span>
       </TableCell>
       <TableCell/>
       <TableCell/>

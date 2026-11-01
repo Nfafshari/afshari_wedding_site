@@ -48,6 +48,9 @@ export default function ConfirmDialog({
   error,
   onConfirm,
 }: ConfirmDialogProps) {
+  // Set once Delete is pressed. If the dialog then closes with no error, the delete worked.
+  const confirmed = React.useRef(false);
+
   return (
     <AlertDialog
       open={open}
@@ -56,7 +59,18 @@ export default function ConfirmDialog({
         onOpenChange(next);
       }}
     >
-      <AlertDialogContent>
+      <AlertDialogContent
+        onCloseAutoFocus={(event) => {
+          // Focus normally goes back to the button that opened the dialog, but after a
+          // delete that button leaves with its row and focus drops to the page. Send it to
+          // the page's main action (the header's "Add …") instead.
+          if (!confirmed.current || error) return;
+          const pageAction = document.querySelector<HTMLElement>("[data-page-actions] button");
+          if (!pageAction) return;
+          event.preventDefault();
+          pageAction.focus();
+        }}
+      >
         <AlertDialogHeader>
           <AlertDialogTitle>{title}</AlertDialogTitle>
           <AlertDialogDescription>{description}</AlertDialogDescription>
@@ -72,6 +86,7 @@ export default function ConfirmDialog({
             onClick={(event) => {
               // The action closes the dialog by default. Close only when the delete succeeds.
               event.preventDefault();
+              confirmed.current = true;
               onConfirm();
             }}
           >
