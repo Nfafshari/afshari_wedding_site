@@ -1,14 +1,18 @@
 "use server";
 import { prisma } from '@/lib/prisma';
-import { BudgetStatus, Prisma } from '@/generated/prisma/client';
+import { BudgetStatus } from '@/generated/prisma/client';
 import { revalidatePath } from 'next/cache';
 import { requireUserAction } from '@/lib/require-user';
+import { handleActionError, type ActionResult as SharedActionResult } from '@/lib/action';
 
 /**
  * Which input a failure relates to, so the client can highlight the right field.
  * Omitted for general/unexpected errors.
  */
 export type ErrorField = 'name' | 'estimatedCost' | 'paidAmount' | 'budgetCategory' | 'status';
+
+/** See {@link SharedActionResult}; narrowed to this page's fields. */
+export type ActionResult = SharedActionResult<ErrorField>;
 
 export interface BudgetSubcategoryInput {
   name?: string | undefined;
@@ -22,14 +26,8 @@ const BUDGET_PATH = '/planner/budget';
 /** estimatedCost/paidAmount are Decimal(10,2), so anything this large overflows the column. */
 const MAX_MONEY = 100_000_000;
 
-/**
- * The shape every action returns: either it worked, or it failed with a reason.
- * The client checks `ok` to decide whether to close the dialog or show an error,
- * and `field` to decide which input to flag.
- */
-export type ActionResult =
-  | { ok: true }
-  | { ok: false; error: string; field?: ErrorField; authRequired?: true };
+const CATEGORY_GONE = 'That category no longer exists, refresh your page and try again.';
+const SUBCATEGORY_GONE = 'That subcategory no longer exists, refresh your page and try again.';
 
 /**
  * Bounds a money value once, so create and update can't drift apart on what counts
@@ -76,16 +74,11 @@ export async function createBudgetCategory (name: string): Promise<ActionResult>
       },
     });
   } catch (error) {
-    // P2002 = unique constraint failed (a category with this name already exists).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-      return { ok: false, error: 'Category already exists.', field: 'name' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error creating new budget category, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'creating new budget category', {
+      P2002: { error: 'Category already exists.', field: 'name' },
+    });
   }
 
-  // refresh the page data after a successful write
   revalidatePath(BUDGET_PATH);
   return { ok: true };
 }
@@ -120,20 +113,13 @@ export async function updateBudgetCategory (budgetCategoryId: number | undefined
       data: { name: trimmedName },
     });
   } catch (error) {
-    // P2002 = unique constraint (a category with this name already exists).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-      return { ok: false, error: 'Category already exists.', field: 'name' };
-    }
-    // P2025 = record to update not found (category was deleted).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-      return { ok: false, error: 'That category no longer exists, refresh your page and try again.', field: 'name' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error updating budget category, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'updating budget category', {
+      P2002: { error: 'Category already exists.', field: 'name' },
+      // The category was deleted while the dialog was open.
+      P2025: { error: CATEGORY_GONE, field: 'name' },
+    });
   }
 
-  // refresh the page data after a successful write
   revalidatePath(BUDGET_PATH);
   return { ok: true };
 }
@@ -161,16 +147,12 @@ export async function deleteBudgetCategory (budgetCategoryId: number | undefined
       where: { id: budgetCategoryId },
     });
   } catch (error) {
-    // P2025 = record to delete does not exist (already removed).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-      return { ok: false, error: 'That category no longer exists, refresh your page and try again.' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error deleting budget category, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'deleting budget category', {
+      // Already removed.
+      P2025: { error: CATEGORY_GONE },
+    });
   }
 
-  // refresh the page data after a successful write
   revalidatePath(BUDGET_PATH);
   return { ok: true };
 }
@@ -200,14 +182,10 @@ export async function createBudgetSubcategory (name: string, estimatedCost: numb
     return { ok: false, error: 'No category selected.', field: 'budgetCategory' };
   }
 
-  const estimatedCostError = validateMoney(estimatedCost, 'estimatedCost', 'Estimated cost');
-  if (estimatedCostError) {
-    return estimatedCostError;
-  }
-
-  const paidAmountError = validateMoney(paidAmount, 'paidAmount', 'Amount paid');
-  if (paidAmountError) {
-    return paidAmountError;
+  const invalid = validateMoney(estimatedCost, 'estimatedCost', 'Estimated cost')
+    ?? validateMoney(paidAmount, 'paidAmount', 'Amount paid');
+  if (invalid) {
+    return invalid;
   }
 
   // Try the write. The DB's @@unique([budgetCategoryId, name]) guards duplicates.
@@ -221,20 +199,13 @@ export async function createBudgetSubcategory (name: string, estimatedCost: numb
       },
     });
   } catch (error) {
-    // P2002 = unique constraint (this category already has a subcategory with that name).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-      return { ok: false, error: 'A subcategory with that name already exists in this category.', field: 'name' };
-    }
-    // P2003 = foreign key constraint (the parent category no longer exists).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2003') {
-      return { ok: false, error: 'That category no longer exists, refresh and try again.', field: 'budgetCategory' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error creating new budget subcategory, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'creating new budget subcategory', {
+      P2002: { error: 'A subcategory with that name already exists in this category.', field: 'name' },
+      // The parent category was deleted while the dialog was open.
+      P2003: { error: CATEGORY_GONE, field: 'budgetCategory' },
+    });
   }
 
-  // refresh the page data after a successful write
   revalidatePath(BUDGET_PATH);
   return { ok: true };
 }
@@ -262,16 +233,12 @@ export async function deleteBudgetSubcategory (subcategoryId: number | undefined
       where: { id: subcategoryId },
     });
   } catch (error) {
-    // P2025 = record to delete does not exist (already removed).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-      return { ok: false, error: 'That subcategory no longer exists, refresh your page and try again.' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error deleting budget subcategory, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'deleting budget subcategory', {
+      // Already removed.
+      P2025: { error: SUBCATEGORY_GONE },
+    });
   }
 
-  // refresh the page data after a successful write
   revalidatePath(BUDGET_PATH);
   return { ok: true };
 }
@@ -284,8 +251,8 @@ export async function deleteBudgetSubcategory (subcategoryId: number | undefined
  * - name
  * - estimated cost
  * - paid amount
- * - status 
- *  
+ * - status
+ *
  * see {@link BudgetSubcategoryInput}
  * @returns an ActionResult the client can react to
  */
@@ -308,21 +275,13 @@ export async function updateBudgetSubcategory (budgetSubcategoryId: number | und
   // validate all parameters
   const trimmedName = data.name?.trim();
   if (trimmedName === '') {
-    return { ok: false, error: 'Subcategory name can not be empty', field: 'name' }
+    return { ok: false, error: 'Subcategory name cannot be empty.', field: 'name' }
   }
 
-  if (data.estimatedCost !== undefined) {
-    const estimatedCostError = validateMoney(data.estimatedCost, 'estimatedCost', 'Estimated cost');
-    if (estimatedCostError) {
-      return estimatedCostError;
-    }
-  }
-
-  if (data.paidAmount !== undefined) {
-    const paidAmountError = validateMoney(data.paidAmount, 'paidAmount', 'Amount paid');
-    if (paidAmountError) {
-      return paidAmountError;
-    }
+  const invalid = (data.estimatedCost === undefined ? null : validateMoney(data.estimatedCost, 'estimatedCost', 'Estimated cost'))
+    ?? (data.paidAmount === undefined ? null : validateMoney(data.paidAmount, 'paidAmount', 'Amount paid'));
+  if (invalid) {
+    return invalid;
   }
 
   if (data.status !== undefined && !Object.values(BudgetStatus).includes(data.status)) {
@@ -337,21 +296,14 @@ export async function updateBudgetSubcategory (budgetSubcategoryId: number | und
       data: { ...data, name: trimmedName },
     });
   } catch (error) {
-    // P2002 = unique constraint (a category with this name already exists).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-      return { ok: false, error: 'Subcategory already exists.', field: 'name' };
-    }
-    // P2025 = record to update not found (category was deleted).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-      return { ok: false, error: 'That subcategory no longer exists, refresh your page and try again.', field: 'name' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error updating budget subcategory, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'updating budget subcategory', {
+      // This category already has a subcategory with that name.
+      P2002: { error: 'Subcategory already exists.', field: 'name' },
+      // The subcategory was deleted while the dialog was open.
+      P2025: { error: SUBCATEGORY_GONE, field: 'name' },
+    });
   }
 
-
-  // refresh the page data after a successful write
   revalidatePath(BUDGET_PATH);
   return { ok: true };
 }
