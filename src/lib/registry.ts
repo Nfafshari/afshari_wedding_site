@@ -46,6 +46,11 @@ export function checkWantedNotBelowClaimed (wanted: number, claimed: number): st
   return wanted < claimed ? `${claimed} of these are already claimed, so you cannot ask for fewer than ${claimed}.` : null;
 }
 
+/** Who has claimed an item, for its row: "Ana Lee, Ben Ortiz ×2". */
+export function claimantsLabel (claims: { claimedBy: string; quantity: number }[]): string {
+  return claims.map((claim) => claim.quantity > 1 ? `${claim.claimedBy} ×${claim.quantity}` : claim.claimedBy).join(', ');
+}
+
 export function countFullyClaimedItems (items: ItemLike[]): number {
   return items.filter(isFullyClaimed).length;
 }

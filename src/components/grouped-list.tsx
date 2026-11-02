@@ -135,24 +135,29 @@ export function ListRow({ lead, name, className, ...slots }: ListRowProps) {
 }
 
 interface ListGroupProps extends RowSlots {
-  title: string;
+  /** Usually just the name; can carry a thumbnail. It sits inside the open/close button, so nothing interactive. */
+  title: React.ReactNode;
+  /** Beside the title, outside the button: a link, e.g. to the product page. */
+  aside?: React.ReactNode;
   defaultOpen?: boolean;
   /** ListRows, then a ListEmpty and/or a ListAddRow. */
   children: React.ReactNode;
 }
 
 /** A category, party or gift: a tinted row whose title opens its items. */
-export function ListGroup({ title, defaultOpen, children, ...slots }: ListGroupProps) {
+export function ListGroup({ title, aside, defaultOpen, children, ...slots }: ListGroupProps) {
   return (
     <Collapsible role="rowgroup" defaultOpen={defaultOpen}>
       <div role="row" className={cn(ROW, "bg-olivine-50 font-semibold md:min-h-14")}>
-        <div role="rowheader" className="col-[1/3] row-1 min-w-0 md:col-[1/3] md:row-auto">
-          <CollapsibleTrigger className="group flex w-full items-center gap-4 rounded-sm text-left outline-none focus-visible:ring-2 focus-visible:ring-ring">
+        <div role="rowheader" className="col-[1/3] row-1 flex min-w-0 items-center gap-1 md:col-[1/3] md:row-auto">
+          {/* Fills the cell, unless an aside follows the title: then it hugs the title so the aside sits right after it. */}
+          <CollapsibleTrigger className={cn("group flex min-w-0 items-center gap-4 rounded-sm text-left outline-none focus-visible:ring-2 focus-visible:ring-ring", !aside && "flex-1")}>
             <span className="flex w-8 shrink-0 justify-center">
               <ChevronDown className="size-4 transition-transform group-data-[state=open]:rotate-180 motion-reduce:transition-none" aria-hidden />
             </span>
             <span className="min-w-0 break-words">{title}</span>
           </CollapsibleTrigger>
+          {aside}
         </div>
         <RowSlotCells {...slots} />
       </div>

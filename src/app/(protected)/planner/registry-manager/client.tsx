@@ -4,11 +4,12 @@ import { useState } from "react";
 import { CirclePlus, Gift } from "lucide-react";
 
 import { Dialog } from "@/components/ui/dialog";
-import RegistryRow from "./components/registry-row";
+import RegistryList from "./components/registry-list";
 import AddItemDialog from "./dialogs/add-item-dialog";
 import EditItemDialog from "./dialogs/edit-item-dialog";
 import AddClaimDialog from "./dialogs/add-claim-dialog";
 import RemoveClaimDialog from "./dialogs/remove-claim-dialog";
+import DeleteItemDialog from "./dialogs/delete-item-dialog";
 
 import type { RegistryClaim, RegistryItem } from "./page";
 import { Button } from "@/components/ui/button";
@@ -26,6 +27,7 @@ enum DialogType {
   None =        'none',
   AddItem =     'addItem',
   EditItem =    'editItem',
+  DeleteItem =  'deleteItem',
   AddClaim =    'addClaim',
   RemoveClaim = 'removeClaim'
 }
@@ -54,6 +56,11 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
     setActiveDialog(DialogType.EditItem);
   }
 
+  function onDeleteItem (item: RegistryItem) {
+    setActiveItem(item);
+    setActiveDialog(DialogType.DeleteItem);
+  }
+
   function onAddClaim (item: RegistryItem) {
     setActiveItem(item);
     setActiveDialog(DialogType.AddClaim);
@@ -67,7 +74,7 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
   return (
     <Dialog
       // Form dialogs share this root. Delete confirmations bring their own (ConfirmDialog).
-      open={activeDialog !== DialogType.None && activeDialog !== DialogType.RemoveClaim}
+      open={activeDialog !== DialogType.None && activeDialog !== DialogType.RemoveClaim && activeDialog !== DialogType.DeleteItem}
       onOpenChange={(open) => {
         // Radix calls this with the *next* open state. Only act on close.
         if (!open) {
@@ -108,15 +115,13 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
               </Button>
             </EmptyState>
           ) : (
-            registryItems.map((item) => (
-              <RegistryRow
-                key={item.id}
-                item={item}
-                onEdit={onEditItem}
-                onAddClaim={onAddClaim}
-                onRemoveClaim={onRemoveClaim}
-              />
-            ))
+            <RegistryList
+              items={registryItems}
+              onEditItem={onEditItem}
+              onDeleteItem={onDeleteItem}
+              onAddClaim={onAddClaim}
+              onRemoveClaim={onRemoveClaim}
+            />
           )}
         </div>
       </PlannerPage>
@@ -133,6 +138,14 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
           items={registryItems}
           itemToUpdate={activeItem}
           onSuccess={closeDialog}
+        />
+      }
+
+      {activeDialog === DialogType.DeleteItem &&
+        <DeleteItemDialog
+          itemToDelete={activeItem}
+          onSuccess={closeDialog}
+          onCancel={closeDialog}
         />
       }
 
