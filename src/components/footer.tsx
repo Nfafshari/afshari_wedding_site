@@ -1,32 +1,38 @@
-import { Bug, ExternalLink } from "lucide-react";
+import { ExternalLink, Heart } from "lucide-react";
 import Link from "next/link";
 
+import { COUPLE, FOOTER_LINE } from "@/lib/guest-content";
+
+const LINK = "rounded-sm underline-offset-4 hover:text-burg hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring";
+
+/** One footer for the whole site: the guest pages, the planner and the sign-in pages. */
 export default function Footer () {
   return (
-    <div className="h-30 w-full bg-burg md:h-40">
-      <div className="flex flex-col w-full h-full text-gold justify-center items-center">
-        <p>© {new Date().getFullYear()} Nathen &amp; Piper. All rights reserved.</p>
-        <div className="flex w-full justify-center items-center text-sm">
-          <p className="flex items-center"><Bug className="w-5 h-5"/> See a bug?</p>
-          <Link
-            href={'https://github.com/Nfafshari/afshari_wedding_site/issues/new'}
-            target='_blank'
-            rel='noopener noreferrer'
-            className="flex items-center ml-2 underline text-sm"
-          >
-            click here to report it <ExternalLink className="ml-1 w-4 h-4"/>
-          </Link>
-          <p className="ml-2">or contact admin.</p>
-        </div>
-        <div className="flex flex-wrap w-full gap-4 mt-4 justify-center items-center">
-          <Link href={'/'} className="underline">
-            Home
-          </Link>
-          <Link href={'/planner'} className="underline">
-            Planner
-          </Link>
-        </div>
+    <footer className="w-full border-t border-gold/60 bg-cream-100 px-4 py-10 text-center">
+      <p className="guest-label flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+        <span>{FOOTER_LINE}</span>
+        <Heart className="size-3.5 fill-current" aria-hidden />
+        <span>{COUPLE}</span>
+      </p>
+      <div className="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-burg/70">
+        <Link
+          href={'https://github.com/Nfafshari/afshari_wedding_site/issues/new'}
+          target='_blank'
+          rel='noopener noreferrer'
+          className={`${LINK} inline-flex items-center gap-1`}
+        >
+          See a bug? Report it
+          <ExternalLink className="size-3.5" aria-hidden />
+          <span className="sr-only">(opens in a new tab)</span>
+        </Link>
+        <Link href={'/'} className={LINK}>
+          Home
+        </Link>
+        <Link href={'/planner'} className={LINK}>
+          Planner
+        </Link>
       </div>
-    </div>
+      <p className="mt-4 text-xs text-burg/70">© {new Date().getFullYear()} {COUPLE}</p>
+    </footer>
   );
 }
