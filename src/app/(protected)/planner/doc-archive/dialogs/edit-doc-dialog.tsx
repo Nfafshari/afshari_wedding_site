@@ -48,7 +48,7 @@ export default function EditDocDialog({ docs, docToUpdate, onSuccess }: EditDocD
         doc.name.toLowerCase().trim() === value.toLowerCase().trim()
     );
     if (isDuplicate) {
-      return 'Document already exists!';
+      return 'A document with that name already exists.';
     }
 
     // return null if validation succeeded
