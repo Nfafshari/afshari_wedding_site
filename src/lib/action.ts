@@ -1,5 +1,5 @@
 import { Prisma } from '@/generated/prisma/client';
-import { parseHttpUrl } from '@/lib/utils';
+import { checkHttpUrl, checkMoney, checkWholeNumber } from '@/lib/validate';
 
 /**
  * The shape every planner action returns: either it worked, or it failed with a reason.
@@ -15,34 +15,27 @@ export const GENERIC_ERROR = 'Something went wrong. Please try again.';
 /** The Prisma codes the planner actions turn into a user-facing message. */
 type KnownCode = 'P2002' | 'P2003' | 'P2025';
 
-/**
- * Bounds a whole-number input (a quantity or count) to 1..max.
- * @returns a failing ActionResult, or null when the value is acceptable
+/*
+ * The checks in lib/validate.ts, turned into an ActionResult that names the field.
+ * Each returns a failing result, or null when the value is acceptable.
  */
+
+/** Bounds a whole-number input (a quantity or count) to 1..max. */
 export function validateWholeNumber<F extends string> (value: number, field: F, label: string, max: number): ActionResult<F> | null {
-  // Number(...) can hand us NaN if the client sent something non-numeric.
-  if (!Number.isInteger(value) || value < 1) {
-    return { ok: false, error: `${label} must be a whole number of 1 or more.`, field };
-  }
-
-  if (value > max) {
-    return { ok: false, error: `${label} must be ${max} or less.`, field };
-  }
-
-  return null;
+  const error = checkWholeNumber(value, label, max);
+  return error ? { ok: false, error, field } : null;
 }
 
-/**
- * Rejects anything that isn't a plain http(s) address. These values are rendered
- * into an href/src, so a `javascript:` URL here would execute on click.
- * @returns a failing ActionResult, or null when the URL is acceptable
- */
+/** Rejects anything that isn't a plain http(s) address (see checkHttpUrl). */
 export function validateHttpUrl<F extends string> (value: string, field: F, label: string): ActionResult<F> | null {
-  if (parseHttpUrl(value) === null) {
-    return { ok: false, error: `${label} must be a valid link starting with http:// or https://.`, field };
-  }
+  const error = checkHttpUrl(value, label);
+  return error ? { ok: false, error, field } : null;
+}
 
-  return null;
+/** Bounds a money value to 0 up to the column's limit. */
+export function validateMoney<F extends string> (value: number, field: F, label: string): ActionResult<F> | null {
+  const error = checkMoney(value, label);
+  return error ? { ok: false, error, field } : null;
 }
 
 /**

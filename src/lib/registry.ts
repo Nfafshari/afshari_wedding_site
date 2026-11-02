@@ -6,6 +6,9 @@
  * from importing `app/`.
  */
 
+/** Most of one gift anyone can want or claim; well inside Postgres' int4 range. */
+export const MAX_REGISTRY_QUANTITY = 9999;
+
 type ItemLike = {
   quantityWanted: number;
   claimed: { quantity: number }[];
@@ -33,6 +36,14 @@ export function checkClaimQuantity (quantity: number, remaining: number): string
   if (!Number.isInteger(quantity) || quantity < 1) return 'Please choose how many you would like to claim.';
   if (quantity > remaining) return remaining === 1 ? 'Someone just claimed some, so only 1 is left.' : `Someone just claimed some, so only ${remaining} are left.`;
   return null;
+}
+
+/**
+ * Why `wanted` can't be saved when `claimed` are already promised, or null if it can.
+ * Asking for fewer would un-promise a gift someone is already out buying.
+ */
+export function checkWantedNotBelowClaimed (wanted: number, claimed: number): string | null {
+  return wanted < claimed ? `${claimed} of these are already claimed, so you cannot ask for fewer than ${claimed}.` : null;
 }
 
 export function countFullyClaimedItems (items: ItemLike[]): number {

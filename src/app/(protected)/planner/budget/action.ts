@@ -3,7 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { BudgetStatus } from '@/generated/prisma/client';
 import { revalidatePath } from 'next/cache';
 import { requireUserAction } from '@/lib/require-user';
-import { handleActionError, type ActionResult as SharedActionResult } from '@/lib/action';
+import { handleActionError, validateMoney, type ActionResult as SharedActionResult } from '@/lib/action';
 
 /**
  * Which input a failure relates to, so the client can highlight the right field.
@@ -23,30 +23,8 @@ export interface BudgetSubcategoryInput {
 
 const BUDGET_PATH = '/planner/budget';
 
-/** estimatedCost/paidAmount are Decimal(10,2), so anything this large overflows the column. */
-const MAX_MONEY = 100_000_000;
-
 const CATEGORY_GONE = 'That category no longer exists, refresh your page and try again.';
 const SUBCATEGORY_GONE = 'That subcategory no longer exists, refresh your page and try again.';
-
-/**
- * Bounds a money value once, so create and update can't drift apart on what counts
- * as valid — they already had.
- * @returns a failing ActionResult, or null when the value is acceptable
- */
-function validateMoney (value: number, field: 'estimatedCost' | 'paidAmount', label: string): ActionResult | null {
-  // Number(...) can hand us NaN if the user typed something non-numeric.
-  if (!Number.isFinite(value) || value < 0) {
-    return { ok: false, error: `${label} must be a number of 0 or more.`, field };
-  }
-
-  // Past this the DB write throws and the user only sees "Something went wrong".
-  if (value >= MAX_MONEY) {
-    return { ok: false, error: `${label} must be less than $100,000,000.`, field };
-  }
-
-  return null;
-}
 
 /**
  * Creates a new budget category in the DB.

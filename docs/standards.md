@@ -70,6 +70,8 @@ Every rule below is shown live at [`/planner/ui-kit`](../src/app/(protected)/pla
 - Forms use `FormDialog`, inside the page's `<Dialog>` root (inner non-submit buttons need `type="button"`). Deletes use `ConfirmDialog`. Nothing else uses `AlertDialog`.
 - Titles are noun phrases in title case ("Add Category", "Edit Flowers"); confirms ask ("Delete Flowers?") and say the consequence. Buttons say what happens ("Add", "Save changes", "Delete"), and the toast repeats the verb ("Category added").
 - Esc and a click outside close a form, never while it saves. After a delete, focus moves to the page header's main action (handled by `ConfirmDialog`).
+- A dialog never writes its own error text. Field checks come from `src/lib/validate.ts`, the same ones the server action runs (through the `validate*` wrappers in `src/lib/action.ts`), so both say the same thing. `useFieldErrors` holds the messages: check on blur, clear on typing, `checkAll` on submit.
+- One dialog adds and edits a thing: empty with an Add button, or filled with Save changes (as `rsvp/dialogs/party-dialog.tsx` does). Don't keep separate Add and Edit dialogs.
 
 ### Filter and search (`#filters`)
 

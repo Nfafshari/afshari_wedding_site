@@ -8,10 +8,13 @@ import { Input } from "@/components/ui/input";
 import ConfirmDialog from "@/components/confirm-dialog";
 import FormDialog from "@/components/form-dialog";
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
+import { useFieldErrors } from "@/hooks/use-field-errors";
 
 import { updateRegistryItem, deleteRegistryItem, type ErrorField } from "../action";
 import type { RegistryItem } from "../page";
-import { parseHttpUrl, parseQuantityString } from "@/lib/utils";
+import { parseHttpUrl } from "@/lib/utils";
+import { checkWantedNotBelowClaimed, MAX_REGISTRY_QUANTITY } from "@/lib/registry";
+import { checkHttpUrl, checkRequired, checkUniqueName, checkWholeNumber, parseWholeNumber } from "@/lib/validate";
 
 /** The placeholder the DB falls back to, reused for the preview when a URL 404s. */
 const FALLBACK_IMAGE = '/window.svg';
@@ -31,7 +34,7 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
   const [quantityWanted, setQuantityWanted] = useState(String(itemToUpdate?.quantityWanted ?? 1));
   const [image, setImage] = useState(itemToUpdate?.image ?? '');
   const [isImagePreviewBroken, setIsImagePreviewBroken] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState<Partial<Record<ErrorField, string>>>({});
+  const { errors: fieldErrors, check, clear, checkAll } = useFieldErrors<ErrorField>();
   // Flips this dialog between the "edit" view and the "confirm delete" view.
   const [isDeleteItemActive, setIsDeleteItemActive] = useState(false);
   const { isLoading, serverError, serverErrorField, clearServerError, runAction } = useDialogSubmit<ErrorField>(onSuccess);
@@ -45,131 +48,27 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
     ? FALLBACK_IMAGE
     : image.trim();
 
-  /**
-   * Validates the item name by checking if it is empty or already taken.
-   * @param value - string value of the name
-   * @returns a **string** message if it fails, otherwise **null** to clear errors
-   */
-  function nameValidator (value: string): string | null {
-    if (value.trim() === '') {
-      return 'Item name cannot be empty.';
-    }
-
-    // Reject a name already used by *another* item (skip the one being edited).
-    const isDuplicate = items.some(
-      (item) =>
-        item.id !== itemToUpdate?.id &&
-        item.name.toLowerCase().trim() === value.toLowerCase().trim()
-    );
-    if (isDuplicate) {
-      return 'That item is already on the registry!';
-    }
-
-    // return null if validation succeeded
-    return null;
-  }
-
-  /**
-   * Validates the product link by checking it is a real http(s) address.
-   * @param value - string value of the link
-   * @returns a **string** message if it fails, otherwise **null** to clear errors
-   */
-  function linkValidator (value: string): string | null {
-    if (value.trim() === '') {
-      return 'Product link cannot be empty.';
-    }
-
-    if (parseHttpUrl(value) === null) {
-      return 'Product link must start with http:// or https://';
-    }
-
-    // return null if validation succeeded
-    return null;
-  }
-
-  /**
-   * Validates the quantity wanted. It must be a whole number of at least 1, and it
-   * cannot drop below what guests have already claimed.
-   * @param value - string value of the quantity
-   * @returns a **string** message if it fails, otherwise **null** to clear errors
-   */
-  function quantityWantedValidator (value: string): string | null {
-    if (value.trim() === '') {
-      return 'Quantity cannot be empty.';
-    }
-
-    const parsedQuantityWanted = parseQuantityString(value);
-    if (parsedQuantityWanted === null) {
-      return 'Quantity must be a whole number of 1 or more.';
-    }
-
-    // Asking for fewer than are already claimed would un-promise a gift someone is
-    // already out buying. The server re-checks this — it is the real guard.
-    if (parsedQuantityWanted < claimedTotal) {
-      return `${claimedTotal} ${claimedTotal === 1 ? 'is' : 'are'} already claimed, so you cannot ask for fewer than ${claimedTotal}.`;
-    }
-
-    // return null if validation succeeded
-    return null;
-  }
-
-  /**
-   * Validates the image link. Blank is allowed — it reverts to the placeholder.
-   * @param value - string value of the image link
-   * @returns a **string** message if it fails, otherwise **null** to clear errors
-   */
-  function imageValidator (value: string): string | null {
-    if (value.trim() === '') {
-      // blank reverts to the placeholder image, so it's valid
-      return null;
-    }
-
-    if (parseHttpUrl(value) === null) {
-      return 'Image link must start with http:// or https://';
-    }
-
-    // return null if validation succeeded
-    return null;
-  }
+  // The messages come from lib/validate.ts and lib/registry.ts, so they match the server's.
+  const otherNames = items.filter((item) => item.id !== itemToUpdate?.id).map((item) => item.name);
+  const checks = {
+    name: () => checkRequired(name, 'Item name') ?? checkUniqueName(name, otherNames, 'item'),
+    link: () => checkHttpUrl(link, 'Product link'),
+    // Can't drop below what guests have already claimed. The server re-checks; it is the real guard.
+    quantityWanted: () => checkWholeNumber(parseWholeNumber(quantityWanted), 'Quantity wanted', MAX_REGISTRY_QUANTITY)
+      ?? checkWantedNotBelowClaimed(parseWholeNumber(quantityWanted), claimedTotal),
+    // Blank reverts to the placeholder image.
+    image: () => (image.trim() === '' ? null : checkHttpUrl(image, 'Image link')),
+  };
 
   // FormDialog has already called preventDefault, so this just runs our logic.
   async function editItem () {
-    // Validate every field into one local object, then gate on it
-    const errors: Partial<Record<ErrorField, string>> = {};
-
-    const nameError = nameValidator(name);
-    if (nameError) {
-      errors.name = nameError;
-    }
-
-    const linkError = linkValidator(link);
-    if (linkError) {
-      errors.link = linkError;
-    }
-
-    const quantityWantedError = quantityWantedValidator(quantityWanted);
-    if (quantityWantedError) {
-      errors.quantityWanted = quantityWantedError;
-    }
-
-    const imageError = imageValidator(image);
-    if (imageError) {
-      errors.image = imageError;
-    }
-
-    if (Object.keys(errors).length > 0) {
-      setFieldErrors(errors);
-      return;
-    }
-
-    // Validation passed, so the quantity parses.
-    const parsedQuantityWanted = parseQuantityString(quantityWanted);
-    if (parsedQuantityWanted === null) return;
+    const ok = checkAll({ name: checks.name(), link: checks.link(), quantityWanted: checks.quantityWanted(), image: checks.image() });
+    if (!ok) return;
 
     await runAction("Item saved", () => updateRegistryItem(itemToUpdate?.id, {
       name,
       link,
-      quantityWanted: parsedQuantityWanted,
+      quantityWanted: parseWholeNumber(quantityWanted),
       image,
     }));
   }
@@ -200,20 +99,10 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
               aria-invalid={Boolean(fieldErrors.name || serverErrorField === 'name')}
               onChange={(e) => {
                 setName(e.target.value);
-                // Typing clears any previous error so the user gets a fresh start.
-                if (e.target.value.trim() !== '') {
-                  setFieldErrors(({ name, ...rest }) => rest);
-                }
+                clear('name');
                 clearServerError();
               }}
-              onBlur={(e) => {
-                const msg = nameValidator(e.target.value);
-                if (msg) {
-                  setFieldErrors(prev => ({ ...prev, name: msg }));
-                } else {
-                  setFieldErrors(({ name, ...rest }) => rest);
-                }
-              }}
+              onBlur={() => check('name', checks.name())}
             />
             {fieldErrors.name && <p className="text-destructive text-xs">{fieldErrors.name}</p>}
             {(serverError && serverErrorField === 'name') && <p className="text-destructive text-xs">{serverError}</p>}
@@ -229,19 +118,10 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
               aria-invalid={Boolean(fieldErrors.link || serverErrorField === 'link')}
               onChange={(e) => {
                 setLink(e.target.value);
-                if (e.target.value.trim() !== '') {
-                  setFieldErrors(({ link, ...rest }) => rest);
-                }
+                clear('link');
                 clearServerError();
               }}
-              onBlur={(e) => {
-                const msg = linkValidator(e.target.value);
-                if (msg) {
-                  setFieldErrors(prev => ({ ...prev, link: msg }));
-                } else {
-                  setFieldErrors(({ link, ...rest }) => rest);
-                }
-              }}
+              onBlur={() => check('link', checks.link())}
             />
             {fieldErrors.link && <p className="text-destructive text-xs">{fieldErrors.link}</p>}
             {(serverError && serverErrorField === 'link') && <p className="text-destructive text-xs">{serverError}</p>}
@@ -257,19 +137,10 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
               aria-invalid={Boolean(fieldErrors.quantityWanted || serverErrorField === 'quantityWanted')}
               onChange={(e) => {
                 setQuantityWanted(e.target.value);
-                if (e.target.value.trim() !== '') {
-                  setFieldErrors(({ quantityWanted, ...rest }) => rest);
-                }
+                clear('quantityWanted');
                 clearServerError();
               }}
-              onBlur={(e) => {
-                const msg = quantityWantedValidator(e.target.value);
-                if (msg) {
-                  setFieldErrors(prev => ({ ...prev, quantityWanted: msg }));
-                } else {
-                  setFieldErrors(({ quantityWanted, ...rest }) => rest);
-                }
-              }}
+              onBlur={() => check('quantityWanted', checks.quantityWanted())}
             />
             {hasClaims && !fieldErrors.quantityWanted && (
               <p className="text-muted-foreground text-xs">{claimedTotal} already claimed.</p>
@@ -304,17 +175,10 @@ export default function EditItemDialog({ items, itemToUpdate, onSuccess }: EditI
                   setImage(e.target.value);
                   // Give the new URL a fresh chance to load rather than staying broken.
                   setIsImagePreviewBroken(false);
-                  setFieldErrors(({ image, ...rest }) => rest);
+                  clear('image');
                   clearServerError();
                 }}
-                onBlur={(e) => {
-                  const msg = imageValidator(e.target.value);
-                  if (msg) {
-                    setFieldErrors(prev => ({ ...prev, image: msg }));
-                  } else {
-                    setFieldErrors(({ image, ...rest }) => rest);
-                  }
-                }}
+                onBlur={() => check('image', checks.image())}
               />
             </div>
             {fieldErrors.image && <p className="text-destructive text-xs">{fieldErrors.image}</p>}
