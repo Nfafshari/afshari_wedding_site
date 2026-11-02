@@ -72,3 +72,42 @@ export const OUR_STORY = {
     { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "portrait" },
   ],
 } as const;
+
+/**
+ * Details page: the venue, the schedule and travel. Placeholders, except the venue's name and
+ * town. Links open in a new tab. Venue photo: set `src` to a file in /public.
+ */
+export const DETAILS = {
+  title: "Details",
+  venue: {
+    title: "The Venue",
+    address: "Street address, Sheridan, WY 82801",
+    note: "A sentence or two about the venue: the setting, what to expect on arrival, and where to park.",
+    mapUrl: "https://www.google.com/maps/search/?api=1&query=Big+Horn+Equestrian+Center+Sheridan+WY",
+    mapLabel: "Get directions",
+    photo: { src: undefined as string | undefined, alt: "Big Horn Equestrian Center" },
+  },
+  schedule: {
+    title: "The Schedule",
+    days: [
+      {
+        label: "Saturday, September 11",
+        events: [
+          { time: "4:00 PM", name: "Ceremony", place: "Big Horn Equestrian Center", note: "Dress note, e.g. cocktail attire" },
+          { time: "5:30 PM", name: "Reception", place: "Big Horn Equestrian Center", note: "Dinner and dancing to follow" },
+        ],
+      },
+    ],
+  },
+  travel: {
+    title: "Travel",
+    intro: "A short note about getting to Sheridan and getting around once you're here.",
+    hotelsTitle: "Where to stay",
+    bookLabel: "Book a room",
+    hotels: [
+      { name: "Hotel name", town: "Sheridan, WY", blockCode: "Room block code" as string | undefined, url: "https://example.com" },
+      { name: "Second hotel name", town: "Sheridan, WY", blockCode: undefined as string | undefined, url: "https://example.com" },
+    ],
+  },
+  photoPlaceholder: "Photo needed",
+} as const;
