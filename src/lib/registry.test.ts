@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { checkClaimQuantity } from "./registry";
+import { checkClaimQuantity, checkWantedNotBelowClaimed } from "./registry";
 
 describe("checkClaimQuantity", () => {
   it("allows any whole number from 1 up to what's left", () => {
@@ -21,5 +21,16 @@ describe("checkClaimQuantity", () => {
   it("says how many are left when asked for too many", () => {
     expect(checkClaimQuantity(3, 2)).toBe("Someone just claimed some, so only 2 are left.");
     expect(checkClaimQuantity(2, 1)).toBe("Someone just claimed some, so only 1 is left.");
+  });
+});
+
+describe("checkWantedNotBelowClaimed", () => {
+  it("allows asking for as many as are claimed, or more", () => {
+    expect(checkWantedNotBelowClaimed(3, 3)).toBeNull();
+    expect(checkWantedNotBelowClaimed(5, 3)).toBeNull();
+  });
+
+  it("refuses asking for fewer than are claimed", () => {
+    expect(checkWantedNotBelowClaimed(2, 3)).toBe("3 of these are already claimed, so you cannot ask for fewer than 3.");
   });
 });

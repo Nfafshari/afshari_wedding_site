@@ -408,6 +408,8 @@ export default async function UiKitPage() {
           <li>Titles are noun phrases in title case: &ldquo;Add Category&rdquo;, &ldquo;Edit Flowers&rdquo;. Confirms ask: &ldquo;Delete Flowers?&rdquo;</li>
           <li>Buttons say what happens: Add, Save changes, Delete, Remove, Import. The toast repeats the verb: &ldquo;Category added&rdquo;.</li>
           <li>Mark a field with an error using aria-invalid and put the message right under it.</li>
+          <li>A dialog never writes its own error text. Checks come from <code>lib/validate.ts</code> (<code>checkRequired</code>, <code>checkUniqueName</code>, <code>checkWholeNumber</code>, <code>checkMoney</code>, <code>checkHttpUrl</code>, <code>checkDate</code>), the same ones the server action uses, and <code>useFieldErrors</code> holds the messages: check on blur, clear on typing, <code>checkAll</code> on submit.</li>
+          <li>One dialog adds and edits: it opens empty with an Add button, or filled with Save changes (see <code>rsvp/dialogs/party-dialog.tsx</code>).</li>
         </ul>
       </KitSection>
 

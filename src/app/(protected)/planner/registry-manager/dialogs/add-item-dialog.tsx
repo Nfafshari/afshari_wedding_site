@@ -6,10 +6,12 @@ import FormDialog from "@/components/form-dialog";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
+import { useFieldErrors } from "@/hooks/use-field-errors";
 
 import { createRegistryItem, type ErrorField } from "../action";
 import type { RegistryItem } from "../page";
-import { parseHttpUrl, parseQuantityString } from "@/lib/utils";
+import { MAX_REGISTRY_QUANTITY } from "@/lib/registry";
+import { checkHttpUrl, checkRequired, checkUniqueName, checkWholeNumber, parseWholeNumber } from "@/lib/validate";
 
 interface AddItemDialogProps {
   /** Existing items, used for the client-side duplicate-name check. */
@@ -23,120 +25,24 @@ export default function AddItemDialog({ items, onSuccess }: AddItemDialogProps) 
   const [link, setLink] = useState('');
   const [quantityWanted, setQuantityWanted] = useState('1');
   const [image, setImage] = useState('');
-  const [fieldErrors, setFieldErrors] = useState<Partial<Record<ErrorField, string>>>({});
+  const { errors: fieldErrors, check, clear, checkAll } = useFieldErrors<ErrorField>();
   const { isLoading, serverError, serverErrorField, clearServerError, runAction } = useDialogSubmit<ErrorField>(onSuccess);
 
-  /**
-   * Validates the item name by checking if it is empty or already taken.
-   * @param value - string value of the name
-   * @returns a **string** message if it fails, otherwise **null** to clear errors
-   */
-  function nameValidator (value: string): string | null {
-    if (value.trim() === '') {
-      return 'Item name cannot be empty.';
-    }
-
-    const isDuplicate = items.some(
-      (item) => item.name.toLowerCase().trim() === value.toLowerCase().trim()
-    );
-    if (isDuplicate) {
-      return 'That item is already on the registry!';
-    }
-
-    // return null if validation succeeded
-    return null;
-  }
-
-  /**
-   * Validates the product link by checking it is a real http(s) address.
-   * @param value - string value of the link
-   * @returns a **string** message if it fails, otherwise **null** to clear errors
-   */
-  function linkValidator (value: string): string | null {
-    if (value.trim() === '') {
-      return 'Product link cannot be empty.';
-    }
-
-    if (parseHttpUrl(value) === null) {
-      return 'Product link must start with http:// or https://';
-    }
-
-    // return null if validation succeeded
-    return null;
-  }
-
-  /**
-   * Validates the quantity wanted, which must be a whole number of at least 1.
-   * @param value - string value of the quantity
-   * @returns a **string** message if it fails, otherwise **null** to clear errors
-   */
-  function quantityWantedValidator (value: string): string | null {
-    if (value.trim() === '') {
-      return 'Quantity cannot be empty.';
-    }
-
-    if (parseQuantityString(value) === null) {
-      return 'Quantity must be a whole number of 1 or more.';
-    }
-
-    // return null if validation succeeded
-    return null;
-  }
-
-  /**
-   * Validates the image link. Blank is allowed — the DB fills in a placeholder.
-   * @param value - string value of the image link
-   * @returns a **string** message if it fails, otherwise **null** to clear errors
-   */
-  function imageValidator (value: string): string | null {
-    if (value.trim() === '') {
-      // blank falls back to the placeholder image, so it's valid
-      return null;
-    }
-
-    if (parseHttpUrl(value) === null) {
-      return 'Image link must start with http:// or https://';
-    }
-
-    // return null if validation succeeded
-    return null;
-  }
+  // The messages come from lib/validate.ts, so they match what the server would say.
+  const checks = {
+    name: () => checkRequired(name, 'Item name') ?? checkUniqueName(name, items.map((item) => item.name), 'item'),
+    link: () => checkHttpUrl(link, 'Product link'),
+    quantityWanted: () => checkWholeNumber(parseWholeNumber(quantityWanted), 'Quantity wanted', MAX_REGISTRY_QUANTITY),
+    // Blank is allowed: the DB fills in a placeholder image.
+    image: () => (image.trim() === '' ? null : checkHttpUrl(image, 'Image link')),
+  };
 
   // FormDialog has already called preventDefault, so this just runs our logic.
   async function addItem () {
-    // Validate every field into one local object, then gate on it
-    const errors: Partial<Record<ErrorField, string>> = {};
+    const ok = checkAll({ name: checks.name(), link: checks.link(), quantityWanted: checks.quantityWanted(), image: checks.image() });
+    if (!ok) return;
 
-    const nameError = nameValidator(name);
-    if (nameError) {
-      errors.name = nameError;
-    }
-
-    const linkError = linkValidator(link);
-    if (linkError) {
-      errors.link = linkError;
-    }
-
-    const quantityWantedError = quantityWantedValidator(quantityWanted);
-    if (quantityWantedError) {
-      errors.quantityWanted = quantityWantedError;
-    }
-
-    const imageError = imageValidator(image);
-    if (imageError) {
-      errors.image = imageError;
-    }
-
-    if (Object.keys(errors).length > 0) {
-      setFieldErrors(errors);
-      return;
-    }
-
-    // Validation passed, so the quantity parses.
-    const parsedQuantityWanted = parseQuantityString(quantityWanted);
-    if (parsedQuantityWanted === null) return;
-
-    await runAction("Item added", () => createRegistryItem(name, link, parsedQuantityWanted, image));
+    await runAction("Item added", () => createRegistryItem(name, link, parseWholeNumber(quantityWanted), image));
   }
 
   return (
@@ -155,20 +61,10 @@ export default function AddItemDialog({ items, onSuccess }: AddItemDialogProps) 
           aria-invalid={Boolean(fieldErrors.name || serverErrorField === 'name')}
           onChange={(e) => {
             setName(e.target.value);
-            // Typing clears any previous error so the user gets a fresh start.
-            if (e.target.value.trim() !== '') {
-              setFieldErrors(({ name, ...rest }) => rest);
-            }
+            clear('name');
             clearServerError();
           }}
-          onBlur={(e) => {
-            const msg = nameValidator(e.target.value);
-            if (msg) {
-              setFieldErrors(prev => ({ ...prev, name: msg }));
-            } else {
-              setFieldErrors(({ name, ...rest }) => rest);
-            }
-          }}
+          onBlur={() => check('name', checks.name())}
         />
         {fieldErrors.name && <p className="text-destructive text-xs">{fieldErrors.name}</p>}
         {(serverError && serverErrorField === 'name') && <p className="text-destructive text-xs">{serverError}</p>}
@@ -184,19 +80,10 @@ export default function AddItemDialog({ items, onSuccess }: AddItemDialogProps) 
           aria-invalid={Boolean(fieldErrors.link || serverErrorField === 'link')}
           onChange={(e) => {
             setLink(e.target.value);
-            if (e.target.value.trim() !== '') {
-              setFieldErrors(({ link, ...rest }) => rest);
-            }
+            clear('link');
             clearServerError();
           }}
-          onBlur={(e) => {
-            const msg = linkValidator(e.target.value);
-            if (msg) {
-              setFieldErrors(prev => ({ ...prev, link: msg }));
-            } else {
-              setFieldErrors(({ link, ...rest }) => rest);
-            }
-          }}
+          onBlur={() => check('link', checks.link())}
         />
         {fieldErrors.link && <p className="text-destructive text-xs">{fieldErrors.link}</p>}
         {(serverError && serverErrorField === 'link') && <p className="text-destructive text-xs">{serverError}</p>}
@@ -213,19 +100,10 @@ export default function AddItemDialog({ items, onSuccess }: AddItemDialogProps) 
           aria-invalid={Boolean(fieldErrors.quantityWanted || serverErrorField === 'quantityWanted')}
           onChange={(e) => {
             setQuantityWanted(e.target.value);
-            if (e.target.value.trim() !== '') {
-              setFieldErrors(({ quantityWanted, ...rest }) => rest);
-            }
+            clear('quantityWanted');
             clearServerError();
           }}
-          onBlur={(e) => {
-            const msg = quantityWantedValidator(e.target.value);
-            if (msg) {
-              setFieldErrors(prev => ({ ...prev, quantityWanted: msg }));
-            } else {
-              setFieldErrors(({ quantityWanted, ...rest }) => rest);
-            }
-          }}
+          onBlur={() => check('quantityWanted', checks.quantityWanted())}
         />
         {fieldErrors.quantityWanted && <p className="text-destructive text-xs">{fieldErrors.quantityWanted}</p>}
         {(serverError && serverErrorField === 'quantityWanted') && <p className="text-destructive text-xs">{serverError}</p>}
@@ -241,17 +119,10 @@ export default function AddItemDialog({ items, onSuccess }: AddItemDialogProps) 
           aria-invalid={Boolean(fieldErrors.image || serverErrorField === 'image')}
           onChange={(e) => {
             setImage(e.target.value);
-            setFieldErrors(({ image, ...rest }) => rest);
+            clear('image');
             clearServerError();
           }}
-          onBlur={(e) => {
-            const msg = imageValidator(e.target.value);
-            if (msg) {
-              setFieldErrors(prev => ({ ...prev, image: msg }));
-            } else {
-              setFieldErrors(({ image, ...rest }) => rest);
-            }
-          }}
+          onBlur={() => check('image', checks.image())}
         />
         {fieldErrors.image && <p className="text-destructive text-xs">{fieldErrors.image}</p>}
         {(serverError && serverErrorField === 'image') && <p className="text-destructive text-xs">{serverError}</p>}

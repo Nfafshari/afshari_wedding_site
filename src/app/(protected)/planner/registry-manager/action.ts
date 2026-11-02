@@ -3,6 +3,8 @@ import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { requireUserAction } from '@/lib/require-user';
 import { handleActionError, validateHttpUrl, validateWholeNumber, type ActionResult as SharedActionResult } from '@/lib/action';
+import { checkWantedNotBelowClaimed, MAX_REGISTRY_QUANTITY } from '@/lib/registry';
+import { checkRequired } from '@/lib/validate';
 
 /**
  * Which input a failure relates to, so the client can highlight the right field.
@@ -24,9 +26,6 @@ export interface RegistryItemInput {
 const REGISTRY_MANAGER_PATH = '/planner/registry-manager';
 /** The guest site's registry, which shows the same items and claim counts. */
 const PUBLIC_REGISTRY_PATH = '/registry';
-
-/** quantityWanted is Int; 4 digits keeps it well inside Postgres' int4 range. */
-const MAX_QUANTITY = 9999;
 
 const ITEM_GONE = 'That item no longer exists, refresh your page and try again.';
 
@@ -74,14 +73,15 @@ export async function createRegistryItem (name: string, link: string, quantityWa
 
   // Validate on the server (the client re-checks these too, for instant feedback).
   const trimmedName = name.trim();
-  if (trimmedName === '') {
-    return { ok: false, error: 'Item name cannot be empty.', field: 'name' };
+  const nameError = checkRequired(name, 'Item name');
+  if (nameError) {
+    return { ok: false, error: nameError, field: 'name' };
   }
 
   // An empty image is allowed — the column default fills in the placeholder.
   const trimmedImage = image.trim();
   const invalid = validateHttpUrl(link, 'link', 'Product link')
-    ?? validateWholeNumber(quantityWanted, 'quantityWanted', 'Quantity wanted', MAX_QUANTITY)
+    ?? validateWholeNumber(quantityWanted, 'quantityWanted', 'Quantity wanted', MAX_REGISTRY_QUANTITY)
     ?? (trimmedImage === '' ? null : validateHttpUrl(trimmedImage, 'image', 'Image link'));
   if (invalid) {
     return invalid;
@@ -139,14 +139,15 @@ export async function updateRegistryItem (registryItemId: number | undefined, da
 
   // validate all parameters
   const trimmedName = data.name?.trim();
-  if (trimmedName === '') {
-    return { ok: false, error: 'Item name cannot be empty.', field: 'name' };
+  const nameError = data.name === undefined ? null : checkRequired(data.name, 'Item name');
+  if (nameError) {
+    return { ok: false, error: nameError, field: 'name' };
   }
 
   const trimmedImage = data.image?.trim();
   const invalid = (data.link === undefined ? null : validateHttpUrl(data.link, 'link', 'Product link'))
     ?? (trimmedImage === undefined || trimmedImage === '' ? null : validateHttpUrl(trimmedImage, 'image', 'Image link'))
-    ?? (data.quantityWanted === undefined ? null : validateWholeNumber(data.quantityWanted, 'quantityWanted', 'Quantity wanted', MAX_QUANTITY));
+    ?? (data.quantityWanted === undefined ? null : validateWholeNumber(data.quantityWanted, 'quantityWanted', 'Quantity wanted', MAX_REGISTRY_QUANTITY));
   if (invalid) {
     return invalid;
   }
@@ -160,12 +161,9 @@ export async function updateRegistryItem (registryItemId: number | undefined, da
       return { ok: false, error: ITEM_GONE, field: 'item' };
     }
 
-    if (data.quantityWanted < totals.claimedTotal) {
-      return {
-        ok: false,
-        error: `${totals.claimedTotal} of these are already claimed, so you cannot ask for fewer than ${totals.claimedTotal}.`,
-        field: 'quantityWanted',
-      };
+    const belowClaimed = checkWantedNotBelowClaimed(data.quantityWanted, totals.claimedTotal);
+    if (belowClaimed) {
+      return { ok: false, error: belowClaimed, field: 'quantityWanted' };
     }
   }
 
@@ -268,7 +266,7 @@ export async function createRegistryClaim (itemId: number | undefined, claimedBy
     return { ok: false, error: 'Please say who claimed this.', field: 'claimedBy' };
   }
 
-  const quantityError = validateWholeNumber(quantity, 'quantity', 'Quantity', MAX_QUANTITY);
+  const quantityError = validateWholeNumber(quantity, 'quantity', 'Quantity', MAX_REGISTRY_QUANTITY);
   if (quantityError) {
     return quantityError;
   }
