@@ -139,8 +139,8 @@ const TYPE_SCALE = [
   { name: "page-subtitle", className: "page-subtitle text-left", sample: "Paid of $32,000 estimated", spec: "Cormorant 500 · 24px", usage: "The line under a page title." },
   { name: "section-title", className: "section-title", sample: "By category", spec: "Cormorant 600 · 24px", usage: "Headings inside a page, sentence case." },
   { name: "planner-label", className: "planner-label", sample: "Paid to date", spec: "Lora 500 · 14px, gold ink", usage: "Column names, field captions and summary labels. Sentence case, never uppercase." },
-  { name: "stat-number", className: "stat-number", sample: "$12,400", spec: "Cormorant 700 · 48–60px, even digits", usage: "Big numbers. Set the color per use." },
-  { name: "muted-caption", className: "muted-caption", sample: "Attending", spec: "Lora · 18px, uppercase", usage: "Short label under a stat, three words at most." },
+  { name: "stat-number", className: "stat-number", sample: "$12,400", spec: "Cormorant 600 · 30–36px, even digits", usage: "Summary numbers. Set the color with a Stat tone." },
+  { name: "muted-caption", className: "muted-caption", sample: "Attending", spec: "Lora · 14px, burgundy 600", usage: "Short caption under a stat, three words at most, sentence case." },
   { name: "text-base", className: "text-base", sample: "Kindly respond by August 1, 2027. We can't wait to celebrate with you.", spec: "Lora 400 · 16px", usage: "Body text and paragraphs." },
   { name: "text-sm", className: "text-sm", sample: "Venue & catering · $18,500.00 · Save changes", spec: "Lora · 14px", usage: "Tables, buttons, labels, most interface text." },
   { name: "text-xs", className: "text-xs", sample: "Updated October 30, 2026", spec: "Lora · 12px", usage: "Timestamps and helper text. The smallest size we use." },
@@ -479,10 +479,20 @@ export default async function UiKitPage() {
                 </>
               }
             />
-            <StatRow className="grid-cols-3">
+            <StatRow className="grid-cols-2 md:grid-cols-4">
               <Stat value={96} caption="Invited" />
               <Stat value={58} caption="Attending" tone="success" />
               <Stat value={7} caption="Declined" tone="danger" />
+              <Stat value={2} caption="Plus-ones to review" tone="attention" />
+            </StatRow>
+          </div>
+
+          <div>
+            <p className="planner-label mb-3">Summary strip: four stats sit 2×2 on phones, three can stay in one row</p>
+            <StatRow className="grid-cols-3">
+              <Stat value={16} caption="Items" />
+              <Stat value={5} caption="Fully claimed" tone="success" />
+              <Stat value={9} caption="Gifts claimed" />
             </StatRow>
           </div>
 

@@ -88,8 +88,8 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
 
         <StatRow className="grid-cols-3">
           <Stat value={totalItems} caption="Items" />
-          <Stat value={fullyClaimedItems} caption="Fully Claimed" tone="success" />
-          <Stat value={totalGiftsClaimed} caption="Gifts Claimed" />
+          <Stat value={fullyClaimedItems} caption="Fully claimed" tone="success" />
+          <Stat value={totalGiftsClaimed} caption="Gifts claimed" />
         </StatRow>
         <hr className="my-5 bg-accent" />
 
