@@ -16,7 +16,7 @@ interface SummaryCardProps {
  */
 export default function SummaryCard({ title, href, linkLabel, children }: SummaryCardProps) {
   return (
-    <div className="flex flex-col gap-3 p-4 border border-burg/8 rounded-lg bg-olivine/15">
+    <div className="flex flex-col gap-3 p-4 border rounded-lg bg-olivine-50">
       <div className="flex items-baseline justify-between gap-2">
         <h2 className="section-title pr-2">{title}</h2>
         <Link

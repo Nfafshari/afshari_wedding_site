@@ -137,7 +137,8 @@ const TYPE_SCALE = [
   { name: "script-title", className: "script-title text-left", sample: "Piper & Nathen", spec: "Pinyon Script · 36–60px", usage: "The couple's names only." },
   { name: "page-title", className: "page-title text-left", sample: "Budget", spec: "Cormorant 600 · 36px", usage: "One per page." },
   { name: "page-subtitle", className: "page-subtitle text-left", sample: "Paid of $32,000 estimated", spec: "Cormorant 500 · 24px", usage: "The line under a page title." },
-  { name: "section-title", className: "section-title", sample: "By category", spec: "Cormorant 700 · 18px", usage: "Headings inside a page." },
+  { name: "section-title", className: "section-title", sample: "By category", spec: "Cormorant 600 · 24px", usage: "Headings inside a page, sentence case." },
+  { name: "planner-label", className: "planner-label", sample: "Paid to date", spec: "Lora 500 · 14px, gold ink", usage: "Column names, field captions and summary labels. Sentence case, never uppercase." },
   { name: "stat-number", className: "stat-number", sample: "$12,400", spec: "Cormorant 700 · 48–60px, even digits", usage: "Big numbers. Set the color per use." },
   { name: "muted-caption", className: "muted-caption", sample: "Attending", spec: "Lora · 18px, uppercase", usage: "Short label under a stat, three words at most." },
   { name: "text-base", className: "text-base", sample: "Kindly respond by August 1, 2027. We can't wait to celebrate with you.", spec: "Lora 400 · 16px", usage: "Body text and paragraphs." },
@@ -152,6 +153,12 @@ const RADII = [
   { name: "rounded-lg", className: "rounded-lg border bg-card", note: "Cards" },
   { name: "rounded-xl", className: "rounded-xl border bg-card", note: "Dialogs" },
   { name: "rounded-full", className: "rounded-full border bg-card", note: "Pills, avatars" },
+];
+
+// The one divider color and the one tinted surface. Plain `border` is already Olivine 200.
+const LINES_AND_SURFACES = [
+  { name: "border", className: "rounded-lg border bg-card", note: "Every divider, rule and card edge" },
+  { name: "bg-olivine-50", className: "rounded-lg border bg-olivine-50", note: "Cards and group rows" },
 ];
 
 const SHADOWS = [
@@ -251,6 +258,18 @@ export default async function UiKitPage() {
       <KitSection id="radius" title="Radius" description="Every step scales from one --radius token. Pick by what the element is, not by taste.">
         <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
           {RADII.map((tile) => (
+            <TokenTile key={tile.name} {...tile} />
+          ))}
+        </div>
+      </KitSection>
+
+      <KitSection
+        id="lines"
+        title="Lines and surfaces"
+        description="One divider color and one tinted surface. Don't fade burgundy, gold or olivine into a border by hand; gold rules belong to the guest site."
+      >
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
+          {LINES_AND_SURFACES.map((tile) => (
             <TokenTile key={tile.name} {...tile} />
           ))}
         </div>

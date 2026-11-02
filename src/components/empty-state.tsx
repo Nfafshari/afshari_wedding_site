@@ -20,7 +20,7 @@ export default function EmptyState({ icon: Icon, title, message, size = "inline"
   return (
     <div
       className={cn(
-        "flex flex-col items-center gap-2 rounded-lg border border-dashed border-accent text-center whitespace-normal",
+        "flex flex-col items-center gap-2 rounded-lg border border-dashed text-center whitespace-normal",
         isPage ? "px-6 py-16" : "px-4 py-6"
       )}
     >

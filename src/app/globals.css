@@ -225,9 +225,15 @@
   @apply font-heading font-medium text-burg/70 text-center text-2xl;
 }
 
-/* Smaller section heading / label (e.g. "Checklist Progress"). Cormorant 700. */
+/* Heading inside a page (e.g. "Up next", "Attending"). Cormorant 600, sentence case. */
 @utility section-title {
-  @apply font-heading font-bold text-burg/70 text-lg tracking-wide;
+  @apply font-heading font-semibold text-burg text-2xl;
+}
+
+/* Planner label: column names, field captions, summary labels (e.g. "Paid to date").
+   Lora 500 in gold ink, sentence case. Never uppercase or tracked. */
+@utility planner-label {
+  @apply text-sm font-medium text-gold-ink;
 }
 
 /* Large emphasized number (e.g. RSVP counts). Override color per use. Even-height
