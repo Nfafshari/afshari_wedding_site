@@ -80,11 +80,11 @@ export function StackedProgressBar ({ limits, legend }: StackedProgressBarProps)
     
       {/** Keys */}
       <div className="flex mt-8 ml-1.5 gap-8 text-sm text-muted-foreground">
-        <div className="flex items-center tracking-wide">
+        <div className="flex items-center">
           <div className='w-2 h-2 mr-2 rounded-xs' style={{ backgroundColor: legend.primary.color }} />
           <p>{legend.primary.label} • ${compactNumber(legend.primary.value)}</p>
         </div>
-        <div className="flex items-center tracking-wide">
+        <div className="flex items-center">
           <div className='w-2 h-2 mr-2 rounded-xs' style={{ backgroundColor: legend.secondary.color }} />
           <p>{legend.secondary.label} • ${compactNumber(legend.secondary.value)}</p>
         </div>

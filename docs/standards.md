@@ -56,6 +56,8 @@ Every rule below is shown live at [`/planner/ui-kit`](../src/app/(protected)/pla
 ### Type, radius, elevation (`#type`, `#radius`, `#elevation`)
 
 - Headings, titles and stat numbers use the type utilities (`page-title`, `page-subtitle`, `section-title`, `stat-number`, `muted-caption`); everything else is Lora by default. Don't set a font family by hand.
+- Planner labels (column names, field captions, summary labels) use `planner-label`, in sentence case. No `uppercase` or `tracking-*` in the planner.
+- Planner dividers, rules and card edges use plain `border` (Olivine 200); tinted cards and group rows use `bg-olivine-50`. No faded colors such as `border-burg/50` or `border-gold/50` (gold rules are for the guest site).
 - Radius and shadows come from tokens (`rounded-sm`…`rounded-xl`, `shadow-xs`…`shadow-lg`), never bare `rounded`/`shadow` or arbitrary values.
 
 ### Components (`#primitives`)

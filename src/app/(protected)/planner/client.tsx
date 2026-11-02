@@ -75,8 +75,8 @@ export default function Planner({
     <PlannerPage>
       <PageHeader title="Dashboard" subtitle={`Sept. 11, 2027 · ${daysTilWedding} days to go`} subtitlePlacement="end" />
       <Field>
-        <FieldLabel htmlFor="task-progress" className="text-burg/70 font-bold">
-          <span className="section-title">Checklist Progress</span>
+        <FieldLabel htmlFor="task-progress" className="planner-label">
+          <span>Checklist progress</span>
           <span className="ml-auto">{Math.round(progress)}%</span>
         </FieldLabel>
         <Progress
@@ -94,7 +94,7 @@ export default function Planner({
               <li key={task.id}>
                 <Link
                   href={`/planner/checklist?category=${encodeURIComponent(categoryName)}`}
-                  className="flex h-full items-center gap-3 rounded-lg border border-burg/8 bg-olivine/15 p-3 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="flex h-full items-center gap-3 rounded-lg border bg-olivine-50 p-3 hover:shadow-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <Icon className="size-8 shrink-0 text-gold-ink" strokeWidth={1} aria-hidden />
                   <div className="min-w-0">
@@ -115,10 +115,10 @@ export default function Planner({
       </section>
 
       <div className="flex flex-col w-full justify-center py-5">
-        <p className="uppercase tracking-[0.16em]">RSVPs</p>
+        <h2 className="section-title mb-2">RSVPs</h2>
         <Link
           href={'/planner/rsvp'}
-          className="w-full border-2 border-s-0 border-e-0 border-gold/50 hover:shadow-sm cursor-pointer"
+          className="w-full border-y hover:shadow-sm cursor-pointer"
         >
           {/* Phones show only the two answers; the first two stats join from md. */}
           <StatRow className="grid-cols-2 md:grid-cols-4">

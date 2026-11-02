@@ -225,7 +225,7 @@ function SortButton ({ label, onClick }: { label: string; onClick(): void }) {
     <Button
       variant={'ghost'}
       size={'sm'}
-      className="-mr-1.5 px-1.5 h-6 text-xs tracking-wide uppercase text-gold-ink"
+      className="-mr-1.5 px-1.5 h-6 planner-label"
       onClick={onClick}
     >
       {label}

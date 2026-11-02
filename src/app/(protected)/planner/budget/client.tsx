@@ -131,29 +131,29 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
 
         <div className="flex flex-col justify-center items-center md:hidden">
           <p className="page-title text-6xl text-olivine-ink">{toCurrency(totalPaidAmount)}</p>
-          <p className="section-title text-sm text-muted-foreground font-normal">Paid of {toCurrency(totalEstimatedCost)} Estimated</p>
+          <p className="planner-label">Paid of {toCurrency(totalEstimatedCost)} estimated</p>
         </div>
 
         {/** overview */}
         <div className="grid pt-3 lg:grid-cols-2 lg:gap-10">
           <div className="flex flex-col w-full px-2">
-            <h2 className="hidden section-title font-normal text-muted-foreground ml-1 mb-3 md:flex">Estimated/Spent vs. Soft/Hard Caps</h2>
+            <h2 className="hidden section-title ml-1 mb-3 md:flex">Estimated and paid against the caps</h2>
             <StackedProgressBar
               limits={LIMITS}
               legend={progressLegend}
             />
           </div>
           <div className="hidden flex-col w-full mt-5 md:mt-0 md:flex">
-            <div className="flex py-4 items-center border-b border-b-accent">
-              <p className="text-gold-ink mt-1 text-xl">ESTIMATED TOTAL</p>
+            <div className="flex py-4 items-center border-b">
+              <p className="planner-label mt-1">Estimated total</p>
               <p className="ml-auto text-3xl md:text-4xl">{toCurrency(totalEstimatedCost)}</p>
             </div>
-            <div className="flex py-4 items-center border-b border-b-accent">
-              <p className="text-gold-ink mt-1 text-xl">PAID TO DATE</p>
+            <div className="flex py-4 items-center border-b">
+              <p className="planner-label mt-1">Paid to date</p>
               <p className="ml-auto text-3xl text-olivine-ink md:text-4xl">{toCurrency(totalPaidAmount)}</p>
             </div>
-            <div className="flex py-4 items-center border-b border-b-accent">
-              <p className="text-gold-ink mt-1 text-xl">BALANCE DUE</p>
+            <div className="flex py-4 items-center border-b">
+              <p className="planner-label mt-1">Balance due</p>
               <p className="ml-auto text-destructive text-3xl md:text-4xl">{toCurrency(totalBalance)}</p>
             </div>
           </div>

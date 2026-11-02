@@ -124,8 +124,8 @@ export default function Checklist({ categories }: ChecklistProps) {
           <>
             <div className="w-full">
               <Field className="w-full">
-                <FieldLabel htmlFor="task-progress" className="text-burg/70 font-bold">
-                  <span className="ml-auto uppercase tracking-widest">{progress}% | {daysToWedding} Days Remaining</span>
+                <FieldLabel htmlFor="task-progress" className="planner-label">
+                  <span className="ml-auto">{progress}% done · {daysToWedding} days to go</span>
                 </FieldLabel>
                 <Progress
                   id="task-progress"
@@ -175,9 +175,9 @@ export default function Checklist({ categories }: ChecklistProps) {
                   return (
                     <div
                       key={`${category.name}-${idx}`}
-                      className="flex flex-col mx-5 p-2 rounded-sm border border-olivine/20 "
+                      className="flex flex-col mx-5 p-2 rounded-lg border"
                     >
-                      <div className="p-2 flex items-center gap-2 border-b border-b-burg/50">
+                      <div className="p-2 flex items-center gap-2 border-b">
                         <CategoryIcon className="shrink-0" />
                         <h2 className="page-title min-w-0 truncate text-2xl">{category.name}</h2>
                         <p className="ml-auto page-subtitle">{numOfTasksDone}/{category.tasks.length}</p>

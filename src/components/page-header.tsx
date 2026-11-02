@@ -23,7 +23,7 @@ export default function PageHeader({ title, subtitle, subtitlePlacement = "below
   return (
     <header
       className={cn(
-        "mb-6 flex flex-col gap-3 border-b border-accent pb-4 md:flex-row md:justify-between",
+        "mb-6 flex flex-col gap-3 border-b pb-4 md:flex-row md:justify-between",
         // A subtitle on the title's line sits on its baseline; buttons sit on its bottom edge.
         subtitleAtEnd ? "md:items-baseline" : "md:items-end"
       )}
