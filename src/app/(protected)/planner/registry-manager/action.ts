@@ -20,6 +20,8 @@ export interface RegistryItemInput {
 
 /** The route these writes invalidate. `(protected)` is a route group, so it is not in the URL. */
 const REGISTRY_MANAGER_PATH = '/planner/registry-manager';
+/** The guest site's registry, which shows the same items and claim counts. */
+const PUBLIC_REGISTRY_PATH = '/registry';
 
 /** quantityWanted is Int; 4 digits keeps it well inside Postgres' int4 range. */
 const MAX_QUANTITY = 9999;
@@ -147,6 +149,7 @@ export async function createRegistryItem (name: string, link: string, quantityWa
 
   // refresh the page data after a successful write
   revalidatePath(REGISTRY_MANAGER_PATH);
+  revalidatePath(PUBLIC_REGISTRY_PATH);
   return { ok: true };
 }
 
@@ -252,6 +255,7 @@ export async function updateRegistryItem (registryItemId: number | undefined, da
 
   // refresh the page data after a successful write
   revalidatePath(REGISTRY_MANAGER_PATH);
+  revalidatePath(PUBLIC_REGISTRY_PATH);
   return { ok: true };
 }
 
@@ -309,6 +313,7 @@ export async function deleteRegistryItem (registryItemId: number | undefined): P
 
   // refresh the page data after a successful write
   revalidatePath(REGISTRY_MANAGER_PATH);
+  revalidatePath(PUBLIC_REGISTRY_PATH);
   return { ok: true };
 }
 
@@ -361,8 +366,8 @@ export async function createRegistryClaim (itemId: number | undefined, claimedBy
     // and over-claim the item. Accepted — claims are typed in by hand by two people,
     // and the worst case (one extra gravy boat) is visible on the page and undone by
     // deleting a claim. `remaining` is derived from a SUM, so no column constraint can
-    // catch it; closing this properly needs a Serializable transaction, which is worth
-    // it only once the public /registry page lets guests claim concurrently.
+    // catch it. The public /registry claim (where guests do race) uses a Serializable
+    // transaction; this hand-entered path doesn't need one.
     await prisma.registryClaim.create({
       data: {
         itemId,
@@ -382,6 +387,7 @@ export async function createRegistryClaim (itemId: number | undefined, claimedBy
 
   // refresh the page data after a successful write
   revalidatePath(REGISTRY_MANAGER_PATH);
+  revalidatePath(PUBLIC_REGISTRY_PATH);
   return { ok: true };
 }
 
@@ -417,5 +423,6 @@ export async function deleteRegistryClaim (registryClaimId: number | undefined):
 
   // refresh the page data after a successful write
   revalidatePath(REGISTRY_MANAGER_PATH);
+  revalidatePath(PUBLIC_REGISTRY_PATH);
   return { ok: true };
 }

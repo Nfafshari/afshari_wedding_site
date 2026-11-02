@@ -22,6 +22,7 @@ const PUBLIC_ACTION_FILES = [
   "src/app/sign-in/action.ts", // you can't require a login to log in
   "src/app/sign-out/action.ts",
   "src/app/(public)/rsvp/action.ts", // guests are not signed in; guarded by a full-name lookup, server-side re-check of name and invitation, and the response deadline
+  "src/app/(public)/registry/action.ts", // guests are not signed in; a claim needs an invited guest's full name, quantity is re-checked in a Serializable transaction, and no claimer names are returned
 ];
 
 /** Route handlers that are intentionally public. */

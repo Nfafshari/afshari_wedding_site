@@ -9,7 +9,7 @@ describe("hasPage", () => {
   });
 
   it("is false for a page that isn't listed yet", () => {
-    expect(hasPage("/registry")).toBe(false);
-    expect(hasPage("/registry#items")).toBe(false);
+    expect(hasPage("/wedding-party")).toBe(false);
+    expect(hasPage("/gallery#top")).toBe(false);
   });
 });

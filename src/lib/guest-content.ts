@@ -131,3 +131,20 @@ export const FAQ = {
     { question: "Can we take photos during the ceremony?", answer: "Placeholder: whether the ceremony is unplugged, and where to share photos after." },
   ] as { question: string; answer: string; link?: { href: string; label: string } }[],
 } as const;
+
+/** Registry page. The items themselves come from the planner's Registry. */
+export const REGISTRY = {
+  title: "Registry",
+  intro: "Your presence is the best gift. If you'd like to give something more, here are a few things we'd love. Claim a gift so nobody doubles up.",
+  empty: "Our registry is coming soon.",
+  viewItem: "View item",
+  claim: "Claim",
+  fullyClaimed: "Fully claimed",
+  dialogTitle: "Claim this gift",
+  nameLabel: "Your first and last name, as on your invitation",
+  quantityLabel: "How many",
+  submit: "Claim gift",
+  thanks: "Thank you!",
+  changedMind: "Changed your mind? Let us know.",
+  photoPlaceholder: "No photo",
+} as const;
