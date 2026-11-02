@@ -26,10 +26,12 @@ export function gridTemplate(columns: string) {
 
 // Below md: lead | name and meta | end | actions. From md: the --gl-cols template, and the
 // meta and end wrappers dissolve (display: contents) so their cells take the next columns.
+// The phone "·" separators are switched off from md with the same not-first selector: a
+// plain `md:*:before` is less specific than `*:not-first:before` and would lose.
 const ROW = "grid grid-cols-[2rem_minmax(0,1fr)_auto_auto] items-center gap-x-4 border-b px-2 py-2.5 md:min-h-13 md:grid-cols-(--gl-cols) md:py-1.5";
 const LEAD = "col-1 row-[1/3] md:col-auto md:row-auto";
 const NAME = "col-2 row-1 min-w-0 md:col-auto md:row-auto";
-const META = "col-2 row-2 flex flex-wrap text-sm text-burgundy-600 *:not-first:before:px-1.5 *:not-first:before:content-['·'] md:contents md:text-base md:text-foreground md:*:before:content-none";
+const META = "col-2 row-2 flex flex-wrap text-sm text-burgundy-600 *:not-first:before:px-1.5 *:not-first:before:content-['·'] md:contents md:text-base md:text-foreground md:*:not-first:before:content-none";
 const END = "col-3 row-[1/3] flex flex-col items-end gap-1 md:contents";
 const ACTIONS = "col-4 row-[1/3] flex justify-end gap-1 md:col-auto md:row-auto";
 
