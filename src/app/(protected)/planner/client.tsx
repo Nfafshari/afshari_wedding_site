@@ -118,12 +118,12 @@ export default function Planner({
         <h2 className="section-title mb-2">RSVPs</h2>
         <Link
           href={'/planner/rsvp'}
-          className="w-full border-y hover:shadow-sm cursor-pointer"
+          className="w-full border-y py-4 hover:shadow-sm cursor-pointer"
         >
           {/* Phones show only the two answers; the first two stats join from md. */}
           <StatRow className="grid-cols-2 md:grid-cols-4">
             <Stat value={rsvpStats.invited} caption="Invited" className="hidden md:flex" />
-            <Stat value={rsvpStats.respondedParties} caption="Parties Responded" className="hidden md:flex" />
+            <Stat value={rsvpStats.respondedParties} caption="Parties responded" className="hidden md:flex" />
             <Stat value={rsvpStats.attending} caption="Attending" tone="success" />
             <Stat value={rsvpStats.declined} caption="Declined" tone="danger" />
           </StatRow>

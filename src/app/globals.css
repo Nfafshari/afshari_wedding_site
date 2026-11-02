@@ -239,12 +239,12 @@
 /* Large emphasized number (e.g. RSVP counts). Override color per use. Even-height
    digits (Cormorant defaults to old-style). One size smaller on mobile. */
 @utility stat-number {
-  @apply font-heading font-bold lining-nums tabular-nums text-burg text-5xl md:text-6xl;
+  @apply font-heading font-semibold lining-nums tabular-nums text-burg text-3xl md:text-4xl;
 }
 
-/* Muted caption under a stat or field (e.g. "Invited", "Responded"). Lora. */
+/* Muted caption under a stat or field (e.g. "Invited", "Fully claimed"). Lora, sentence case. */
 @utility muted-caption {
-  @apply text-burg/70 text-lg uppercase tracking-widest;
+  @apply text-burgundy-600 text-sm;
 }
 
 /* Guest site. Big headings and the couple's names: uppercase, widely spaced Cormorant.

@@ -18,7 +18,7 @@ interface RegistryCardProps {
 export default function RegistryCard({ registryItems }: RegistryCardProps) {
   const totalItems = registryItems.length;
   // Partly claimed is not claimed — someone still has to buy the rest. Same definition
-  // the registry manager's own "Fully Claimed" stat uses.
+  // the registry manager's own "Fully claimed" stat uses.
   const claimedItems = countFullyClaimedItems(registryItems);
   const progress = totalItems === 0 ? 0 : (claimedItems / totalItems) * 100;
   const latestClaim = getLatestClaim(registryItems);
