@@ -28,7 +28,7 @@ export default function RemoveSubcategoryDialog({ subcategoryToRemove, onSuccess
       description="You can't undo this."
       isLoading={isLoading}
       error={serverError || undefined}
-      onConfirm={() => runAction("Subcategory deleted", () => deleteBudgetSubcategory(subcategoryToRemove?.id))}
+      onConfirm={() => runAction("Line item deleted", () => deleteBudgetSubcategory(subcategoryToRemove?.id))}
     />
   );
 }

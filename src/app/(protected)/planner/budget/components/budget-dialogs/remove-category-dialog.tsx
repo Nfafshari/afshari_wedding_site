@@ -25,7 +25,7 @@ export default function RemoveCategoryDialog({ categoryToRemove, onSuccess, onCa
         if (!open) onCancel();
       }}
       title={`Delete ${categoryToRemove?.name}?`}
-      description="This also deletes every subcategory in it. You can't undo this."
+      description="This also deletes every line item in it. You can't undo this."
       isLoading={isLoading}
       error={serverError || undefined}
       onConfirm={() => runAction("Category deleted", () => deleteBudgetCategory(categoryToRemove?.id))}

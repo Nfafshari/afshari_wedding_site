@@ -16,6 +16,8 @@ export type ActionResult = SharedActionResult<ErrorField>;
 
 export interface BudgetSubcategoryInput {
   name?: string | undefined;
+  /** Moves the line item to another category. */
+  budgetCategoryId?: number | undefined;
   estimatedCost?: number | undefined;
   paidAmount?: number | undefined;
   status?: BudgetStatus | undefined;
@@ -24,7 +26,9 @@ export interface BudgetSubcategoryInput {
 const BUDGET_PATH = '/planner/budget';
 
 const CATEGORY_GONE = 'That category no longer exists, refresh your page and try again.';
-const SUBCATEGORY_GONE = 'That subcategory no longer exists, refresh your page and try again.';
+const LINE_ITEM_GONE = 'That line item no longer exists, refresh your page and try again.';
+/** One message for a name clash, whether the line item was renamed or moved. */
+const LINE_ITEM_TAKEN = 'A line item with that name already exists in this category.';
 
 /**
  * Creates a new budget category in the DB.
@@ -103,7 +107,7 @@ export async function updateBudgetCategory (budgetCategoryId: number | undefined
 }
 
 /**
- * Deletes a budget category. Its subcategories go with it via the DB's
+ * Deletes a budget category. Its line items go with it via the DB's
  * onDelete: Cascade relation, so we only delete the category here.
  * @param budgetCategoryId - id of the category to delete
  * @returns an ActionResult the client can react to
@@ -119,7 +123,7 @@ export async function deleteBudgetCategory (budgetCategoryId: number | undefined
     return { ok: false, error: 'Category could not be found.', field: 'budgetCategory' };
   }
 
-  // Try to delete the category (subcategories cascade automatically).
+  // Try to delete the category (line items cascade automatically).
   try {
     await prisma.budgetCategory.delete({
       where: { id: budgetCategoryId },
@@ -136,14 +140,15 @@ export async function deleteBudgetCategory (budgetCategoryId: number | undefined
 }
 
 /**
- * Creates a new budget subcategory (line item) under a category.
- * @param name - name of the subcategory (cannot be empty)
+ * Creates a new line item (a BudgetSubcategory row) under a category.
+ * @param name - name of the line item (cannot be empty)
  * @param estimatedCost - estimated cost, in dollars (>= 0)
  * @param paidAmount - amount already paid, in dollars (>= 0)
  * @param budgetCategoryId - id of the parent category
+ * @param status - payment status; the column defaults to DUE
  * @returns an ActionResult the client can react to
  */
-export async function createBudgetSubcategory (name: string, estimatedCost: number, paidAmount: number, budgetCategoryId: number | null): Promise<ActionResult> {
+export async function createBudgetSubcategory (name: string, estimatedCost: number, paidAmount: number, budgetCategoryId: number | null, status: BudgetStatus = BudgetStatus.DUE): Promise<ActionResult> {
   /* Validate user session */
   const guard = await requireUserAction();
   if (!guard.ok) {
@@ -153,7 +158,7 @@ export async function createBudgetSubcategory (name: string, estimatedCost: numb
   // Validate on the server (the client re-checks these too, for instant feedback).
   const trimmedName = name.trim();
   if (trimmedName === '') {
-    return { ok: false, error: 'Subcategory name cannot be empty.', field: 'name' };
+    return { ok: false, error: 'Line item name cannot be empty.', field: 'name' };
   }
 
   if (budgetCategoryId === null) {
@@ -166,6 +171,10 @@ export async function createBudgetSubcategory (name: string, estimatedCost: numb
     return invalid;
   }
 
+  if (!Object.values(BudgetStatus).includes(status)) {
+    return { ok: false, error: 'Line item status is incorrect. Please try again.', field: 'status' };
+  }
+
   // Try the write. The DB's @@unique([budgetCategoryId, name]) guards duplicates.
   try {
     await prisma.budgetSubcategory.create({
@@ -174,11 +183,12 @@ export async function createBudgetSubcategory (name: string, estimatedCost: numb
         estimatedCost,
         paidAmount,
         budgetCategoryId,
+        status,
       },
     });
   } catch (error) {
     return handleActionError(error, 'creating new budget subcategory', {
-      P2002: { error: 'A subcategory with that name already exists in this category.', field: 'name' },
+      P2002: { error: LINE_ITEM_TAKEN, field: 'name' },
       // The parent category was deleted while the dialog was open.
       P2003: { error: CATEGORY_GONE, field: 'budgetCategory' },
     });
@@ -202,7 +212,7 @@ export async function deleteBudgetSubcategory (subcategoryId: number | undefined
 
   // check if the id is undefined
   if (subcategoryId === undefined) {
-    return { ok: false, error: 'Subcategory could not be found.' };
+    return { ok: false, error: 'Line item could not be found.' };
   }
 
   // Try to delete the subcategory
@@ -213,7 +223,7 @@ export async function deleteBudgetSubcategory (subcategoryId: number | undefined
   } catch (error) {
     return handleActionError(error, 'deleting budget subcategory', {
       // Already removed.
-      P2025: { error: SUBCATEGORY_GONE },
+      P2025: { error: LINE_ITEM_GONE },
     });
   }
 
@@ -227,6 +237,7 @@ export async function deleteBudgetSubcategory (subcategoryId: number | undefined
  * @param budgetSubcategoryId - id of the category to update
  * @param data - an object of all optional inputs that can be updated:
  * - name
+ * - budgetCategoryId (moves it to another category)
  * - estimated cost
  * - paid amount
  * - status
@@ -242,18 +253,18 @@ export async function updateBudgetSubcategory (budgetSubcategoryId: number | und
   }
 
   if (budgetSubcategoryId === undefined) {
-    return { ok: false, error: 'Subcategory could not be found.', field: 'budgetCategory' };
+    return { ok: false, error: 'Line item could not be found.', field: 'budgetCategory' };
   }
 
-  // return the function worked since now values were passed (all undefined)
-  if (data.name === undefined && data.estimatedCost === undefined && data.paidAmount === undefined && data.status === undefined) {
+  // Nothing was passed, so there is nothing to do.
+  if (Object.values(data).every((value) => value === undefined)) {
     return { ok: true }
   }
 
   // validate all parameters
   const trimmedName = data.name?.trim();
   if (trimmedName === '') {
-    return { ok: false, error: 'Subcategory name cannot be empty.', field: 'name' }
+    return { ok: false, error: 'Line item name cannot be empty.', field: 'name' }
   }
 
   const invalid = (data.estimatedCost === undefined ? null : validateMoney(data.estimatedCost, 'estimatedCost', 'Estimated cost'))
@@ -263,7 +274,7 @@ export async function updateBudgetSubcategory (budgetSubcategoryId: number | und
   }
 
   if (data.status !== undefined && !Object.values(BudgetStatus).includes(data.status)) {
-    return { ok: false, error: 'Subcategory status is incorrect. Please try again.', field: 'status'}
+    return { ok: false, error: 'Line item status is incorrect. Please try again.', field: 'status'}
   }
 
   // Spread rather than mutating `data` — it belongs to the caller. Prisma skips any
@@ -275,10 +286,12 @@ export async function updateBudgetSubcategory (budgetSubcategoryId: number | und
     });
   } catch (error) {
     return handleActionError(error, 'updating budget subcategory', {
-      // This category already has a subcategory with that name.
-      P2002: { error: 'A subcategory with that name already exists in this category.', field: 'name' },
-      // The subcategory was deleted while the dialog was open.
-      P2025: { error: SUBCATEGORY_GONE, field: 'name' },
+      // The category (its own, or the one it moved to) already has a line item with that name.
+      P2002: { error: LINE_ITEM_TAKEN, field: 'name' },
+      // It was moved to a category deleted while the dialog was open.
+      P2003: { error: CATEGORY_GONE, field: 'budgetCategory' },
+      // The line item was deleted while the dialog was open.
+      P2025: { error: LINE_ITEM_GONE, field: 'name' },
     });
   }
 
