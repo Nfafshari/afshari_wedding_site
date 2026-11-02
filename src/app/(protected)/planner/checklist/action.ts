@@ -3,6 +3,7 @@ import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { requireUserAction } from '@/lib/require-user';
 import { handleActionError, type ActionResult as SharedActionResult } from '@/lib/action';
+import { checkDate, checkRequired } from '@/lib/validate';
 
 /**
  * Which input a failure relates to, so the client can highlight the right field.
@@ -17,6 +18,7 @@ export type ActionResult = SharedActionResult<ErrorField>;
 const CHECKLIST_PATH = '/planner/checklist';
 
 const CATEGORY_GONE = 'That category no longer exists, refresh your page and try again.';
+const TASK_GONE = 'That task no longer exists, refresh your page and try again.';
 
 /**
  * Creates a new category in the DB.
@@ -159,7 +161,7 @@ export async function deleteTask (taskId: number | undefined): Promise<ActionRes
   } catch (error) {
     return handleActionError(error, 'deleting task', {
       // Already removed.
-      P2025: { error: 'That task no longer exists, refresh your page and try again.' },
+      P2025: { error: TASK_GONE },
     });
   }
 
@@ -206,6 +208,59 @@ export async function createTask (taskName: string, date: Date | undefined, cate
     });
   } catch (error) {
     return handleActionError(error, 'creating new task', {});
+  }
+
+  revalidatePath(CHECKLIST_PATH);
+  return { ok: true };
+}
+
+/** What the task dialog sends when editing. */
+export type TaskInput = {
+  name: string;
+  goalDate: Date | undefined;
+  /** A different category moves the task. */
+  categoryId: number;
+};
+
+/**
+ * Updates a task's name, due date and category. Done or not is left to toggleTaskStatus.
+ * @param taskId - id of the task to update
+ * @param input - see {@link TaskInput}
+ * @returns an ActionResult the client can react to
+ */
+export async function updateTask (taskId: number | undefined, input: TaskInput): Promise<ActionResult> {
+  /* Validate user session */
+  const guard = await requireUserAction();
+  if (!guard.ok) {
+    return guard;
+  }
+
+  if (taskId === undefined) {
+    return { ok: false, error: 'Task could not be found.', field: 'name' };
+  }
+
+  // The checks come from lib/validate.ts, so the dialog shows the same words first.
+  const nameError = checkRequired(input.name, 'Task name');
+  if (nameError) {
+    return { ok: false, error: nameError, field: 'name' };
+  }
+  const dateError = checkDate(input.goalDate);
+  if (dateError || input.goalDate === undefined) {
+    return { ok: false, error: dateError ?? 'Please select a date.', field: 'date' };
+  }
+
+  try {
+    await prisma.task.update({
+      where: { id: taskId },
+      data: { name: input.name.trim(), goalDate: input.goalDate, categoryId: input.categoryId },
+    });
+  } catch (error) {
+    return handleActionError(error, 'updating task', {
+      // The task was deleted while the dialog was open.
+      P2025: { error: TASK_GONE, field: 'name' },
+      // The category it was moving to was deleted meanwhile.
+      P2003: { error: CATEGORY_GONE, field: 'category' },
+    });
   }
 
   revalidatePath(CHECKLIST_PATH);
