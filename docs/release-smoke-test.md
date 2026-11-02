@@ -44,6 +44,10 @@ Use a **private/incognito window** for this entire section. This is the path a s
 | 1.1a | Click **Our Story** in the header (and **Read our story** on Home) | `/our-story` shows the heading, the short excerpt and the photo gallery (2 columns on phones, 3 on desktop, no gaps between mixed shapes); a real photo opens larger on click and closes with Esc; the slim RSVP band at the bottom opens `/rsvp`; tab title "Our Story · Piper & Nathen" |
 | 1.1b | Click **Details** in the header, then go back to Home and click each Weekend Details link | `/details` shows The Venue, The Schedule (timeline for Saturday) and Travel (hotels); each Home link lands on its section with the heading visible; Get directions and Book a room open in a new tab |
 | 1.1d | Click **FAQ** in the header; open a few questions with the mouse, then Tab to one and press Enter | Each answer opens and closes; several can be open at once; the RSVP question shows the right deadline and an RSVP now link |
+| 1.1e | **Production: use a throwaway item.** In the planner add a registry item "Zz Smoke Gift" wanting 2. Open `/registry` signed out | The item shows "0 of 2 claimed"; no claimer names anywhere on the page |
+| 1.1f | Claim it with a name not on the guest list, then with a first name only | "We couldn't find that name…", then "Please enter your first and last name." Nothing is saved |
+| 1.1g | Claim 1 with the throwaway party's guest name (from 1.7) | "Thank you! You claimed Zz Smoke Gift"; the page shows "1 of 2 claimed"; the planner Registry lists the claim under that guest's name |
+| 1.1h | Claim it again asking for 2 | "Someone just claimed some, so only 1 is left." Claim 1 and the item shows "Fully claimed" with no Claim button. **Delete the claims and the item in the planner** |
 | 1.2 | Check the page title in the browser tab | **Not** "Create Next App" |
 | 1.3 | Open devtools console | No red errors |
 | 1.4 | Click **RSVP** in the header | Lands on `/rsvp`: RSVP heading, sprig, date and "Kindly respond by …", then the name lookup in a white card with a double gold line; RSVP is gold with a short underline in the header |
@@ -65,6 +69,15 @@ The public form is protected by a Vercel firewall rule (NFA-33), not by app code
 3. Wait a minute, then look up a name and submit in the browser.
 
 **Expected:** the first ~20 replays succeed and later ones return **403** (what this rule's deny sends, measured on 2026-10-30); the denied requests show in the firewall log; after the window the normal lookup and submit work again. A missing or inactive rule is a blocker: the form is open to unlimited guessing.
+
+### 1.12 — Registry rate limit
+
+Same protection as 1.11, for the registry claim (NFA-52). Rule: path equals `/registry` and method is `POST`; rate limit about 20 requests per 60 seconds per IP (fixed window); action Deny. Create it in Vercel on first deploy of the Registry page.
+
+1. Check the rule is listed and active.
+2. Copy a claim request (with a made-up name, so nothing is saved) as cURL and replay it about 25 times in a minute.
+
+**Expected:** later replays return **403** and show in the firewall log. A missing rule is a blocker: the claim form is open to unlimited name guessing.
 
 - [ ] Section 1 complete
 

@@ -52,6 +52,27 @@ export function normalizeName (value: string): string {
     .trim();
 }
 
+/** Shown when a typed name isn't on the guest list (and for an over-long one, so it reveals nothing). */
+export const NAME_NOT_FOUND = "We couldn't find that name. Try it exactly as it appears on your invitation, or reach out to us.";
+
+/**
+ * Turns a typed name into a lookup key, or explains why it can't be one. A first
+ * name alone matches too many people, so both names are required. Shared by the
+ * public RSVP and Registry pages, which both prove a visitor is invited this way.
+ */
+export function toLookupKey (name: string): { ok: true; key: string } | { ok: false; error: string; field: 'name' } {
+  if (name.length > MAX_SHORT_TEXT) {
+    return { ok: false, error: NAME_NOT_FOUND, field: 'name' };
+  }
+
+  const key = normalizeName(name);
+  if (key.split(' ').length < 2) {
+    return { ok: false, error: 'Please enter your first and last name.', field: 'name' };
+  }
+
+  return { ok: true, key };
+}
+
 type GuestLike = {
   attendance: 'PENDING' | 'ATTENDING' | 'DECLINED';
   isPlusOne: boolean;

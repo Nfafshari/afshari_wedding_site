@@ -2,7 +2,7 @@
 import { prisma } from '@/lib/prisma';
 import type { Attendance, PlusOneStatus } from '@/generated/prisma/enums';
 import { revalidatePath } from 'next/cache';
-import { MAX_LONG_TEXT, MAX_SHORT_TEXT, isRsvpOpen, normalizeName } from '@/lib/rsvp';
+import { MAX_LONG_TEXT, MAX_SHORT_TEXT, NAME_NOT_FOUND as NOT_FOUND, isRsvpOpen, normalizeName, toLookupKey } from '@/lib/rsvp';
 
 /**
  * Public actions. These run for anyone on the internet, so unlike the planner's
@@ -53,30 +53,12 @@ export type RsvpSubmission = {
 
 const RSVP_PATHS = ['/planner/rsvp', '/planner'];
 
-const NOT_FOUND = "We couldn't find that name. Try it exactly as it appears on your invitation, or reach out to us.";
 const STALE = 'Your invitation changed since you opened it. Please look up your name again.';
 
 /** Loose on purpose: catches typos like a missing @, not every RFC edge case. */
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 /** Digits plus the punctuation people actually type: +1 (555) 218-0142. */
 const PHONE_PATTERN = /^\+?[\d\s().-]{7,20}$/;
-
-/**
- * Turns a typed name into a lookup key, or explains why it can't be one. A first
- * name alone matches too many people, so both names are required.
- */
-function toLookupKey (name: string): { ok: true; key: string } | { ok: false; error: string; field: 'name' } {
-  if (name.length > MAX_SHORT_TEXT) {
-    return { ok: false, error: NOT_FOUND, field: 'name' };
-  }
-
-  const key = normalizeName(name);
-  if (key.split(' ').length < 2) {
-    return { ok: false, error: 'Please enter your first and last name.', field: 'name' };
-  }
-
-  return { ok: true, key };
-}
 
 /**
  * Finds the party a guest belongs to by their full name.

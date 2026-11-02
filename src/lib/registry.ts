@@ -24,6 +24,17 @@ export function isFullyClaimed (item: ItemLike): boolean {
   return getClaimedQuantity(item) >= item.quantityWanted;
 }
 
+/**
+ * Why a guest can't claim `quantity` of an item with `remaining` left, or null if they can.
+ * `remaining` is what's still unclaimed right now, so the message can say how many are left.
+ */
+export function checkClaimQuantity (quantity: number, remaining: number): string | null {
+  if (remaining <= 0) return 'This gift has already been fully claimed.';
+  if (!Number.isInteger(quantity) || quantity < 1) return 'Please choose how many you would like to claim.';
+  if (quantity > remaining) return remaining === 1 ? 'Someone just claimed some, so only 1 is left.' : `Someone just claimed some, so only ${remaining} are left.`;
+  return null;
+}
+
 export function countFullyClaimedItems (items: ItemLike[]): number {
   return items.filter(isFullyClaimed).length;
 }
