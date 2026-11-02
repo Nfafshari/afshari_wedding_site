@@ -96,6 +96,7 @@ export default function RsvpForm({ isOpen, deadline }: RsvpFormProps) {
                   type="text"
                   autoComplete="name"
                   placeholder="Grace Okafor"
+                  className="h-10"
                   value={name}
                   aria-invalid={error !== ''}
                   onChange={(e) => {
@@ -103,7 +104,7 @@ export default function RsvpForm({ isOpen, deadline }: RsvpFormProps) {
                     setError('');
                   }}
                 />
-                <button type="submit" disabled={isLoading || name.trim() === ''} className={cn(PRIMARY, "px-5")}>
+                <button type="submit" disabled={isLoading || name.trim() === ''} className={cn(PRIMARY, "h-10 px-5 py-0")}>
                   {isLoading ? <Spinner /> : <><Search className="size-4" aria-hidden /> Find</>}
                 </button>
               </div>
