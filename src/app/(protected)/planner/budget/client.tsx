@@ -13,12 +13,10 @@ import { Dialog } from "@/components/ui/dialog";
 import { BudgetCategory } from './page'
 import { toCurrency } from "@/lib/utils";
 import CategoryTable from "./components/category-table";
-import AddCategoryDialog from "./components/budget-dialogs/add-category-dialog";
-import AddSubcategoryDialog from "./components/budget-dialogs/add-subcategory-dialog";
+import CategoryDialog from "./components/budget-dialogs/category-dialog";
+import LineItemDialog from "./components/budget-dialogs/line-item-dialog";
 import RemoveCategoryDialog from "./components/budget-dialogs/remove-category-dialog";
 import RemoveSubcategoryDialog from "./components/budget-dialogs/remove-subcategory-dialog";
-import EditCategoryDialog from "./components/budget-dialogs/edit-category-dialog";
-import EditSubcategoryDialog from "./components/budget-dialogs/edit-subcategory-dialog";
 
 interface BudgetProps {
   budgetCategories: BudgetCategory[]
@@ -189,16 +187,16 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
 
       {/* Each dialog owns its own form state; rendering it conditionally mounts/unmounts (and resets) it. */}
       {activeDialog === DialogType.Category && (
-        <AddCategoryDialog
+        <CategoryDialog
           budgetCategories={budgetCategories}
           onSuccess={closeDialog}
         />
       )}
 
       {activeDialog === DialogType.Subcategory && (
-        <AddSubcategoryDialog
+        <LineItemDialog
           budgetCategories={budgetCategories}
-          budgetCategoryId={activeBudgetCategoryId}
+          defaultCategoryId={activeBudgetCategoryId}
           onSuccess={closeDialog}
         />
       )}
@@ -219,17 +217,18 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
         />
       )}
 
-      {activeDialog === DialogType.Edit && (
-        <EditCategoryDialog
+      {activeDialog === DialogType.Edit && categoryToUpdate && (
+        <CategoryDialog
           budgetCategories={budgetCategories}
-          categoryToUpdate={categoryToUpdate}
+          category={categoryToUpdate}
           onSuccess={closeDialog}
         />
       )}
 
       {activeDialog === DialogType.EditSubcat && activeSubcategory && (
-        <EditSubcategoryDialog
-          subcategoryToUpdate={activeSubcategory}
+        <LineItemDialog
+          budgetCategories={budgetCategories}
+          lineItem={activeSubcategory}
           onSuccess={closeDialog}
         />
       )}

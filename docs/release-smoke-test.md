@@ -153,6 +153,7 @@ The most complete feature — exercise it hardest.
 | 5.3 | Add category `ZZTEST Budget` | Appears; toast fires |
 | 5.4 | Add a line item (the category's "Add line item" row) with an estimated cost | Appears; totals and progress bar update |
 | 5.5 | Edit a line item with its pencil | Edit dialog opens; saves; totals recalculate |
+| 5.5a | Edit the test line item and change its Category | It moves to the other category; both categories' totals update. Moving it next to a line item with the same name is refused under Name |
 | 5.6 | Sort by estimated cost, then paid, then balance | Each reorders correctly |
 | 5.7 | Check the status chips | A line item matches its status; a category is Paid when every item is, Deposit paid once anything is paid, otherwise Due |
 | 5.8 | Remove the test line item, then the category | Both removed; totals return to prior values |
