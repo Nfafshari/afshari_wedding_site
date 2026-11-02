@@ -6,6 +6,8 @@
  * page module into a client component just to borrow a type.
  */
 
+import type { BudgetStatus } from '@/generated/prisma/enums';
+
 type SubcategoryLike = {
   estimatedCost: number;
   paidAmount: number;
@@ -27,6 +29,16 @@ export function getCategoryTotals (category: { budgetSubcategories: SubcategoryL
   const paid = category.budgetSubcategories.reduce((sum, sub) => sum + sub.paidAmount, 0);
 
   return { estimated, paid, balance: estimated - paid };
+}
+
+/**
+ * A category's status from its line items: paid once every one is paid, deposit paid
+ * once anything has been paid, otherwise due. An empty category is due.
+ */
+export function getCategoryStatus (lineItems: { status: BudgetStatus; paidAmount: number }[]): BudgetStatus {
+  if (lineItems.length > 0 && lineItems.every((item) => item.status === 'PAID')) return 'PAID';
+  if (lineItems.some((item) => item.status !== 'DUE' || item.paidAmount > 0)) return 'DEPOSIT';
+  return 'DUE';
 }
 
 export type BudgetSlice = {
