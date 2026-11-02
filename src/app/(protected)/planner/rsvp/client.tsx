@@ -1,19 +1,22 @@
 "use client";
 
 import { useState } from "react";
-import { CirclePlus, FileUp, Users } from "lucide-react";
+import { CirclePlus, FileUp, SearchX, Users } from "lucide-react";
 
 import { Dialog } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/empty-state";
 import PageHeader from "@/components/page-header";
 import PlannerPage from "@/components/planner-page";
+import SearchField from "@/components/search-field";
+import SegmentedFilter from "@/components/segmented-filter";
 import RsvpTable from "@/components/rsvp/rsvp-table";
 import RsvpStats from "@/components/rsvp/rsvp-stats";
 import type { RsvpGuestRow, RsvpPartyRow } from "@/components/rsvp/types";
 import type { Attendance } from "@/generated/prisma/enums";
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
-import { formatRsvpDeadline, getRsvpStats, isRsvpOpen } from "@/lib/rsvp";
+import { useQueryParams } from "@/hooks/use-query-params";
+import { countPartiesByFilter, filterParties, formatRsvpDeadline, getRsvpStats, isRsvpFilter, isRsvpOpen } from "@/lib/rsvp";
 
 import { setAttendance, setPlusOneStatus, type ErrorField } from "./action";
 import PartyDialog from "./dialogs/party-dialog";
@@ -47,6 +50,24 @@ export default function Rsvp({ invitations }: RsvpProps) {
   const activeParty = invitations.find((invitation) => invitation.id === activePartyId);
 
   const stats = getRsvpStats(invitations);
+
+  // The query string is untrusted, so an unknown filter falls back to all.
+  const { searchParams, setParams } = useQueryParams();
+  const rawFilter = searchParams.get('show');
+  const filter = isRsvpFilter(rawFilter) ? rawFilter : 'all';
+  const query = searchParams.get('q') ?? '';
+  const counts = countPartiesByFilter(invitations);
+  const shownParties = filterParties(invitations, filter, query);
+  // SearchField keeps its own text, so Clear filters remounts it to empty it.
+  const [searchKey, setSearchKey] = useState(0);
+
+  function clearFilters() {
+    setParams((params) => {
+      params.delete('show');
+      params.delete('q');
+    });
+    setSearchKey((key) => key + 1);
+  }
 
   // Close any open dialog. Each dialog owns its own form state, so unmounting it resets that state.
   function closeDialog() {
@@ -120,13 +141,38 @@ export default function Rsvp({ invitations }: RsvpProps) {
             </Button>
           </EmptyState>
         ) : (
-          <RsvpTable
-            parties={invitations}
-            onEditParty={onEditParty}
-            onRemoveParty={onRemoveParty}
-            onSetAttendance={onSetAttendance}
-            onSetPlusOneStatus={onSetPlusOneStatus}
-          />
+          <>
+            <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <SegmentedFilter
+                label="Show parties"
+                param="show"
+                defaultValue="all"
+                options={[
+                  { value: 'all', label: 'All', count: counts.all },
+                  { value: 'waiting', label: 'Waiting', count: counts.waiting },
+                  { value: 'attending', label: 'Attending', count: counts.attending },
+                  { value: 'declined', label: 'Declined', count: counts.declined },
+                  { value: 'plus-ones', label: 'Plus-one requests', count: counts['plus-ones'] },
+                ]}
+              />
+              <SearchField key={searchKey} label="Find a guest" />
+            </div>
+
+            {shownParties.length === 0 ? (
+              <EmptyState icon={SearchX} title="No parties match" message="Try another name, or show everyone.">
+                <Button variant="secondary" onClick={clearFilters}>Clear filters</Button>
+              </EmptyState>
+            ) : (
+              <RsvpTable
+                parties={shownParties}
+                openAll={query.trim() !== ''}
+                onEditParty={onEditParty}
+                onRemoveParty={onRemoveParty}
+                onSetAttendance={onSetAttendance}
+                onSetPlusOneStatus={onSetPlusOneStatus}
+              />
+            )}
+          </>
         )}
       </PlannerPage>
 

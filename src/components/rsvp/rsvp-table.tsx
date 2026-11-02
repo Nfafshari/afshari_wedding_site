@@ -17,6 +17,8 @@ import type { RsvpGuestRow, RsvpHandlers, RsvpPartyRow } from "./types";
 
 interface RsvpTableProps extends RsvpHandlers {
   parties: RsvpPartyRow[];
+  /** Open every party, e.g. while searching, so the matching guest is in view. */
+  openAll?: boolean;
 }
 
 const ATTENDANCE_OPTIONS: Attendance[] = ['ATTENDING', 'DECLINED', 'PENDING'];
@@ -39,7 +41,7 @@ function hasPendingPlusOne (party: RsvpPartyRow): boolean {
  * a party's contact and notes, and a guest's dietary notes. A party with a plus-one to review
  * starts open, so the Approve and Reject buttons are already in view.
  */
-export default function RsvpTable ({ parties, onEditParty, onRemoveParty, onSetAttendance, onSetPlusOneStatus }: RsvpTableProps) {
+export default function RsvpTable ({ parties, openAll = false, onEditParty, onRemoveParty, onSetAttendance, onSetPlusOneStatus }: RsvpTableProps) {
   const sorted = parties.toSorted((a, b) => a.partyName.localeCompare(b.partyName));
 
   return (
@@ -56,9 +58,10 @@ export default function RsvpTable ({ parties, onEditParty, onRemoveParty, onSetA
 
         return (
           <ListGroup
-            key={party.id}
+            // defaultOpen only applies on mount, so the key remounts the group when openAll flips.
+            key={`${party.id}-${openAll}`}
             title={party.partyName}
-            defaultOpen={hasPendingPlusOne(party)}
+            defaultOpen={openAll || hasPendingPlusOne(party)}
             // Always a cell, even when empty, so the status lands in its own column from md.
             meta={
               <ListCell className="flex min-w-0 items-center gap-1 font-normal">

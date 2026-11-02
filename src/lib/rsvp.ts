@@ -1,3 +1,5 @@
+import { matchesSearch } from "./search";
+
 /**
  * RSVP rules and math, shared by the planner, the public RSVP form and the CSV import.
  *
@@ -170,4 +172,44 @@ export function partyHeadcountLabel (invitation: InvitationLike): string {
 
   const coming = invitation.guests.filter(isCountedAttending).length;
   return `${coming} of ${members + countActivePlusOnes(invitation)} coming`;
+}
+
+/** The planner's party filter: everyone, one `PartyGroup`, or parties with a plus-one to review. */
+export const RSVP_FILTERS = ['all', 'waiting', 'attending', 'declined', 'plus-ones'] as const;
+export type RsvpFilter = typeof RSVP_FILTERS[number];
+
+export function isRsvpFilter (value: string | null): value is RsvpFilter {
+  return RSVP_FILTERS.some((filter) => filter === value);
+}
+
+function matchesFilter (invitation: InvitationLike, filter: RsvpFilter): boolean {
+  switch (filter) {
+    case 'all': return true;
+    case 'waiting': return getPartyGroup(invitation) === 'awaiting';
+    case 'attending': return getPartyGroup(invitation) === 'attending';
+    case 'declined': return getPartyGroup(invitation) === 'declined';
+    case 'plus-ones': return getPlusOnes(invitation).some((guest) => guest.plusOneStatus === 'PENDING');
+  }
+}
+
+/** How many parties each filter shows, before any search. */
+export function countPartiesByFilter (invitations: InvitationLike[]): Record<RsvpFilter, number> {
+  return Object.fromEntries(
+    RSVP_FILTERS.map((filter) => [filter, invitations.filter((invitation) => matchesFilter(invitation, filter)).length])
+  ) as Record<RsvpFilter, number>;
+}
+
+/**
+ * The parties the planner list shows. Search matches the party name or any guest's
+ * name, and a match keeps the whole party, so the guest is seen with their party.
+ */
+export function filterParties<T extends { respondedAt: Date | null; partyName: string; guests: (GuestLike & { name: string })[] }> (
+  invitations: T[],
+  filter: RsvpFilter,
+  query: string
+): T[] {
+  return invitations.filter((invitation) =>
+    matchesFilter(invitation, filter)
+    && matchesSearch(query, invitation.partyName, ...invitation.guests.map((guest) => guest.name))
+  );
 }
