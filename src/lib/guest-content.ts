@@ -111,3 +111,23 @@ export const DETAILS = {
   },
   photoPlaceholder: "Photo needed",
 } as const;
+
+/**
+ * Wedding Party page: one group, in the order listed. Placeholders: set each name (and the
+ * photo's alt text to that name), role and one-line note. Photos: set `src` to a file in /public.
+ */
+export const WEDDING_PARTY = {
+  title: "Wedding Party",
+  intro: "The people standing beside us on September 11.",
+  photoPlaceholder: "Photo needed",
+  people: [
+    { name: "Person name", role: "Maid of Honor", line: "Piper's sister and lifelong partner in crime.", photo: { src: undefined as string | undefined, alt: "Person name" } },
+    { name: "Person name", role: "Best Man", line: "Nathen's brother, and first call for everything.", photo: { src: undefined as string | undefined, alt: "Person name" } },
+    { name: "Person name", role: "Bridesmaid", line: "Piper's college roommate and forever friend.", photo: { src: undefined as string | undefined, alt: "Person name" } },
+    { name: "Person name", role: "Groomsman", line: "Nathen's oldest friend, since grade school.", photo: { src: undefined as string | undefined, alt: "Person name" } },
+    { name: "Person name", role: "Bridesmaid", line: "The friend who's always up for an adventure.", photo: { src: undefined as string | undefined, alt: "Person name" } },
+    { name: "Person name", role: "Groomsman", line: "Teammate, roommate and now groomsman.", photo: { src: undefined as string | undefined, alt: "Person name" } },
+    { name: "Person name", role: "Bridesmaid", line: "A friend who feels like family.", photo: { src: undefined as string | undefined, alt: "Person name" } },
+    { name: "Person name", role: "Groomsman", line: "The one who introduced us (probably).", photo: { src: undefined as string | undefined, alt: "Person name" } },
+  ],
+} as const;
