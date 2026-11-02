@@ -1,23 +1,28 @@
 "use client";
 
 import { useState } from "react";
-import { CirclePlus, ExternalLink, FileText, SquarePen } from "lucide-react";
+import { CirclePlus, FileText, SearchX } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
-import { formatDate } from "@/lib/utils";
 import EmptyState from "@/components/empty-state";
 import PageHeader from "@/components/page-header";
 import PlannerPage from "@/components/planner-page";
+import SearchField from "@/components/search-field";
+import SegmentedFilter from "@/components/segmented-filter";
 import { Dialog } from "@/components/ui/dialog";
+import { useQueryParams } from "@/hooks/use-query-params";
+import { filterAndSortDocs, isDocSort } from "@/lib/documents";
 import AddDocDialog from "./dialogs/add-doc-dialog";
 import EditDocDialog from "./dialogs/edit-doc-dialog";
-import { resolveDocIcon } from "./dialogs/icon-picker";
+import DeleteDocDialog from "./dialogs/delete-doc-dialog";
+import DocTile from "./components/doc-tile";
 import { type ArchivedDoc } from "./data";
 
 enum DialogType {
   None = 'none',
   Add =  'add',
-  Edit = 'edit'
+  Edit = 'edit',
+  Delete = 'delete'
 }
 
 interface DocArchiveProps {
@@ -27,15 +32,43 @@ interface DocArchiveProps {
 
 export default function DocArchive({ docs }: DocArchiveProps) {
   const [activeDialog, setActiveDialog] = useState<DialogType>(DialogType.None);
-  const [docToEdit, setDocToEdit] = useState<ArchivedDoc | undefined>(undefined);
+  const [activeDocId, setActiveDocId] = useState<number | undefined>(undefined);
+
+  // Looked up by id so a dialog always works on the current row after a revalidation.
+  const activeDoc = docs.find((doc) => doc.id === activeDocId);
+
+  // The query string is untrusted, so an unknown sort falls back to newest.
+  const { searchParams, setParams } = useQueryParams();
+  const rawSort = searchParams.get('sort');
+  const sort = isDocSort(rawSort) ? rawSort : 'newest';
+  const query = searchParams.get('q') ?? '';
+  const shownDocs = filterAndSortDocs(docs, query, sort);
+  // SearchField keeps its own text, so Clear search remounts it to empty it.
+  const [searchKey, setSearchKey] = useState(0);
+
+  function clearSearch() {
+    setParams((params) => params.delete('q'));
+    setSearchKey((key) => key + 1);
+  }
+
+  function closeDialog() {
+    setActiveDialog(DialogType.None);
+    setActiveDocId(undefined);
+  }
+
+  function openDialog(type: DialogType, doc: ArchivedDoc) {
+    setActiveDocId(doc.id);
+    setActiveDialog(type);
+  }
 
   return (
     <Dialog
-      open={activeDialog !== DialogType.None}
+      // Form dialogs share this root. The delete confirmation brings its own (ConfirmDialog).
+      open={activeDialog !== DialogType.None && activeDialog !== DialogType.Delete}
       onOpenChange={(open) => {
         // Radix calls this with the *next* open state. Only act on close.
         if (!open) {
-          setActiveDialog(DialogType.None);
+          closeDialog();
         }
       }}
     >
@@ -63,69 +96,60 @@ export default function DocArchive({ docs }: DocArchiveProps) {
             </Button>
           </EmptyState>
         ) : (
-          <div className="flex w-full md:px-10">
-            <div className="grid grid-cols-2 gap-4 w-full h-full md:grid-cols-2 lg:grid-cols-3 lg:gap-10">
-              {docs.map((doc) => {
-                const Icon = resolveDocIcon(doc.icon);
-
-                return (
-                  <div key={doc.id} className="relative flex flex-col w-full h-45 rounded-lg bg-muted/20 border border-border hover:shadow-sm has-[a:active]:translate-y-px has-[a:active]:-translate-x-px md:h-60 lg:h-80">
-                    {/* Cover div with link underneath edit button so that the edit button does not trigger opening the pdf */}
-                    <a
-                      className="absolute inset-0 z-10 rounded-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-                      href={doc.link}
-                      target='_blank'
-                      rel='noopener noreferrer'
-                      aria-label={`Open ${doc.name} (PDF, opens in a new tab)`}
-                    />
-
-                    <ExternalLink className="absolute top-1 right-1 w-5 h-5 text-gold-ink"/>
-
-                  
-                    {/* Icon area */}
-                    <div className="flex flex-col w-full h-3/5 md:h-2/3 mt-2 justify-center items-center ">
-                      <Icon className="w-20 h-20 md:w-30 md:h-30 lg:w-40 lg:h-40" strokeWidth={0.5}/>
-                      <p className="text-muted-foreground text-sm md:text-base mt-2">Added {formatDate(doc.createdAt)}</p>
-                    </div>
-
-                    {/* footer text area */}
-                    <div className="flex flex-col w-full h-2/5 md:h-1/5 px-2 py-1 text-muted-foreground border-t border-border md:px-4 md:py-2">
-                      <p className="font-bold text-burg md:text-xl lg:text-2xl">{doc.name}</p>
-                      <p className="hidden md:flex">{doc.companyName}</p>
-                    </div>
-
-                    <Button
-                      variant={'ghost'}
-                      aria-label={`Edit ${doc.name}`}
-                      size={'icon-sm'}
-                      className="absolute bottom-0.5 right-0.5 z-20 md:mt-auto"
-                      onClick={() => {
-                        setDocToEdit(doc);
-                        setActiveDialog(DialogType.Edit);
-                      }}
-                    >
-                      <SquarePen />
-                    </Button>
-                  </div>
-                );
-              })}
+          <>
+            <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+              <SegmentedFilter
+                label="Sort documents"
+                param="sort"
+                defaultValue="newest"
+                options={[
+                  { value: 'newest', label: 'Newest' },
+                  { value: 'az', label: 'A–Z' },
+                ]}
+              />
+              <SearchField key={searchKey} label="Find a document" />
             </div>
-          </div>
+
+            {shownDocs.length === 0 ? (
+              <EmptyState icon={SearchX} title="No documents match" message="Try another name or company.">
+                <Button variant="secondary" onClick={clearSearch}>Clear search</Button>
+              </EmptyState>
+            ) : (
+              <ul aria-label="Documents" className="grid grid-cols-[repeat(auto-fill,minmax(15rem,1fr))] gap-4">
+                {shownDocs.map((doc) => (
+                  <DocTile
+                    key={doc.id}
+                    doc={doc}
+                    onEdit={(doc) => openDialog(DialogType.Edit, doc)}
+                    onDelete={(doc) => openDialog(DialogType.Delete, doc)}
+                  />
+                ))}
+              </ul>
+            )}
+          </>
         )}
       </PlannerPage>
 
       {activeDialog === DialogType.Add &&
         <AddDocDialog
           docs={docs}
-          onSuccess={() => setActiveDialog(DialogType.None)}
+          onSuccess={closeDialog}
         />
       }
 
       {activeDialog === DialogType.Edit &&
         <EditDocDialog
           docs={docs}
-          docToUpdate={docToEdit}
-          onSuccess={() => setActiveDialog(DialogType.None)}
+          docToUpdate={activeDoc}
+          onSuccess={closeDialog}
+        />
+      }
+
+      {activeDialog === DialogType.Delete &&
+        <DeleteDocDialog
+          docToDelete={activeDoc}
+          onSuccess={closeDialog}
+          onCancel={closeDialog}
         />
       }
     </Dialog>

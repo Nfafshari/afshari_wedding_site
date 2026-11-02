@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/require-user";
 import { supabase, DOCUMENTS_BUCKET } from "@/lib/supabase";
 import DocArchive from "./client";
 import type { ArchivedDoc } from "./data";
+import { fileTypeLabel } from "@/lib/documents";
 
 export const dynamic = 'force-dynamic';
 
@@ -41,6 +42,7 @@ export async function getDocuments (): Promise<ArchivedDoc[]> {
     companyName: doc.companyName,
     icon: doc.icon,
     link: linkByPath.get(doc.filePath) ?? '',
+    fileType: fileTypeLabel(doc.filePath),
   }));
 }
 
