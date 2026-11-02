@@ -51,7 +51,7 @@ Every rule below is shown live at [`/planner/ui-kit`](../src/app/(protected)/pla
 - Gold or olivine text and icons on a light background use `text-gold-ink` / `text-olivine-ink`, never the brand shades. Brand gold works as text only on burgundy and in the logo and script title.
 - `text-muted` is a surface, not a text color: secondary text is `text-muted-foreground` or `text-burg/70`. Text opacity stops at `/70`, and error text is solid `text-destructive`.
 - Every text/background pairing in use is listed in the kit's contrast table and must pass WCAG AA (4.5:1 text, 3:1 large text and UI parts). A new pairing, including a see-through one like `bg-olivine/15`, gets a row there.
-- Allowed exceptions (from the NFA-40 scan): Google's brand colors in `google-sign-in-button.tsx`, the Recharts selectors in `ui/chart.tsx`, and `bg-black/…` scrims behind overlays (sheet, lightbox, image hover).
+- Allowed exceptions (from the NFA-40 scan): Google's brand colors in `google-sign-in-button.tsx` and `bg-black/…` scrims behind overlays (sheet, lightbox, image hover).
 
 ### Type, radius, elevation (`#type`, `#radius`, `#elevation`)
 

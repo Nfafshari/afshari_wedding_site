@@ -115,10 +115,12 @@ Observed destination: `________________`
 
 | # | Action | Expected |
 |---|---|---|
-| 3.1 | Load `/planner` | Renders with real data, not placeholder numbers |
-| 3.2 | Check task progress indicator | Reflects actual completed/total counts |
-| 3.3 | Click a **Next Tasks** tile | Navigates to `/planner/checklist` |
-| 3.4 | Click through to each section card | Each lands on the right page |
+| 3.1 | Load `/planner` | Renders with real data, not placeholder numbers. No hydration error in the console |
+| 3.2 | Check the strip | Days to go, parties responded, paid of estimated and tasks done match the RSVP, Budget and Checklist pages |
+| 3.3 | Check **Up next** | Up to 5 undone tasks; overdue ones first with an Overdue chip, then by due date across categories |
+| 3.4 | Check the **Budget** card | The paid/estimated bar matches the Budget page; up to 5 categories largest first, the rest as "Other". No pie chart |
+| 3.5 | At 1280px, then 390px | Cards in a row share one height at 1280; one column with no sideways scroll at 390 |
+| 3.6 | Click each card's "View …" link | Each lands on the right page |
 
 - [ ] Section 3 complete
 

@@ -43,6 +43,9 @@ export function getCategoryStatus (lineItems: { status: BudgetStatus; paidAmount
 
 export type BudgetLimits = { target: number; cap: number };
 
+/** The couple's limits: what they aim to spend, and what they won't go past. Read by the Budget page and the Dashboard. */
+export const BUDGET_LIMITS: BudgetLimits = { target: 15000, cap: 20000 };
+
 /**
  * Where the estimate sits against the couple's limits, and by how much: over the cap,
  * over the target only, or under the target (amount = what's left). Landing exactly on
@@ -75,9 +78,9 @@ export const OTHER_SLICE_NAME = 'Other';
  * Rank categories by estimated cost and fold everything past `limit` into a single
  * "Other" slice.
  *
- * The pie this feeds is capped at 6 segments by the viz rules, so the tail folds
- * rather than growing a 7th colour. Categories costing nothing are dropped outright:
- * a zero-value slice draws nothing but still claims a legend row.
+ * The Dashboard's budget card shows at most 6 bars, so the tail folds rather than
+ * growing the card. Categories costing nothing are dropped outright: a zero-value
+ * bar draws nothing but still claims a row.
  */
 export function getTopCategoriesWithOther (categories: CategoryLike[], limit = 5): BudgetSlice[] {
   const ranked = categories
