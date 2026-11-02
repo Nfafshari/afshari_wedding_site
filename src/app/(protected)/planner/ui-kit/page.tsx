@@ -146,7 +146,7 @@ const TYPE_SCALE = [
   { name: "page-subtitle", className: "page-subtitle text-left", sample: "Paid of $32,000 estimated", spec: "Cormorant 500 · 24px", usage: "The line under a page title." },
   { name: "section-title", className: "section-title", sample: "By category", spec: "Cormorant 600 · 24px", usage: "Headings inside a page, sentence case." },
   { name: "planner-label", className: "planner-label", sample: "Paid to date", spec: "Lora 500 · 14px, gold ink", usage: "Column names, field captions and summary labels. Sentence case, never uppercase." },
-  { name: "stat-number", className: "stat-number", sample: "$12,400", spec: "Cormorant 600 · 30–36px, even digits", usage: "Summary numbers. Set the color with a Stat tone." },
+  { name: "stat-number", className: "stat-number", sample: "$12,400", spec: "Cormorant 600 · 24–36px, fits its cell, even digits", usage: "Summary numbers. Set the color with a Stat tone. Budget shows whole dollars." },
   { name: "muted-caption", className: "muted-caption", sample: "Attending", spec: "Lora · 14px, burgundy 600", usage: "Short caption under a stat, three words at most, sentence case." },
   { name: "text-base", className: "text-base", sample: "Kindly respond by August 1, 2027. We can't wait to celebrate with you.", spec: "Lora 400 · 16px", usage: "Body text and paragraphs." },
   { name: "text-sm", className: "text-sm", sample: "Venue & catering · $18,500.00 · Save changes", spec: "Lora · 14px", usage: "Tables, buttons, labels, most interface text." },
