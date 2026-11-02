@@ -14,6 +14,8 @@ import { Textarea } from "@/components/ui/textarea";
 
 import RowActionButton from "@/components/row-action-button";
 import EmptyState from "@/components/empty-state";
+import SearchField from "@/components/search-field";
+import SegmentedFilter from "@/components/segmented-filter";
 import StatusChip from "@/components/status-chip";
 import { GroupedList, ListAddRow, ListCell, ListEmpty, ListGroup, ListHeadCell, ListHeader, ListRow } from "@/components/grouped-list";
 import PageHeader from "@/components/page-header";
@@ -406,6 +408,31 @@ export default async function UiKitPage() {
           <li>Titles are noun phrases in title case: &ldquo;Add Category&rdquo;, &ldquo;Edit Flowers&rdquo;. Confirms ask: &ldquo;Delete Flowers?&rdquo;</li>
           <li>Buttons say what happens: Add, Save changes, Delete, Remove, Import. The toast repeats the verb: &ldquo;Category added&rdquo;.</li>
           <li>Mark a field with an error using aria-invalid and put the message right under it.</li>
+        </ul>
+      </KitSection>
+
+      <KitSection
+        id="filters"
+        title="Filter and search"
+        description="Both keep their value in the URL, so a reload or a shared link shows the same view. Try them: they write to this page's own query string."
+      >
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <SearchField label="Find a guest" />
+          <SegmentedFilter
+            label="Show guests"
+            param="show"
+            defaultValue="all"
+            options={[
+              { value: "all", label: "All", count: 96 },
+              { value: "waiting", label: "Waiting", count: 31 },
+              { value: "attending", label: "Attending", count: 58 },
+              { value: "declined", label: "Declined", count: 7 },
+            ]}
+          />
+        </div>
+        <ul className="mt-4 list-disc space-y-1 pl-5 text-sm">
+          <li><code>SegmentedFilter</code>: a few choices, one at a time. The default option leaves the URL clean.</li>
+          <li><code>SearchField</code>: updates the URL shortly after typing stops; Escape or × clears it. Match items with <code>matchesSearch</code> from <code>lib/search.ts</code>, which ignores case and accents.</li>
         </ul>
       </KitSection>
 
