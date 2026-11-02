@@ -139,6 +139,8 @@ The most complete feature — exercise it hardest.
 | 4.6 | **Reload the page while filtered** | Filter survives the reload |
 | 4.7 | Submit the add-category dialog with an empty name | Inline validation error. No crash, no toast-only failure |
 | 4.8 | Add a second category with the **same** name | Handled gracefully (`P2002` path) — clear error, not "Something went wrong" |
+| 4.8a | Click a task's pencil; change its name, due date and category; save | The task moves to the new category with the new name and date; the dialog opened filled in |
+| 4.8b | Click a category's pencil | The dialog opens with the category's current name and icon selected; renaming it and picking another icon saves both |
 | 4.9 | Delete the test task | Removed; toast fires |
 
 - [ ] Section 4 complete

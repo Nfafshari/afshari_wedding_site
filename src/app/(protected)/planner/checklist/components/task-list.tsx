@@ -29,11 +29,12 @@ interface TaskListProps {
   onEditCategory: (categoryId: number) => void;
   onDeleteCategory: (categoryId: number) => void;
   onAddTask: (categoryId: number) => void;
+  onEditTask: (taskId: number) => void;
   onDeleteTask: (taskId: number) => void;
 }
 
 /** Categories in their saved order, each open with its tasks by due date. */
-export default function TaskList ({ categories, filter, onEditCategory, onDeleteCategory, onAddTask, onDeleteTask }: TaskListProps) {
+export default function TaskList ({ categories, filter, onEditCategory, onDeleteCategory, onAddTask, onEditTask, onDeleteTask }: TaskListProps) {
   return (
     <GroupedList label="Checklist by category" columns="minmax(0,1fr) 9rem 7rem">
       <ListHeader>
@@ -74,7 +75,12 @@ export default function TaskList ({ categories, filter, onEditCategory, onDelete
                 name={<span className={cn(task.status && "text-burgundy-600 line-through")}>{task.name}</span>}
                 meta={<ListCell className={cn(task.status && "line-through")}>{formatDate(task.goalDate)}</ListCell>}
                 end={<ListCell>{isOverdue(task) && <StatusChip status={OVERDUE_STATUS} />}</ListCell>}
-                actions={<RowActionButton action="delete" aria-label={`Delete ${task.name}`} onClick={() => onDeleteTask(task.id)} />}
+                actions={
+                  <>
+                    <RowActionButton action="edit" aria-label={`Edit ${task.name}`} onClick={() => onEditTask(task.id)} />
+                    <RowActionButton action="delete" aria-label={`Delete ${task.name}`} onClick={() => onDeleteTask(task.id)} />
+                  </>
+                }
               />
             ))}
             {shown.length === 0 && <ListEmpty>{EMPTY_MESSAGE[filter]}</ListEmpty>}

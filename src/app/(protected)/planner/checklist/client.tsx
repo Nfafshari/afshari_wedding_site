@@ -8,9 +8,8 @@ import EmptyState from "@/components/empty-state";
 import PageHeader from "@/components/page-header";
 import PlannerPage from "@/components/planner-page";
 import { Dialog } from "@/components/ui/dialog"
-import AddCategoryDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/add-category-dialog";
-import AddTaskDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/add-task-dialog";
-import EditCategoryDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/edit-category-dialog";
+import CategoryDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/category-dialog";
+import TaskDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/task-dialog";
 import RemoveCategoryDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/remove-category-dialog";
 import RemoveTaskDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/remove-task-dialog";
 
@@ -30,7 +29,6 @@ enum DialogType {
   None =     'none',
   Category = 'category',
   Task =     'task',
-  Edit =     'edit',
   Delete =   'delete',
   DeleteCategory = 'deleteCategory'
 }
@@ -127,7 +125,7 @@ export default function Checklist({ categories }: ChecklistProps) {
               filter={filter}
               onEditCategory={(categoryId) => {
                 setActiveCategoryId(categoryId);
-                setActiveDialog(DialogType.Edit);
+                setActiveDialog(DialogType.Category);
               }}
               onDeleteCategory={(categoryId) => {
                 setActiveCategoryId(categoryId);
@@ -137,6 +135,10 @@ export default function Checklist({ categories }: ChecklistProps) {
                 setActiveCategoryId(categoryId);
                 setActiveDialog(DialogType.Task);
               }}
+              onEditTask={(taskId) => {
+                setActiveTaskId(taskId);
+                setActiveDialog(DialogType.Task);
+              }}
               onDeleteTask={onTaskDelete}
             />
           </>
@@ -144,24 +146,21 @@ export default function Checklist({ categories }: ChecklistProps) {
       </PlannerPage>
 
       {/* Each dialog owns its own form state; rendering it conditionally mounts/unmounts (and resets) it. */}
+      {/* With no active category it adds; with one it edits. */}
       {activeDialog === DialogType.Category && (
-        <AddCategoryDialog
+        <CategoryDialog
           categories={categories}
+          category={categories.find((category) => category.id === activeCategoryId)}
           onSuccess={closeDialog}
         />
       )}
 
+      {/* With an active task it edits; otherwise it adds to the active category. */}
       {activeDialog === DialogType.Task && (
-        <AddTaskDialog
-          categoryId={activeCategoryId}
-          onSuccess={closeDialog}
-        />
-      )}
-
-      {activeDialog === DialogType.Edit && (
-        <EditCategoryDialog 
+        <TaskDialog
           categories={categories}
-          categoryToUpdate={categories.find((category) => category.id === activeCategoryId)}
+          task={categories.flatMap((category) => category.tasks).find((task) => task.id === activeTaskId)}
+          defaultCategoryId={activeCategoryId}
           onSuccess={closeDialog}
         />
       )}
