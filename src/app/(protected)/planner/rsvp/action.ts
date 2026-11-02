@@ -1,11 +1,11 @@
 "use server";
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@/generated/prisma/client';
 import type { Attendance } from '@/generated/prisma/enums';
 import { revalidatePath } from 'next/cache';
 import { requireUserAction } from '@/lib/require-user';
 import { MAX_SHORT_TEXT, countActivePlusOnes, normalizeName } from '@/lib/rsvp';
 import { importGuestParties, parseGuestCsv, type ImportSummary } from '@/lib/guest-import';
+import { handleActionError, type ActionResult as SharedActionResult } from '@/lib/action';
 
 /**
  * Which input a failure relates to, so the client can highlight the right field.
@@ -38,14 +38,12 @@ const PLANNER_PATH = '/planner';
 /** Nobody is bringing a busload. Also keeps the value well inside int4. */
 const MAX_PLUS_ONES = 10;
 
-/**
- * The shape every action returns: either it worked, or it failed with a reason.
- * The client checks `ok` to decide whether to close the dialog or show an error,
- * and `field` to decide which input to flag.
- */
-export type ActionResult =
-  | { ok: true }
-  | { ok: false; error: string; field?: ErrorField; authRequired?: true };
+/** See {@link SharedActionResult}; narrowed to this page's fields. */
+export type ActionResult = SharedActionResult<ErrorField>;
+
+const PARTY_GONE = 'That party no longer exists, refresh your page and try again.';
+const PLUS_ONE_GONE = 'That plus-one no longer exists, refresh your page and try again.';
+const GUEST_GONE = 'That guest no longer exists, refresh your page and try again.';
 
 /** ActionResult, with what the import changed attached on success. */
 export type ImportResult =
@@ -130,16 +128,11 @@ export async function createInvitation (input: InvitationInput): Promise<ActionR
       },
     });
   } catch (error) {
-    // P2002 = unique constraint failed (a party with this name already exists).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-      return { ok: false, error: 'A party with that name already exists.', field: 'partyName' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error creating new invitation, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'creating new invitation', {
+      P2002: { error: 'A party with that name already exists.', field: 'partyName' },
+    });
   }
 
-  // refresh the page data after a successful write
   revalidateRsvpPages();
   return { ok: true };
 }
@@ -177,7 +170,7 @@ export async function updateInvitation (invitationId: number | undefined, input:
         include: { guests: true },
       });
       if (invitation === null) {
-        return { ok: false, error: 'That party no longer exists, refresh your page and try again.', field: 'invitation' };
+        return { ok: false, error: PARTY_GONE, field: 'invitation' };
       }
 
       // Guests have already named plus-ones against the old allowance, and we
@@ -226,20 +219,13 @@ export async function updateInvitation (invitationId: number | undefined, input:
       return result;
     }
   } catch (error) {
-    // P2002 = unique constraint (a party with this name already exists).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-      return { ok: false, error: 'A party with that name already exists.', field: 'partyName' };
-    }
-    // P2025 = record to update not found (deleted mid-edit).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-      return { ok: false, error: 'That party no longer exists, refresh your page and try again.', field: 'invitation' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error updating invitation, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'updating invitation', {
+      P2002: { error: 'A party with that name already exists.', field: 'partyName' },
+      // Deleted mid-edit.
+      P2025: { error: PARTY_GONE, field: 'invitation' },
+    });
   }
 
-  // refresh the page data after a successful write
   revalidateRsvpPages();
   return { ok: true };
 }
@@ -265,16 +251,12 @@ export async function deleteInvitation (invitationId: number | undefined): Promi
       where: { id: invitationId },
     });
   } catch (error) {
-    // P2025 = record to delete does not exist (already removed).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-      return { ok: false, error: 'That party no longer exists, refresh your page and try again.' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error deleting invitation, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'deleting invitation', {
+      // Already removed.
+      P2025: { error: PARTY_GONE },
+    });
   }
 
-  // refresh the page data after a successful write
   revalidateRsvpPages();
   return { ok: true };
 }
@@ -306,7 +288,7 @@ export async function setPlusOneStatus (guestId: number | undefined, status: 'AP
       include: { invitation: { include: { guests: true } } },
     });
     if (guest === null || !guest.isPlusOne) {
-      return { ok: false, error: 'That plus-one no longer exists, refresh your page and try again.', field: 'guest' };
+      return { ok: false, error: PLUS_ONE_GONE, field: 'guest' };
     }
 
     // Un-rejecting takes a slot back. Make sure there still is one, since the
@@ -323,16 +305,12 @@ export async function setPlusOneStatus (guestId: number | undefined, status: 'AP
       data: { plusOneStatus: status },
     });
   } catch (error) {
-    // P2025 = record to update not found (the guest re-submitted and replaced it).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-      return { ok: false, error: 'That plus-one no longer exists, refresh your page and try again.', field: 'guest' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error updating plus-one status, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'updating plus-one status', {
+      // The guest re-submitted their response and replaced it.
+      P2025: { error: PLUS_ONE_GONE, field: 'guest' },
+    });
   }
 
-  // refresh the page data after a successful write
   revalidateRsvpPages();
   return { ok: true };
 }
@@ -363,7 +341,7 @@ export async function setAttendance (guestId: number | undefined, attendance: At
   try {
     const guest = await prisma.guest.findUnique({ where: { id: guestId } });
     if (guest === null || guest.isPlusOne) {
-      return { ok: false, error: 'That guest no longer exists, refresh your page and try again.', field: 'guest' };
+      return { ok: false, error: GUEST_GONE, field: 'guest' };
     }
 
     await prisma.$transaction([
@@ -379,16 +357,12 @@ export async function setAttendance (guestId: number | undefined, attendance: At
       }),
     ]);
   } catch (error) {
-    // P2025 = record to update not found (the guest was removed).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-      return { ok: false, error: 'That guest no longer exists, refresh your page and try again.', field: 'guest' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error updating attendance, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'updating attendance', {
+      // The guest was removed.
+      P2025: { error: GUEST_GONE, field: 'guest' },
+    });
   }
 
-  // refresh the page data after a successful write
   revalidateRsvpPages();
   return { ok: true };
 }
