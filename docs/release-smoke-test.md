@@ -45,7 +45,7 @@ Use a **private/incognito window** for this entire section. This is the path a s
 | 1.1b | Click **Details** in the header, then go back to Home and click each Weekend Details link | `/details` shows The Venue, The Schedule (timeline for Saturday) and Travel (hotels); each Home link lands on its section with the heading visible; Get directions and Book a room open in a new tab |
 | 1.2 | Check the page title in the browser tab | **Not** "Create Next App" |
 | 1.3 | Open devtools console | No red errors |
-| 1.4 | Click **RSVP** in the header | Lands on `/rsvp` with the name lookup form; RSVP is gold with a short underline |
+| 1.4 | Click **RSVP** in the header | Lands on `/rsvp`: RSVP heading, sprig, date and "Kindly respond by …", then the name lookup in a white card with a double gold line; RSVP is gold with a short underline in the header |
 | 1.4a | Check the header and footer at 1280px | Burgundy band, links either side of the hanging monogram, every link opens a real page (no link back to `/` that should go elsewhere). Footer: the gold "We can't wait…" line, then Report a bug, Home, Planner |
 | 1.4b | At 320px and 768px, press the menu button | Burgundy menu slides in from the left with the same pages; the current page has a gold bar; the X and Esc close it; no sideways scroll |
 | 1.5 | Look up a name that is not on the list | Not-found message, no party shown |

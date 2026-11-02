@@ -1,13 +1,15 @@
 "use client";
 
 import { useState } from "react";
-import { CircleAlert, CircleCheck, Search } from "lucide-react";
+import { CircleAlert, Search } from "lucide-react";
 
+import Sprig from "@/components/sprig";
 import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
+import { WEDDING } from "@/lib/guest-content";
 import { MAX_LONG_TEXT, MAX_SHORT_TEXT } from "@/lib/rsvp";
 import { cn } from "@/lib/utils";
 
@@ -28,7 +30,11 @@ type Step =
 
 type Summary = { attending: string[]; declined: string[]; plusOnes: string[] };
 
-const CARD = "w-full rounded-md border border-gold/50 bg-popover p-5 shadow-sm md:p-8";
+// An invitation card: white, a gold frame, and a fainter gold line inset inside it (the outline).
+const CARD = "w-full rounded-sm border border-gold/60 bg-popover p-6 shadow-sm outline outline-gold/30 -outline-offset-8 md:p-12";
+
+// The guest site's deep-olive button, as on the Home page's RSVP band.
+const PRIMARY = "guest-label inline-flex shrink-0 items-center justify-center gap-2 rounded-sm bg-olivine-ink px-8 py-3 text-cream hover:bg-olivine-ink/85 disabled:pointer-events-none disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2";
 
 export default function RsvpForm({ isOpen, deadline }: RsvpFormProps) {
   const [step, setStep] = useState<Step>({ kind: 'lookup' });
@@ -63,12 +69,14 @@ export default function RsvpForm({ isOpen, deadline }: RsvpFormProps) {
   }
 
   return (
-    <main className="flex flex-col w-full min-h-[70vh] items-center bg-cream px-4 py-10 text-burg md:py-16">
+    // A div, not <main>: the root layout already wraps every page in <main>.
+    <div className="flex flex-col w-full min-h-[70vh] items-center bg-cream px-4 pt-6 pb-16 text-burg md:pt-10 md:pb-24">
       <div className="flex flex-col w-full max-w-2xl items-center">
-        <h1 className="script-title text-6xl text-burg md:text-7xl">RSVP</h1>
-        <p className="section-title mt-2 text-center">September 11, 2027</p>
-        <p className="mt-1 mb-8 text-sm text-center text-burg/70">
-          {isOpen ? `Kindly respond by ${deadline}.` : `RSVPs closed on ${deadline}.`}
+        <h1 className="guest-display text-5xl md:text-6xl">RSVP</h1>
+        <Sprig className="mt-6" />
+        <p className="guest-display mt-6 text-xl">{WEDDING.date}</p>
+        <p className="guest-label mt-3 mb-10 text-center">
+          {isOpen ? `Kindly respond by ${deadline}` : `RSVPs closed on ${deadline}`}
         </p>
 
         {step.kind === 'lookup' && (
@@ -80,7 +88,7 @@ export default function RsvpForm({ isOpen, deadline }: RsvpFormProps) {
             }}
           >
             <Field>
-              <FieldLabel htmlFor="rsvp-name" className="text-lg">Find your invitation</FieldLabel>
+              <FieldLabel htmlFor="rsvp-name" className="guest-display text-2xl">Find your invitation</FieldLabel>
               <FieldDescription>Enter your first and last name as it appears on your invitation.</FieldDescription>
               <div className="flex gap-2">
                 <Input
@@ -95,9 +103,9 @@ export default function RsvpForm({ isOpen, deadline }: RsvpFormProps) {
                     setError('');
                   }}
                 />
-                <Button type="submit" disabled={isLoading || name.trim() === ''} className="shrink-0">
-                  {isLoading ? <Spinner /> : <><Search /> Find</>}
-                </Button>
+                <button type="submit" disabled={isLoading || name.trim() === ''} className={cn(PRIMARY, "px-5")}>
+                  {isLoading ? <Spinner /> : <><Search className="size-4" aria-hidden /> Find</>}
+                </button>
               </div>
               {error && <p role="alert" className="text-destructive text-sm">{error}</p>}
             </Field>
@@ -106,7 +114,7 @@ export default function RsvpForm({ isOpen, deadline }: RsvpFormProps) {
 
         {step.kind === 'choose' && (
           <div className={CARD}>
-            <h2 className="text-lg font-bold">Which party are you with?</h2>
+            <h2 className="guest-display text-2xl">Which party are you with?</h2>
             <p className="text-sm text-burg/70 mt-1">More than one guest goes by that name.</p>
             <div className="flex flex-col gap-2 mt-4">
               {step.options.map((option) => (
@@ -140,29 +148,29 @@ export default function RsvpForm({ isOpen, deadline }: RsvpFormProps) {
 
         {step.kind === 'done' && (
           <div className={cn(CARD, "flex flex-col items-center text-center")}>
-            <CircleCheck className="w-12 h-12 text-success" strokeWidth={1.5} />
-            <h2 className="page-subtitle text-2xl mt-2">Thank you!</h2>
+            <Sprig />
+            <h2 className="guest-display mt-5 text-3xl md:text-4xl">Thank you</h2>
             <p className="mt-2">
               {step.summary.attending.length > 0
                 ? "We can't wait to celebrate with you."
                 : "We'll miss you, and thank you for letting us know."}
             </p>
-            <dl className="mt-4 text-sm text-left w-full max-w-sm">
+            <dl className="mt-6 text-sm w-full max-w-sm">
               {step.summary.attending.length > 0 && (
                 <div className="mt-2">
-                  <dt className="font-bold">Attending</dt>
+                  <dt className="guest-label">Attending</dt>
                   <dd>{step.summary.attending.join(', ')}</dd>
                 </div>
               )}
               {step.summary.declined.length > 0 && (
                 <div className="mt-2">
-                  <dt className="font-bold">Not attending</dt>
+                  <dt className="guest-label">Not attending</dt>
                   <dd>{step.summary.declined.join(', ')}</dd>
                 </div>
               )}
               {step.summary.plusOnes.length > 0 && (
                 <div className="mt-2">
-                  <dt className="font-bold">Additional guests</dt>
+                  <dt className="guest-label">Additional guests</dt>
                   <dd>{step.summary.plusOnes.join(', ')}</dd>
                   <dd className="text-burg/70 text-xs mt-1">We&apos;ll confirm any new additional guests with you.</dd>
                 </div>
@@ -173,7 +181,7 @@ export default function RsvpForm({ isOpen, deadline }: RsvpFormProps) {
           </div>
         )}
       </div>
-    </main>
+    </div>
   );
 }
 
@@ -292,7 +300,7 @@ function PartyForm ({ party, lookupName, isOpen, deadline, onStartOver, onDone }
       }}
     >
       <div>
-        <h2 className="page-subtitle text-2xl">{party.partyName}</h2>
+        <h2 className="guest-display text-3xl">{party.partyName}</h2>
         <Button type="button" variant={'link'} className="px-0 h-auto text-sm text-burg/70" onClick={onStartOver}>
           Not you? Search again
         </Button>
@@ -320,12 +328,12 @@ function PartyForm ({ party, lookupName, isOpen, deadline, onStartOver, onDone }
 
       {/* Members */}
       <fieldset disabled={disabled} className="flex flex-col gap-4">
-        <legend className="section-title mb-2">Will you be joining us?</legend>
+        <legend className="guest-label mb-3">Will you be joining us?</legend>
         {party.members.map((member) => (
           <div key={member.id} className="flex flex-col gap-2 border-b border-accent/40 pb-4 last:border-b-0">
             <div className="flex flex-col gap-2 md:flex-row md:items-center md:justify-between">
-              <p className="font-bold text-lg">{member.name}</p>
-              <div role="radiogroup" aria-label={`Will ${member.name} attend?`} className="flex gap-2">
+              <p className="guest-display text-xl">{member.name}</p>
+              <div role="radiogroup" aria-label={`Will ${member.name} attend?`} className="flex flex-wrap gap-2">
                 <ChoiceButton
                   selected={answers[member.id] === true}
                   onClick={() => {
@@ -365,7 +373,7 @@ function PartyForm ({ party, lookupName, isOpen, deadline, onStartOver, onDone }
       {/* Plus-ones */}
       {party.plusOnesAllowed > 0 && anyAttending && (
         <fieldset disabled={disabled} className="flex flex-col gap-3">
-          <legend className="section-title mb-1">
+          <legend className="guest-label mb-2">
             Additional guest{party.plusOnesAllowed === 1 ? '' : 's'}
           </legend>
           <p className="text-sm text-burg/70">
@@ -404,7 +412,7 @@ function PartyForm ({ party, lookupName, isOpen, deadline, onStartOver, onDone }
 
       {/* Contact */}
       <fieldset disabled={disabled} className="flex flex-col gap-3">
-        <legend className="section-title mb-1">How can we reach you?</legend>
+        <legend className="guest-label mb-2">How can we reach you?</legend>
         <p className="text-sm text-burg/70">
           {party.hasContact
             ? "We already have your contact info. Fill these in only if you'd like to update it."
@@ -473,9 +481,9 @@ function PartyForm ({ party, lookupName, isOpen, deadline, onStartOver, onDone }
       {error && errorField === null && <p role="alert" className="text-destructive text-sm">{error}</p>}
 
       {isOpen && (
-        <Button type="submit" disabled={isLoading} size={'lg'} className="w-full md:w-auto md:self-end">
+        <button type="submit" disabled={isLoading} className={cn(PRIMARY, "w-full py-3.5 md:w-auto md:self-center md:px-12")}>
           {isLoading ? <Spinner /> : isReturning ? 'Update RSVP' : 'Send RSVP'}
-        </Button>
+        </button>
       )}
     </form>
   );
@@ -499,12 +507,12 @@ function ChoiceButton ({
       aria-checked={selected}
       onClick={onClick}
       className={cn(
-        "rounded-full border px-4 py-1.5 text-sm transition-colors disabled:opacity-50",
+        "rounded-sm border px-4 py-2.5 text-xs font-medium uppercase tracking-[0.14em] transition-colors disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
         selected
           ? tone === 'accept'
-            ? "border-olivine bg-olivine text-burg font-semibold"
-            : "border-burg bg-burg text-cream font-semibold"
-          : "border-burg/30 bg-transparent hover:bg-muted/30"
+            ? "border-olivine-ink bg-olivine-ink text-cream"
+            : "border-burg bg-burg text-cream"
+          : "border-burg/30 bg-transparent hover:border-burg/60"
       )}
     >
       {children}
