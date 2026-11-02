@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Lora, Geist_Mono, Pinyon_Script, Cormorant_Garamond, Herr_Von_Muellerhoff } from "next/font/google";
+import { Lora, Geist_Mono, Pinyon_Script, Cormorant_Garamond, Herr_Von_Muellerhoff, Montserrat } from "next/font/google";
 import { Viewport } from "next";
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -39,6 +39,12 @@ const cormorant = Cormorant_Garamond({
   weight: ["500", "600", "700"]
 });
 
+// Guest site text: paragraphs, nav, small capitals and buttons (the planner keeps Lora).
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
+  subsets: ["latin"],
+});
+
 export const metadata: Metadata = {
   title: "Piper & Nathen | September 11, 2027",
   description: "Join us as we celebrate our wedding on September 11, 2027.",
@@ -60,7 +66,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${lora.variable} ${geistMono.variable} ${pinyon.variable} ${herrVon.variable} ${cormorant.variable} h-full antialiased`}
+      className={`${lora.variable} ${geistMono.variable} ${pinyon.variable} ${herrVon.variable} ${cormorant.variable} ${montserrat.variable} h-full antialiased`}
     >
       <body className="h-full flex flex-col">
         <SidebarProvider>

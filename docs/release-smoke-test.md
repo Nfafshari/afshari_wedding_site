@@ -40,7 +40,7 @@ Use a **private/incognito window** for this entire section. This is the path a s
 
 | # | Action | Expected |
 |---|---|---|
-| 1.1 | Load `/` | Under-development page renders, hammer + wrench icons visible, no layout shift |
+| 1.1 | Load `/` | Home shows the names, date, Big Horn Equestrian Center, the days-to-go line and the arched photo; then Our Story, Weekend Details and the RSVP band with the right deadline. "RSVP now" opens `/rsvp`. No link to a page that doesn't exist yet; no layout shift |
 | 1.2 | Check the page title in the browser tab | **Not** "Create Next App" |
 | 1.3 | Open devtools console | No red errors |
 | 1.4 | Click **RSVP** in the header | Lands on `/rsvp` with the name lookup form; RSVP is gold with a short underline |

@@ -5,3 +5,41 @@
 export const COUPLE = "Piper & Nathen";
 
 export const FOOTER_LINE = "We can't wait to celebrate with you";
+
+export const WEDDING = {
+  names: ["Piper", "Nathen"],
+  /** For the countdown. */
+  isoDate: "2027-09-11",
+  date: "September 11, 2027",
+  venue: "Big Horn Equestrian Center",
+  place: "Sheridan, Wyoming",
+} as const;
+
+export const HOME = {
+  welcome: "Welcome to our wedding",
+  /** Set `src` to a file in /public (e.g. "/photos/hero.jpg") to replace the placeholder. */
+  heroPhoto: {
+    src: undefined as string | undefined,
+    alt: "Piper and Nathen",
+    placeholder: "Photo needed",
+  },
+  story: {
+    title: "Our Story",
+    // Placeholder copy.
+    text: "A few sentences about how we met and how we got here. The full story lives on its own page.",
+    linkLabel: "Read our story",
+  },
+  details: {
+    title: "Weekend Details",
+    items: [
+      { key: "venue", title: "The Venue", text: "Big Horn Equestrian Center, Sheridan, Wyoming", href: "/details#venue", linkLabel: "View the venue" },
+      { key: "schedule", title: "The Schedule", text: "Every event of the weekend, with times and places.", href: "/details#schedule", linkLabel: "View the schedule" },
+      { key: "travel", title: "Travel", text: "Flights, hotels and getting around Sheridan.", href: "/details#travel", linkLabel: "View travel info" },
+    ],
+  },
+  rsvp: {
+    kicker: "Kindly",
+    title: "RSVP",
+    button: "RSVP now",
+  },
+} as const;

@@ -15,7 +15,7 @@ function GuestNavLink ({ item, isActive }: { item: NavItem; isActive: boolean })
     <Link
       href={item.href}
       aria-current={isActive ? 'page' : undefined}
-      className='relative whitespace-nowrap rounded-sm py-2 font-heading text-[15px] font-medium uppercase tracking-[0.14em] text-cream/90 transition-colors hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold aria-[current=page]:text-gold after:absolute after:inset-x-0 after:bottom-0 after:mx-auto after:h-px after:w-6 after:bg-gold after:opacity-0 aria-[current=page]:after:opacity-100 xl:text-base xl:tracking-[0.2em]'
+      className='relative whitespace-nowrap rounded-sm py-2 font-guest text-xs font-medium uppercase tracking-[0.14em] text-cream/90 transition-colors hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold aria-[current=page]:text-gold after:absolute after:inset-x-0 after:bottom-0 after:mx-auto after:h-px after:w-6 after:bg-gold after:opacity-0 aria-[current=page]:after:opacity-100 xl:text-[13px] xl:tracking-[0.2em]'
     >
       {item.label}
     </Link>
