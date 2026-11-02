@@ -37,9 +37,38 @@ export const HOME = {
       { key: "travel", title: "Travel", text: "Flights, hotels and getting around Sheridan.", href: "/details#travel", linkLabel: "View travel info" },
     ],
   },
-  rsvp: {
-    kicker: "Kindly",
-    title: "RSVP",
-    button: "RSVP now",
-  },
+} as const;
+
+/** The burgundy band at the foot of guest pages that sends guests to the RSVP form. */
+export const RSVP_BAND = {
+  kicker: "Kindly",
+  title: "RSVP",
+  button: "RSVP now",
+  /** The one line on the slim band other pages use. */
+  slimLine: FOOTER_LINE,
+} as const;
+
+/**
+ * Our Story page: a short excerpt, then a photo gallery. Placeholder copy, written as "we".
+ * Photos: set `src` to a file in /public; `shape` sets the tile's proportions in the gallery.
+ */
+export const OUR_STORY = {
+  title: "Our Story",
+  excerpt: [
+    "A few sentences about how we met and how we got here: where it started, the moment we knew, and how the question was asked.",
+    "We're so glad you're part of our story, and we can't wait to celebrate the next chapter with you on September 11.",
+  ],
+  galleryTitle: "Photos",
+  photoPlaceholder: "Photo needed",
+  photos: [
+    { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "portrait" },
+    { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "landscape" },
+    { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "square" },
+    { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "landscape" },
+    { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "portrait" },
+    { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "square" },
+    { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "portrait" },
+    { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "landscape" },
+    { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "portrait" },
+  ],
 } as const;
