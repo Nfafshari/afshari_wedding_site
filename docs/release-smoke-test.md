@@ -169,10 +169,14 @@ The most complete feature — exercise it hardest.
 
 | # | Action | Expected |
 |---|---|---|
-| 6.1 | Load `/planner/doc-archive` | Documents render |
-| 6.2 | Add a doc named `ZZTEST Doc`, pick an icon | Appears with the chosen icon |
-| 6.3 | Edit it — change name and icon | Both update |
-| 6.4 | Delete it | Removed |
+| 6.1 | Load `/planner/doc-archive` | Documents render as tiles, newest first. Each shows its icon, a file-type tag (PDF, JPG or PNG), name, company and "Added" date |
+| 6.2 | Add a doc named `ZZTEST Doc`, pick an icon | Appears first with the chosen icon |
+| 6.3 | Click the tile (not its buttons) | The file opens in a new tab |
+| 6.4 | Choose A–Z, then reload | Sorted by name; the URL keeps `?sort=az` and the choice survives the reload |
+| 6.5 | Type `zztest` in Find a document | Only `ZZTEST Doc` shows; searching by company works too |
+| 6.6 | Type `qqqq` | "No documents match"; Clear search empties the box and shows every document |
+| 6.7 | Edit it from the tile's pencil — change name and icon | Both update |
+| 6.8 | Delete it from the tile's trash icon, Cancel, then delete again and confirm | Cancel keeps it; confirm removes it |
 
 - [ ] Section 6 complete
 

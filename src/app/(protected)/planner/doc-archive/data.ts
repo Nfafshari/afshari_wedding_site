@@ -1,10 +1,13 @@
+import type { FileTypeLabel } from "@/lib/documents";
+
 /**
  * A document in the archive, as page.tsx hands it to the client.
  *
  * `icon` is the lucide displayName (e.g. "Receipt"), not the component: a component
  * cannot cross from a server component into a client one, a string can. The client
  * turns it back into a component with `resolveDocIcon`. `link` is a signed URL that
- * expires, minted fresh on every render.
+ * expires, minted fresh on every render. `fileType` is worked out on the server from
+ * the stored file name, so the storage path itself never reaches the browser.
  */
 export type ArchivedDoc = {
   id: number;
@@ -13,6 +16,7 @@ export type ArchivedDoc = {
   companyName: string;
   icon: string;
   link: string;
+  fileType: FileTypeLabel;
 };
 
 /**
