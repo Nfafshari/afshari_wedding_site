@@ -202,6 +202,7 @@ The most complete feature — exercise it hardest.
 | 8.3 | Import a small CSV (`party,name,plus_ones`) with the Import button | Toast reports parties created and guests added |
 | 8.4 | Import the same CSV again | Parties updated, nothing duplicated |
 | 8.5 | Edit a party (rename a guest, change plus-ones allowed) | Changes saved and shown |
+| 8.5a | In Add party: leave the name blank, use an existing party's name, type "abc" and then "11" for plus-ones, list the same guest twice, and submit each | Messages: "Party name cannot be empty.", "A party with that name already exists.", "Plus-ones must be a whole number of 0 or more.", "Plus-ones must be 10 or less.", "The same guest is listed twice." Each clears as you type. On a party with a named plus-one, lowering plus-ones to 0 says "1 plus-one is already named, so you cannot allow fewer than 1. Reject one first." |
 | 8.6 | Remove a party | Party and its guests disappear |
 | 8.7 | Check attendance/status columns and the stats | Values render, no `undefined` or blank enum cells |
 | 8.8 | Load `/planner` | Dashboard RSVP numbers match the RSVP page |

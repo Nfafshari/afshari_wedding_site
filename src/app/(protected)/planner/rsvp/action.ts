@@ -3,7 +3,8 @@ import { prisma } from '@/lib/prisma';
 import type { Attendance } from '@/generated/prisma/enums';
 import { revalidatePath } from 'next/cache';
 import { requireUserAction } from '@/lib/require-user';
-import { MAX_SHORT_TEXT, countActivePlusOnes, normalizeName } from '@/lib/rsvp';
+import { MAX_PLUS_ONES, MAX_SHORT_TEXT, checkPartyMembers, checkPlusOnesFloor, countActivePlusOnes, normalizeName } from '@/lib/rsvp';
+import { checkRequired, checkWholeNumber } from '@/lib/validate';
 import { importGuestParties, parseGuestCsv, type ImportSummary } from '@/lib/guest-import';
 import { handleActionError, type ActionResult as SharedActionResult } from '@/lib/action';
 
@@ -36,7 +37,6 @@ const RSVP_PATH = '/planner/rsvp';
 const PLANNER_PATH = '/planner';
 
 /** Nobody is bringing a busload. Also keeps the value well inside int4. */
-const MAX_PLUS_ONES = 10;
 
 /** See {@link SharedActionResult}; narrowed to this page's fields. */
 export type ActionResult = SharedActionResult<ErrorField>;
@@ -61,37 +61,25 @@ function revalidateRsvpPages () {
  * @returns a failing ActionResult, or the cleaned-up input
  */
 function validateInvitationInput (input: InvitationInput): { ok: false; error: string; field: ErrorField } | { ok: true; value: InvitationInput } {
+  // The checks come from lib/validate.ts and lib/rsvp.ts, so the dialog shows the same words first.
+  const partyNameError = checkRequired(input.partyName, 'Party name', MAX_SHORT_TEXT);
+  if (partyNameError) {
+    return { ok: false, error: partyNameError, field: 'partyName' };
+  }
+
+  // Number(...) can hand us NaN if the client sent something non-numeric; that fails here too.
+  const plusOnesError = checkWholeNumber(input.plusOnesAllowed, 'Plus-ones', MAX_PLUS_ONES, 0);
+  if (plusOnesError) {
+    return { ok: false, error: plusOnesError, field: 'plusOnesAllowed' };
+  }
+
+  const membersError = checkPartyMembers(input.members.map((member) => member.name));
+  if (membersError) {
+    return { ok: false, error: membersError, field: 'members' };
+  }
+
   const partyName = input.partyName.trim();
-  if (partyName === '') {
-    return { ok: false, error: 'Party name cannot be empty.', field: 'partyName' };
-  }
-  if (partyName.length > MAX_SHORT_TEXT) {
-    return { ok: false, error: `Party name must be ${MAX_SHORT_TEXT} characters or less.`, field: 'partyName' };
-  }
-
-  // Number(...) can hand us NaN if the client sent something non-numeric.
-  if (!Number.isInteger(input.plusOnesAllowed) || input.plusOnesAllowed < 0 || input.plusOnesAllowed > MAX_PLUS_ONES) {
-    return { ok: false, error: `Plus-ones must be a whole number from 0 to ${MAX_PLUS_ONES}.`, field: 'plusOnesAllowed' };
-  }
-
   const members = input.members.map((member) => ({ id: member.id, name: member.name.trim() }));
-  if (members.length === 0) {
-    return { ok: false, error: 'A party needs at least one guest.', field: 'members' };
-  }
-  if (members.some((member) => member.name === '')) {
-    return { ok: false, error: 'Guest names cannot be empty.', field: 'members' };
-  }
-  if (members.some((member) => member.name.length > MAX_SHORT_TEXT)) {
-    return { ok: false, error: `Guest names must be ${MAX_SHORT_TEXT} characters or less.`, field: 'members' };
-  }
-
-  // The public lookup finds a party by name, so two identical names in one party
-  // are indistinguishable to the guest and almost certainly a typo here.
-  const keys = members.map((member) => normalizeName(member.name));
-  if (new Set(keys).size !== keys.length) {
-    return { ok: false, error: 'The same guest is listed twice.', field: 'members' };
-  }
-
   return { ok: true, value: { partyName, plusOnesAllowed: input.plusOnesAllowed, members } };
 }
 
@@ -173,15 +161,9 @@ export async function updateInvitation (invitationId: number | undefined, input:
         return { ok: false, error: PARTY_GONE, field: 'invitation' };
       }
 
-      // Guests have already named plus-ones against the old allowance, and we
-      // cannot quietly un-invite someone. Reject them first, then lower it.
-      const activePlusOnes = countActivePlusOnes(invitation);
-      if (plusOnesAllowed < activePlusOnes) {
-        return {
-          ok: false,
-          error: `${activePlusOnes} plus-${activePlusOnes === 1 ? 'one is' : 'ones are'} already named, so you cannot allow fewer than ${activePlusOnes}. Reject one first.`,
-          field: 'plusOnesAllowed',
-        };
+      const floorError = checkPlusOnesFloor(plusOnesAllowed, countActivePlusOnes(invitation));
+      if (floorError) {
+        return { ok: false, error: floorError, field: 'plusOnesAllowed' };
       }
 
       const existingMemberIds = new Set(invitation.guests.filter((guest) => !guest.isPlusOne).map((guest) => guest.id));

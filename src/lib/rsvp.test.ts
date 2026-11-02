@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { MAX_SHORT_TEXT, NAME_NOT_FOUND, countPartiesByFilter, filterParties, formatRsvpDeadline, isRsvpFilter, isRsvpOpen, partyHeadcountLabel, toLookupKey } from "./rsvp";
+import { MAX_SHORT_TEXT, NAME_NOT_FOUND, checkPartyMembers, checkPlusOnesFloor, countPartiesByFilter, filterParties, formatRsvpDeadline, isRsvpFilter, isRsvpOpen, partyHeadcountLabel, toLookupKey } from "./rsvp";
 
 describe("toLookupKey", () => {
   it("normalizes a full name into the key guests are stored under", () => {
@@ -81,5 +81,35 @@ describe("filterParties", () => {
     expect(isRsvpFilter("declined")).toBe(true);
     expect(isRsvpFilter("nope")).toBe(false);
     expect(isRsvpFilter(null)).toBe(false);
+  });
+});
+
+describe("checkPartyMembers", () => {
+  it("accepts a list of distinct names", () => {
+    expect(checkPartyMembers(["Grace Okafor", "Ada Okafor"])).toBeNull();
+  });
+
+  it("needs at least one guest, with no blank names", () => {
+    expect(checkPartyMembers([])).toBe("A party needs at least one guest.");
+    expect(checkPartyMembers(["Grace Okafor", "  "])).toBe("Guest names cannot be empty.");
+  });
+
+  it("refuses an over-long name", () => {
+    expect(checkPartyMembers(["a".repeat(MAX_SHORT_TEXT + 1)])).toBe(`Guest names must be ${MAX_SHORT_TEXT} characters or less.`);
+  });
+
+  it("refuses the same guest twice, as the public lookup would see them", () => {
+    expect(checkPartyMembers(["José O'Neil", "jose oneil"])).toBe("The same guest is listed twice.");
+  });
+});
+
+describe("checkPlusOnesFloor", () => {
+  it("allows any number at or above the plus-ones already named", () => {
+    expect(checkPlusOnesFloor(2, 2)).toBeNull();
+  });
+
+  it("refuses going below them, in the singular and plural", () => {
+    expect(checkPlusOnesFloor(0, 1)).toBe("1 plus-one is already named, so you cannot allow fewer than 1. Reject one first.");
+    expect(checkPlusOnesFloor(1, 2)).toBe("2 plus-ones are already named, so you cannot allow fewer than 2. Reject one first.");
   });
 });

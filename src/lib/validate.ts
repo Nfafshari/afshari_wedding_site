@@ -33,9 +33,9 @@ export function checkUniqueName (value: string, existing: string[], noun: string
   return `${article} ${noun} with that name already exists${where ? ` ${where}` : ''}.`;
 }
 
-/** Bounds a quantity or count to 1..max. NaN (unparseable input) fails the first check. */
-export function checkWholeNumber (value: number, label: string, max: number): string | null {
-  if (!Number.isInteger(value) || value < 1) return `${label} must be a whole number of 1 or more.`;
+/** Bounds a quantity or count to min..max (min 1 unless given). NaN (unparseable input) fails the first check. */
+export function checkWholeNumber (value: number, label: string, max: number, min = 1): string | null {
+  if (!Number.isInteger(value) || value < min) return `${label} must be a whole number of ${min} or more.`;
   if (value > max) return `${label} must be ${max} or less.`;
   return null;
 }
