@@ -1,6 +1,7 @@
 import { ChevronDown, CirclePlus, FileUp, Plus, Receipt, SquarePen, Trash2, Users } from "lucide-react";
 
 import { requireUser } from "@/lib/require-user";
+import { ATTENDANCE_STATUS, BUDGET_STATUS, PLUS_ONE_STATUS, registryItemStatus } from "@/lib/status";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 import RowActionButton from "@/components/row-action-button";
 import EmptyState from "@/components/empty-state";
+import StatusChip from "@/components/status-chip";
 import { GroupedList, ListAddRow, ListCell, ListEmpty, ListGroup, ListHeadCell, ListHeader, ListRow } from "@/components/grouped-list";
 import PageHeader from "@/components/page-header";
 import { Stat, StatRow } from "@/components/stat";
@@ -188,6 +190,13 @@ const BADGE_TONES = [
   { variant: "warning", label: "Deposit", usage: "In between, needs approval" },
   { variant: "danger", label: "Declined", usage: "Declined, rejected, failed" },
 ] as const;
+
+const STATUS_GROUPS = [
+  { name: "Budget", statuses: Object.values(BUDGET_STATUS) },
+  { name: "Attendance", statuses: Object.values(ATTENDANCE_STATUS) },
+  { name: "Plus-one", statuses: Object.values(PLUS_ONE_STATUS) },
+  { name: "Registry item", statuses: [registryItemStatus(0, 4), registryItemStatus(1, 4), registryItemStatus(4, 4)] },
+];
 
 const TABLE_ROWS = [
   { name: "Bouquets", estimated: "$1,200.00", paid: "$400.00", balance: "$800.00" },
@@ -369,6 +378,21 @@ export default async function UiKitPage() {
               ))}
             </div>
           </div>
+
+          <div>
+            <h3 className="mb-3 font-bold">Status chips</h3>
+            <p className="mb-3 text-xs text-burg/70">Every status the planner shows, from lib/status.ts. Render with StatusChip; never pick a Badge tone by hand for a status.</p>
+            <dl className="grid gap-3 sm:grid-cols-[8rem_1fr]">
+              {STATUS_GROUPS.map(({ name, statuses }) => (
+                <div key={name} className="contents">
+                  <dt className="planner-label">{name}</dt>
+                  <dd className="flex flex-wrap gap-2">
+                    {statuses.map((status) => <StatusChip key={status.label} status={status} />)}
+                  </dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         </div>
       </KitSection>
 
@@ -402,7 +426,7 @@ export default async function UiKitPage() {
             title="Flowers"
             defaultOpen
             meta={<><ListCell numeric phoneLabel="est.">$2,150.00</ListCell><ListCell numeric phoneLabel="paid">$400.00</ListCell></>}
-            end={<><ListCell numeric>$1,750.00</ListCell><ListCell><Badge variant="warning">Deposit paid</Badge></ListCell></>}
+            end={<><ListCell numeric>$1,750.00</ListCell><ListCell><StatusChip status={BUDGET_STATUS.DEPOSIT} /></ListCell></>}
             actions={<><RowActionButton action="edit" aria-label="Edit Flowers" /><RowActionButton action="delete" aria-label="Delete Flowers" /></>}
           >
             {TABLE_ROWS.map((row) => (
@@ -410,7 +434,7 @@ export default async function UiKitPage() {
                 key={row.name}
                 name={row.name}
                 meta={<><ListCell numeric phoneLabel="est.">{row.estimated}</ListCell><ListCell numeric phoneLabel="paid">{row.paid}</ListCell></>}
-                end={<><ListCell numeric>{row.balance}</ListCell><ListCell>{row.paid === "$0.00" ? <Badge variant="neutral">Due</Badge> : <Badge variant="warning">Deposit paid</Badge>}</ListCell></>}
+                end={<><ListCell numeric>{row.balance}</ListCell><ListCell><StatusChip status={BUDGET_STATUS[row.paid === "$0.00" ? "DUE" : "DEPOSIT"]} /></ListCell></>}
                 actions={<><RowActionButton action="edit" aria-label={`Edit ${row.name}`} /><RowActionButton action="delete" aria-label={`Delete ${row.name}`} /></>}
               />
             ))}
@@ -419,7 +443,7 @@ export default async function UiKitPage() {
           <ListGroup
             title="Photography"
             meta={<><ListCell numeric phoneLabel="est.">$1,550.00</ListCell><ListCell numeric phoneLabel="paid">$0.00</ListCell></>}
-            end={<><ListCell numeric>$1,550.00</ListCell><ListCell><Badge variant="neutral">Due</Badge></ListCell></>}
+            end={<><ListCell numeric>$1,550.00</ListCell><ListCell><StatusChip status={BUDGET_STATUS.DUE} /></ListCell></>}
             actions={<><RowActionButton action="edit" aria-label="Edit Photography" /><RowActionButton action="delete" aria-label="Delete Photography" /></>}
           >
             <ListEmpty>No line items yet.</ListEmpty>

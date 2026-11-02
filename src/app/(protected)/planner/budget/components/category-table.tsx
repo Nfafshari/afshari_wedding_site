@@ -13,7 +13,8 @@ import {
 
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Button } from "@/components/ui/button";
-import BudgetStatusBadge from "@/components/budget-status-badge";
+import StatusChip from "@/components/status-chip";
+import { BUDGET_STATUS } from "@/lib/status";
 import RowActionButton from "@/components/row-action-button";
 import EmptyState from "@/components/empty-state";
 import { BudgetStatus } from "@/generated/prisma/enums";
@@ -181,7 +182,7 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteCategor
                   <TableHead numeric className="hidden font-bold text-lg md:table-cell">{toCurrency(totalPaid)}</TableHead>
                   <TableHead numeric className="font-bold md:text-lg">{toCurrency(totalBalance)}</TableHead>
                   <TableHead className="text-right font-bold">
-                    <BudgetStatusBadge status={isCategoryPaid ? 'PAID' : 'DUE'} />
+                    <StatusChip status={BUDGET_STATUS[isCategoryPaid ? 'PAID' : 'DUE']} />
                   </TableHead>
                   <TableHead className="hidden md:table-cell">
                     <div className="flex justify-end">{actions}</div>

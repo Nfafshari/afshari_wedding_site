@@ -19,7 +19,8 @@ import type { Attendance } from "@/generated/prisma/enums";
 import { getMembers, getPlusOnes, isCountedAttending } from "@/lib/rsvp";
 import { formatDate } from "@/lib/utils";
 
-import { ATTENDANCE_LABEL, AttendanceChip, PLUS_ONE_LABEL, PlusOneChip } from "./status-chips";
+import StatusChip from "@/components/status-chip";
+import { ATTENDANCE_STATUS, PLUS_ONE_STATUS } from "@/lib/status";
 import type { RsvpGuestRow, RsvpHandlers, RsvpPartyRow } from "./types";
 
 interface RsvpTableProps extends RsvpHandlers {
@@ -129,7 +130,7 @@ export default function RsvpTable ({
                   <TableHead className="font-bold text-base pb-1 md:pb-0">
                     <div className="flex flex-wrap items-center gap-1">
                       <span>{headcountLabel(party)}</span>
-                      {pendingPlusOnes > 0 && <PlusOneChip status="PENDING" className="font-normal" />}
+                      {pendingPlusOnes > 0 && <StatusChip status={PLUS_ONE_STATUS.PENDING} className="font-normal" />}
                     </div>
                   </TableHead>
                   <TableHead className="p-0 font-normal pb-1 md:p-2 md:pb-0">
@@ -248,15 +249,15 @@ function GuestRow ({ guest, isLast, onSetAttendance, onSetPlusOneStatus }: Guest
                   <SelectGroup>
                     {/* PENDING is only ever set by the guest, so it isn't offered here. */}
                     {guest.plusOneStatus === 'PENDING' && (
-                      <SelectItem value="PENDING" disabled>{PLUS_ONE_LABEL.PENDING}</SelectItem>
+                      <SelectItem value="PENDING" disabled>{PLUS_ONE_STATUS.PENDING.label}</SelectItem>
                     )}
-                    <SelectItem value="APPROVED">{PLUS_ONE_LABEL.APPROVED}</SelectItem>
-                    <SelectItem value="REJECTED">{PLUS_ONE_LABEL.REJECTED}</SelectItem>
+                    <SelectItem value="APPROVED">{PLUS_ONE_STATUS.APPROVED.label}</SelectItem>
+                    <SelectItem value="REJECTED">{PLUS_ONE_STATUS.REJECTED.label}</SelectItem>
                   </SelectGroup>
                 </SelectContent>
               </Select>
             ) : (
-              <PlusOneChip status={guest.plusOneStatus} />
+              <StatusChip status={PLUS_ONE_STATUS[guest.plusOneStatus]} />
             )
           )
         ) : onSetAttendance ? (
@@ -270,13 +271,13 @@ function GuestRow ({ guest, isLast, onSetAttendance, onSetPlusOneStatus }: Guest
             <SelectContent>
               <SelectGroup>
                 {ATTENDANCE_OPTIONS.map((option) => (
-                  <SelectItem key={option} value={option}>{ATTENDANCE_LABEL[option]}</SelectItem>
+                  <SelectItem key={option} value={option}>{ATTENDANCE_STATUS[option].label}</SelectItem>
                 ))}
               </SelectGroup>
             </SelectContent>
           </Select>
         ) : (
-          <AttendanceChip attendance={guest.attendance} />
+          <StatusChip status={ATTENDANCE_STATUS[guest.attendance]} />
         )}
       </TableCell>
       <TableCell className="p-0 md:p-2">

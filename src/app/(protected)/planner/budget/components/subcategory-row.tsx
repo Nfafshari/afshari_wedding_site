@@ -4,7 +4,8 @@ import { useState } from "react";
 import { TableRow, TableCell } from "@/components/ui/table";
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import BudgetStatusBadge from "@/components/budget-status-badge";
+import StatusChip from "@/components/status-chip";
+import { BUDGET_STATUS } from "@/lib/status";
 import RowActionButton from "@/components/row-action-button";
 
 import { BudgetStatus } from "@/generated/prisma/enums";
@@ -287,7 +288,7 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
                     key={badge} value={badge}
                     className="focus:bg-muted/20"
                   >
-                    <BudgetStatusBadge status={badge} />
+                    <StatusChip status={BUDGET_STATUS[badge]} />
                   </SelectItem>
                 ))}
               </SelectGroup>
@@ -298,7 +299,7 @@ export default function SubcategoryRow ({ subcategory, onDeleteSubcategory, onEd
           {(serverError && serverErrorField === 'status') && <p className="overflow-x-scroll text-destructive text-xs">{serverError}</p>}
         </div>
         <div className="mt-3.5 md:hidden">
-          <BudgetStatusBadge status={subcategory.status} />
+          <StatusChip status={BUDGET_STATUS[subcategory.status]} />
         </div>
       </TableCell>
       <TableCell className="hidden md:table-cell">
