@@ -157,3 +157,17 @@ export function getPartyGroup (invitation: InvitationLike): PartyGroup {
   const anyAttending = getMembers(invitation).some((guest) => guest.attendance === 'ATTENDING');
   return anyAttending ? 'attending' : 'declined';
 }
+
+/**
+ * The headcount on a party's row: "4 invited" until the party answers, then
+ * "3 of 4 coming". The total counts members and plus-ones still holding a slot.
+ */
+export function partyHeadcountLabel (invitation: InvitationLike): string {
+  const members = getMembers(invitation).length;
+  if (invitation.respondedAt === null) {
+    return `${members} invited`;
+  }
+
+  const coming = invitation.guests.filter(isCountedAttending).length;
+  return `${coming} of ${members + countActivePlusOnes(invitation)} coming`;
+}

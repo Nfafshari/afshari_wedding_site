@@ -1,4 +1,5 @@
 import type { Attendance, BudgetStatus, PlusOneStatus } from "@/generated/prisma/enums";
+import type { PartyGroup } from "@/lib/rsvp";
 
 /*
  * Every status the planner shows as a chip: the word and its tone, in one place. The chip
@@ -26,6 +27,13 @@ export const PLUS_ONE_STATUS: Record<PlusOneStatus, Status> = {
   PENDING: { label: "Needs approval", tone: "warning" },
   APPROVED: { label: "Approved", tone: "success" },
   REJECTED: { label: "Not approved", tone: "danger" },
+};
+
+/** A party as a whole, from `getPartyGroup`. */
+export const PARTY_STATUS: Record<PartyGroup, Status> = {
+  awaiting: { label: "Waiting", tone: "neutral" },
+  attending: { label: "Attending", tone: "success" },
+  declined: { label: "Declined", tone: "danger" },
 };
 
 /** A registry item by how much of it is claimed: open, some left, or fully claimed. */
