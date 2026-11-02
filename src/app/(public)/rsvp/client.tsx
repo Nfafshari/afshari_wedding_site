@@ -11,7 +11,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { Textarea } from "@/components/ui/textarea";
 import { WEDDING } from "@/lib/guest-content";
 import { MAX_LONG_TEXT, MAX_SHORT_TEXT } from "@/lib/rsvp";
-import { cn } from "@/lib/utils";
+import { cn, formatDate } from "@/lib/utils";
 
 import { findInvitation, submitRsvp, type ErrorField, type PublicParty } from "./action";
 
@@ -312,7 +312,7 @@ function PartyForm ({ party, lookupName, isOpen, deadline, onStartOver, onDone }
           <CircleAlert className="w-5 h-5 shrink-0 text-warning" />
           <p>
             {party.respondedByName ? `${party.respondedByName} already responded` : 'You already responded'} on{' '}
-            {party.respondedAt.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}.{' '}
+            {formatDate(party.respondedAt)}.{' '}
             {isOpen
               ? `Your answers are below — you can update them until ${deadline}.`
               : 'Your answers are below.'}
