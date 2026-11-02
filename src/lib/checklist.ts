@@ -69,3 +69,19 @@ export function matchesTaskFilter (task: TaskLike, filter: TaskFilter): boolean 
   if (filter === 'done') return task.status;
   return true;
 }
+
+/**
+ * The dashboard's "Up next": undone tasks from every category by due date, so overdue
+ * ones come first (oldest first), then the upcoming ones. Ties break on id so equal
+ * dates can't swap places between renders. Each task keeps its category for display.
+ */
+export function getUpNextTasks<C extends { tasks: (TaskLike & { id: number })[] }> (
+  categories: C[],
+  limit = 5,
+): { task: C['tasks'][number]; category: C }[] {
+  return categories
+    .flatMap((category) => category.tasks.map((task) => ({ task, category })))
+    .filter(({ task }) => !task.status)
+    .toSorted((a, b) => a.task.goalDate.getTime() - b.task.goalDate.getTime() || a.task.id - b.task.id)
+    .slice(0, limit);
+}

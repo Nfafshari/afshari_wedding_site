@@ -8,6 +8,7 @@ import EmptyState from "@/components/empty-state";
 import PageHeader from "@/components/page-header";
 import PlannerPage from "@/components/planner-page";
 import { Dialog } from "@/components/ui/dialog";
+import { BUDGET_LIMITS } from "@/lib/budget";
 import { toWholeDollars } from "@/lib/utils";
 
 import { BudgetCategory } from './page'
@@ -33,8 +34,6 @@ export enum DialogType {
 }
 
 export default function Budget ({ budgetCategories }: BudgetProps ) {
-  const LIMITS = { target: 15000, cap: 20000 };
-
   const [activeDialog, setActiveDialog] = useState(DialogType.None);
   // Which category a new subcategory attaches to, and which subcategory a delete targets.
   const [activeBudgetCategoryId, setActiveBudgetCategoryId] = useState<number | null>(null);
@@ -111,7 +110,7 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
       <PlannerPage>
         <PageHeader
           title="Budget"
-          subtitle={`Target ${toWholeDollars(LIMITS.target)} · limit ${toWholeDollars(LIMITS.cap)}`}
+          subtitle={`Target ${toWholeDollars(BUDGET_LIMITS.target)} · limit ${toWholeDollars(BUDGET_LIMITS.cap)}`}
           actions={
             <Button onClick={() => setActiveDialog(DialogType.Category)}>
               <CirclePlus />
@@ -120,7 +119,7 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
           }
         />
 
-        <BudgetOverview estimated={totalEstimatedCost} paid={totalPaidAmount} limits={LIMITS} />
+        <BudgetOverview estimated={totalEstimatedCost} paid={totalPaidAmount} limits={BUDGET_LIMITS} />
 
         {/** Category breakdown */}
         <div className="mt-12 w-full">

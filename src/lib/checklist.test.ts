@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getChecklistStats, isDueSoon, isOverdue, isTaskFilter, matchesTaskFilter } from "./checklist";
+import { getChecklistStats, getUpNextTasks, isDueSoon, isOverdue, isTaskFilter, matchesTaskFilter } from "./checklist";
 
 // Noon Central on Nov 2, 2026. Central is UTC-6 in November.
 const now = new Date("2026-11-02T12:00:00-06:00");
@@ -62,5 +62,28 @@ describe("task filter", () => {
     expect(isTaskFilter("done")).toBe(true);
     expect(isTaskFilter("later")).toBe(false);
     expect(isTaskFilter(null)).toBe(false);
+  });
+});
+
+describe("getUpNextTasks", () => {
+  const item = (id: number, goalDate: string, status = false) => ({ id, goalDate: new Date(goalDate), status });
+  const categories = [
+    { name: "Venue", tasks: [item(1, "2026-12-01T12:00:00-06:00"), item(2, "2026-10-20T12:00:00-05:00"), item(3, "2026-10-01T12:00:00-05:00", true)] },
+    { name: "Food", tasks: [item(4, "2026-11-02T12:00:00-06:00"), item(5, "2026-10-25T12:00:00-05:00"), item(6, "2026-12-01T12:00:00-06:00")] },
+  ];
+  const ids = (list: { task: { id: number } }[]) => list.map(({ task }) => task.id);
+
+  it("puts overdue tasks first, oldest first, then upcoming by due date across categories", () => {
+    expect(ids(getUpNextTasks(categories))).toEqual([2, 5, 4, 1, 6]);
+  });
+
+  it("leaves out done tasks and breaks a same-day tie on id", () => {
+    const list = getUpNextTasks(categories);
+    expect(ids(list)).not.toContain(3);
+    expect(ids(list).slice(-2)).toEqual([1, 6]);
+  });
+
+  it("keeps each task's category and stops at the limit", () => {
+    expect(getUpNextTasks(categories, 2).map(({ task, category }) => [task.id, category.name])).toEqual([[2, "Venue"], [5, "Food"]]);
   });
 });

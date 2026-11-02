@@ -54,6 +54,21 @@ export function toWholeDollars (num: number) {
   return wholeDollarsFormatter.format(num);
 }
 
+const compactFormatter = new Intl.NumberFormat('en-us', {
+  style: 'currency',
+  currency: 'USD',
+  notation: 'compact',
+  maximumFractionDigits: 1,
+  // Node renders $15,000 as "$15.0K" and browsers as "$15K"; without this the page
+  // fails hydration. Both agree on "$15K" once the trailing zero is stripped.
+  trailingZeroDisplay: 'stripIfInteger',
+});
+
+/** $15,000 -> "$15K", for bar labels and legends. */
+export function toCompactCurrency (num: number) {
+  return compactFormatter.format(num);
+}
+
 /**
  * Converts number to a bare money string with no currency symbol. Use inside inputs
  * that already render their own "$" addon, so the user never types the symbol.

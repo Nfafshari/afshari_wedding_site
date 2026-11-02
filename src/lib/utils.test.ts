@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, parseHttpUrl, toWholeDollars } from "@/lib/utils";
+import { formatDate, parseHttpUrl, toCompactCurrency, toWholeDollars } from "@/lib/utils";
 
 describe("parseHttpUrl", () => {
   it("accepts http and https URLs and returns the normalized href", () => {
@@ -38,5 +38,12 @@ describe("toWholeDollars", () => {
   it("rounds to the dollar and keeps the separators", () => {
     expect(toWholeDollars(12345.67)).toBe("$12,346");
     expect(toWholeDollars(15000)).toBe("$15,000");
+  });
+});
+
+describe("toCompactCurrency", () => {
+  it("drops a trailing .0 so the server and the browser print the same label", () => {
+    expect(toCompactCurrency(15000)).toBe("$15K");
+    expect(toCompactCurrency(4700)).toBe("$4.7K");
   });
 });

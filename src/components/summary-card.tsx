@@ -1,22 +1,26 @@
 import Link from "next/link";
 import { ChevronRight } from "lucide-react";
 
+import { cn } from "@/lib/utils";
+
 interface SummaryCardProps {
   title: string;
   /** The page the card summarises. */
   href: string;
   linkLabel: string;
+  /** Grid placement, e.g. a column span. */
+  className?: string;
   children: React.ReactNode;
 }
 
 /**
  * The Dashboard's card shell: a title, a link to the page it summarises, and a body.
- * The link sits in the header rather than wrapping the card, because the budget
- * card has an interactive chart inside it.
+ * The link sits in the header rather than wrapping the card, so a card can hold its
+ * own links (Up next's rows) without nesting one link in another.
  */
-export default function SummaryCard({ title, href, linkLabel, children }: SummaryCardProps) {
+export default function SummaryCard({ title, href, linkLabel, className, children }: SummaryCardProps) {
   return (
-    <div className="flex flex-col gap-3 p-4 border rounded-lg bg-olivine-50">
+    <div className={cn("flex flex-col gap-3 p-4 border rounded-lg bg-olivine-50", className)}>
       <div className="flex items-baseline justify-between gap-2">
         <h2 className="section-title pr-2">{title}</h2>
         <Link
