@@ -1,15 +1,17 @@
 "use server";
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@/generated/prisma/client';
 import { revalidatePath } from 'next/cache';
-import { parseHttpUrl } from '@/lib/utils';
 import { requireUserAction } from '@/lib/require-user';
+import { handleActionError, validateHttpUrl, validateWholeNumber, type ActionResult as SharedActionResult } from '@/lib/action';
 
 /**
  * Which input a failure relates to, so the client can highlight the right field.
  * Omitted for general/unexpected errors.
  */
 export type ErrorField = 'name' | 'link' | 'quantityWanted' | 'image' | 'claimedBy' | 'quantity' | 'item';
+
+/** See {@link SharedActionResult}; narrowed to this page's fields. */
+export type ActionResult = SharedActionResult<ErrorField>;
 
 export interface RegistryItemInput {
   name?: string | undefined;
@@ -26,43 +28,12 @@ const PUBLIC_REGISTRY_PATH = '/registry';
 /** quantityWanted is Int; 4 digits keeps it well inside Postgres' int4 range. */
 const MAX_QUANTITY = 9999;
 
-/**
- * The shape every action returns: either it worked, or it failed with a reason.
- * The client checks `ok` to decide whether to close the dialog or show an error,
- * and `field` to decide which input to flag.
- */
-export type ActionResult =
-  | { ok: true }
-  | { ok: false; error: string; field?: ErrorField; authRequired?: true };
+const ITEM_GONE = 'That item no longer exists, refresh your page and try again.';
 
-/**
- * Bounds a quantity once, so create and update can't drift apart on what counts as valid.
- * @returns a failing ActionResult, or null when the value is acceptable
- */
-function validateQuantity (value: number, field: 'quantityWanted' | 'quantity', label: string): ActionResult | null {
-  // Number(...) can hand us NaN if the client sent something non-numeric.
-  if (!Number.isInteger(value) || value < 1) {
-    return { ok: false, error: `${label} must be a whole number of 1 or more.`, field };
-  }
-
-  if (value > MAX_QUANTITY) {
-    return { ok: false, error: `${label} must be ${MAX_QUANTITY} or less.`, field };
-  }
-
-  return null;
-}
-
-/**
- * Rejects anything that isn't a plain http(s) address. These values are rendered
- * into an href/src, so a `javascript:` URL here would execute on click.
- * @returns a failing ActionResult, or null when the URL is acceptable
- */
-function validateUrl (value: string, field: 'link' | 'image', label: string): ActionResult | null {
-  if (parseHttpUrl(value) === null) {
-    return { ok: false, error: `${label} must be a valid link starting with http:// or https://.`, field };
-  }
-
-  return null;
+/** Refreshes every page that shows registry items, after a successful write. */
+function refresh (): void {
+  revalidatePath(REGISTRY_MANAGER_PATH);
+  revalidatePath(PUBLIC_REGISTRY_PATH);
 }
 
 /**
@@ -107,23 +78,13 @@ export async function createRegistryItem (name: string, link: string, quantityWa
     return { ok: false, error: 'Item name cannot be empty.', field: 'name' };
   }
 
-  const linkError = validateUrl(link, 'link', 'Product link');
-  if (linkError) {
-    return linkError;
-  }
-
-  const quantityWantedError = validateQuantity(quantityWanted, 'quantityWanted', 'Quantity wanted');
-  if (quantityWantedError) {
-    return quantityWantedError;
-  }
-
   // An empty image is allowed — the column default fills in the placeholder.
   const trimmedImage = image.trim();
-  if (trimmedImage !== '') {
-    const imageError = validateUrl(trimmedImage, 'image', 'Image link');
-    if (imageError) {
-      return imageError;
-    }
+  const invalid = validateHttpUrl(link, 'link', 'Product link')
+    ?? validateWholeNumber(quantityWanted, 'quantityWanted', 'Quantity wanted', MAX_QUANTITY)
+    ?? (trimmedImage === '' ? null : validateHttpUrl(trimmedImage, 'image', 'Image link'));
+  if (invalid) {
+    return invalid;
   }
 
   // Try the write. The DB's @unique constraint guards against duplicates.
@@ -138,18 +99,12 @@ export async function createRegistryItem (name: string, link: string, quantityWa
       },
     });
   } catch (error) {
-    // P2002 = unique constraint failed (an item with this name already exists).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-      return { ok: false, error: 'An item with that name already exists.', field: 'name' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error creating new registry item, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'creating new registry item', {
+      P2002: { error: 'An item with that name already exists.', field: 'name' },
+    });
   }
 
-  // refresh the page data after a successful write
-  revalidatePath(REGISTRY_MANAGER_PATH);
-  revalidatePath(PUBLIC_REGISTRY_PATH);
+  refresh();
   return { ok: true };
 }
 
@@ -188,33 +143,21 @@ export async function updateRegistryItem (registryItemId: number | undefined, da
     return { ok: false, error: 'Item name cannot be empty.', field: 'name' };
   }
 
-  if (data.link !== undefined) {
-    const linkError = validateUrl(data.link, 'link', 'Product link');
-    if (linkError) {
-      return linkError;
-    }
-  }
-
   const trimmedImage = data.image?.trim();
-  if (trimmedImage !== undefined && trimmedImage !== '') {
-    const imageError = validateUrl(trimmedImage, 'image', 'Image link');
-    if (imageError) {
-      return imageError;
-    }
+  const invalid = (data.link === undefined ? null : validateHttpUrl(data.link, 'link', 'Product link'))
+    ?? (trimmedImage === undefined || trimmedImage === '' ? null : validateHttpUrl(trimmedImage, 'image', 'Image link'))
+    ?? (data.quantityWanted === undefined ? null : validateWholeNumber(data.quantityWanted, 'quantityWanted', 'Quantity wanted', MAX_QUANTITY));
+  if (invalid) {
+    return invalid;
   }
 
   if (data.quantityWanted !== undefined) {
-    const quantityWantedError = validateQuantity(data.quantityWanted, 'quantityWanted', 'Quantity wanted');
-    if (quantityWantedError) {
-      return quantityWantedError;
-    }
-
     // Guests have already called dibs on some of these, and we cannot un-promise a
     // gift someone is already buying. This needs no concurrency to hit — one person
     // with the edit dialog open is enough — so it matters more than the claim race.
     const totals = await getClaimedTotal(registryItemId);
     if (totals === null) {
-      return { ok: false, error: 'That item no longer exists, refresh your page and try again.', field: 'item' };
+      return { ok: false, error: ITEM_GONE, field: 'item' };
     }
 
     if (data.quantityWanted < totals.claimedTotal) {
@@ -240,22 +183,14 @@ export async function updateRegistryItem (registryItemId: number | undefined, da
       },
     });
   } catch (error) {
-    // P2002 = unique constraint (an item with this name already exists).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-      return { ok: false, error: 'An item with that name already exists.', field: 'name' };
-    }
-    // P2025 = record to update not found (the item was deleted).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-      return { ok: false, error: 'That item no longer exists, refresh your page and try again.', field: 'name' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error updating registry item, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'updating registry item', {
+      P2002: { error: 'An item with that name already exists.', field: 'name' },
+      // The item was deleted while the dialog was open.
+      P2025: { error: ITEM_GONE, field: 'name' },
+    });
   }
 
-  // refresh the page data after a successful write
-  revalidatePath(REGISTRY_MANAGER_PATH);
-  revalidatePath(PUBLIC_REGISTRY_PATH);
+  refresh();
   return { ok: true };
 }
 
@@ -296,24 +231,17 @@ export async function deleteRegistryItem (registryItemId: number | undefined): P
       where: { id: registryItemId },
     });
   } catch (error) {
-    // P2025 = record to delete does not exist (already removed).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-      return { ok: false, error: 'That item no longer exists, refresh your page and try again.' };
-    }
-    // P2003 = foreign key constraint. The count above should have caught this, but a
-    // claim landing between the count and the delete would still trip the DB's
-    // onDelete: Restrict — which is exactly what that rule is there for.
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2003') {
-      return { ok: false, error: 'Someone claimed this item just now. Refresh your page and try again.', field: 'item' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error deleting registry item, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'deleting registry item', {
+      // Already removed.
+      P2025: { error: ITEM_GONE },
+      // The count above should have caught this, but a claim landing between the count
+      // and the delete would still trip the DB's onDelete: Restrict — which is exactly
+      // what that rule is there for.
+      P2003: { error: 'Someone claimed this item just now. Refresh your page and try again.', field: 'item' },
+    });
   }
 
-  // refresh the page data after a successful write
-  revalidatePath(REGISTRY_MANAGER_PATH);
-  revalidatePath(PUBLIC_REGISTRY_PATH);
+  refresh();
   return { ok: true };
 }
 
@@ -340,7 +268,7 @@ export async function createRegistryClaim (itemId: number | undefined, claimedBy
     return { ok: false, error: 'Please say who claimed this.', field: 'claimedBy' };
   }
 
-  const quantityError = validateQuantity(quantity, 'quantity', 'Quantity');
+  const quantityError = validateWholeNumber(quantity, 'quantity', 'Quantity', MAX_QUANTITY);
   if (quantityError) {
     return quantityError;
   }
@@ -348,7 +276,7 @@ export async function createRegistryClaim (itemId: number | undefined, claimedBy
   try {
     const totals = await getClaimedTotal(itemId);
     if (totals === null) {
-      return { ok: false, error: 'That item no longer exists, refresh your page and try again.', field: 'item' };
+      return { ok: false, error: ITEM_GONE, field: 'item' };
     }
 
     const remaining = totals.quantityWanted - totals.claimedTotal;
@@ -376,18 +304,13 @@ export async function createRegistryClaim (itemId: number | undefined, claimedBy
       },
     });
   } catch (error) {
-    // P2003 = foreign key constraint (the item was deleted mid-claim).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2003') {
-      return { ok: false, error: 'That item no longer exists, refresh your page and try again.', field: 'item' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error creating new registry claim, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'creating new registry claim', {
+      // The item was deleted mid-claim.
+      P2003: { error: ITEM_GONE, field: 'item' },
+    });
   }
 
-  // refresh the page data after a successful write
-  revalidatePath(REGISTRY_MANAGER_PATH);
-  revalidatePath(PUBLIC_REGISTRY_PATH);
+  refresh();
   return { ok: true };
 }
 
@@ -412,17 +335,12 @@ export async function deleteRegistryClaim (registryClaimId: number | undefined):
       where: { id: registryClaimId },
     });
   } catch (error) {
-    // P2025 = record to delete does not exist (already removed).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-      return { ok: false, error: 'That claim no longer exists, refresh your page and try again.' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error deleting registry claim, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'deleting registry claim', {
+      // Already removed.
+      P2025: { error: 'That claim no longer exists, refresh your page and try again.' },
+    });
   }
 
-  // refresh the page data after a successful write
-  revalidatePath(REGISTRY_MANAGER_PATH);
-  revalidatePath(PUBLIC_REGISTRY_PATH);
+  refresh();
   return { ok: true };
 }
