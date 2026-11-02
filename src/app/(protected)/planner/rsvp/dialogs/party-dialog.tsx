@@ -8,7 +8,9 @@ import { Button } from "@/components/ui/button";
 import { Field, FieldDescription, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
-import { countActivePlusOnes, getMembers, normalizeName } from "@/lib/rsvp";
+import { useFieldErrors } from "@/hooks/use-field-errors";
+import { MAX_PLUS_ONES, MAX_SHORT_TEXT, checkPartyMembers, checkPlusOnesFloor, countActivePlusOnes, getMembers } from "@/lib/rsvp";
+import { checkRequired, checkUniqueName, checkWholeNumber, parseWholeNumber } from "@/lib/validate";
 
 import { createInvitation, updateInvitation, type ErrorField } from "../action";
 import type { Invitations } from "../page";
@@ -28,16 +30,6 @@ interface PartyDialogProps {
  */
 type MemberDraft = { key: number; id?: number; name: string };
 
-/** Whole number from 0 to 10 — mirrors the server's bounds. */
-function parsePlusOnes (value: string): number | null {
-  if (!/^\d{1,2}$/.test(value.trim())) {
-    return null;
-  }
-
-  const parsed = Number(value.trim());
-  return parsed <= 10 ? parsed : null;
-}
-
 /**
  * Add and edit share one dialog: they collect the same fields, and the member-list
  * editor is the bulk of either. Splitting them like the registry dialogs would
@@ -54,81 +46,34 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
   const [members, setMembers] = useState<MemberDraft[]>(initialMembers);
   // Next client key. Starts past every db id in use so the two never collide.
   const [nextKey, setNextKey] = useState(() => Math.max(0, ...initialMembers.map((member) => member.key)) + 1);
-  const [fieldErrors, setFieldErrors] = useState<Partial<Record<ErrorField, string>>>({});
+  const { errors: fieldErrors, check, clear, checkAll } = useFieldErrors<ErrorField>();
   const { isLoading, serverError, serverErrorField, clearServerError, runAction } = useDialogSubmit<ErrorField>(onSuccess);
 
   const activePlusOnes = isEdit ? countActivePlusOnes(partyToUpdate) : 0;
 
-  /**
-   * Validates the party name by checking if it is empty or already taken.
-   * @returns a **string** message if it fails, otherwise **null** to clear errors
-   */
-  function partyNameValidator (value: string): string | null {
-    if (value.trim() === '') {
-      return 'Party name cannot be empty.';
-    }
+  const takenNames = invitations
+    .filter((invitation) => invitation.id !== partyToUpdate?.id)
+    .map((invitation) => invitation.partyName);
 
-    const isDuplicate = invitations.some(
-      (invitation) => invitation.id !== partyToUpdate?.id
-        && invitation.partyName.toLowerCase().trim() === value.toLowerCase().trim()
-    );
-    if (isDuplicate) {
-      return 'A party with that name already exists.';
-    }
-
-    // return null if validation succeeded
-    return null;
-  }
-
-  /**
-   * Validates the plus-one allowance, which can't drop below plus-ones already named.
-   * @returns a **string** message if it fails, otherwise **null** to clear errors
-   */
-  function plusOnesValidator (value: string): string | null {
-    const parsed = parsePlusOnes(value);
-    if (parsed === null) {
-      return 'Plus-ones must be a whole number from 0 to 10.';
-    }
-
-    if (parsed < activePlusOnes) {
-      return `${activePlusOnes} already named — reject one first to go lower.`;
-    }
-
-    // return null if validation succeeded
-    return null;
-  }
-
-  /**
-   * Validates the member list: at least one, none blank, no repeats.
-   * @returns a **string** message if it fails, otherwise **null** to clear errors
-   */
-  function membersValidator (value: MemberDraft[]): string | null {
-    if (value.length === 0) {
-      return 'A party needs at least one guest.';
-    }
-
-    if (value.some((member) => member.name.trim() === '')) {
-      return 'Guest names cannot be empty.';
-    }
-
-    const keys = value.map((member) => normalizeName(member.name));
-    if (new Set(keys).size !== keys.length) {
-      return 'The same guest is listed twice.';
-    }
-
-    // return null if validation succeeded
-    return null;
-  }
+  // The messages come from lib/validate.ts and lib/rsvp.ts, so they match what the server would say.
+  const checks = {
+    partyName: (value = partyName) => checkRequired(value, 'Party name', MAX_SHORT_TEXT) ?? checkUniqueName(value, takenNames, 'party'),
+    plusOnesAllowed: (value = plusOnesAllowed) => {
+      const parsed = parseWholeNumber(value);
+      return checkWholeNumber(parsed, 'Plus-ones', MAX_PLUS_ONES, 0) ?? checkPlusOnesFloor(parsed, activePlusOnes);
+    },
+    members: () => checkPartyMembers(members.map((member) => member.name)),
+  };
 
   function updateMember (key: number, name: string) {
     setMembers((prev) => prev.map((member) => (member.key === key ? { ...member, name } : member)));
-    setFieldErrors(({ members, ...rest }) => rest);
+    clear('members');
     clearServerError();
   }
 
   function removeMember (key: number) {
     setMembers((prev) => prev.filter((member) => member.key !== key));
-    setFieldErrors(({ members, ...rest }) => rest);
+    clear('members');
     clearServerError();
   }
 
@@ -139,36 +84,11 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
 
   // FormDialog has already called preventDefault, so this just runs our logic.
   async function saveParty () {
-    // Validate every field into one local object, then gate on it
-    const errors: Partial<Record<ErrorField, string>> = {};
-
-    const partyNameError = partyNameValidator(partyName);
-    if (partyNameError) {
-      errors.partyName = partyNameError;
-    }
-
-    const plusOnesError = plusOnesValidator(plusOnesAllowed);
-    if (plusOnesError) {
-      errors.plusOnesAllowed = plusOnesError;
-    }
-
-    const membersError = membersValidator(members);
-    if (membersError) {
-      errors.members = membersError;
-    }
-
-    if (Object.keys(errors).length > 0) {
-      setFieldErrors(errors);
-      return;
-    }
-
-    // Validation passed, so the allowance parses.
-    const parsedPlusOnes = parsePlusOnes(plusOnesAllowed);
-    if (parsedPlusOnes === null) return;
+    if (!checkAll({ partyName: checks.partyName(), plusOnesAllowed: checks.plusOnesAllowed(), members: checks.members() })) return;
 
     const input = {
       partyName,
-      plusOnesAllowed: parsedPlusOnes,
+      plusOnesAllowed: parseWholeNumber(plusOnesAllowed),
       members: members.map((member) => ({ id: member.id, name: member.name })),
     };
 
@@ -197,20 +117,10 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
           aria-invalid={Boolean(fieldErrors.partyName || serverErrorField === 'partyName')}
           onChange={(e) => {
             setPartyName(e.target.value);
-            // Typing clears any previous error so the user gets a fresh start.
-            if (e.target.value.trim() !== '') {
-              setFieldErrors(({ partyName, ...rest }) => rest);
-            }
+            clear('partyName');
             clearServerError();
           }}
-          onBlur={(e) => {
-            const msg = partyNameValidator(e.target.value);
-            if (msg) {
-              setFieldErrors(prev => ({ ...prev, partyName: msg }));
-            } else {
-              setFieldErrors(({ partyName, ...rest }) => rest);
-            }
-          }}
+          onBlur={(e) => check('partyName', checks.partyName(e.target.value))}
         />
         {fieldErrors.partyName && <p className="text-destructive text-xs">{fieldErrors.partyName}</p>}
         {(serverError && serverErrorField === 'partyName') && <p className="text-destructive text-xs">{serverError}</p>}
@@ -269,19 +179,10 @@ export default function PartyDialog({ invitations, partyToUpdate, onSuccess }: P
           aria-invalid={Boolean(fieldErrors.plusOnesAllowed || serverErrorField === 'plusOnesAllowed')}
           onChange={(e) => {
             setPlusOnesAllowed(e.target.value);
-            if (e.target.value.trim() !== '') {
-              setFieldErrors(({ plusOnesAllowed, ...rest }) => rest);
-            }
+            clear('plusOnesAllowed');
             clearServerError();
           }}
-          onBlur={(e) => {
-            const msg = plusOnesValidator(e.target.value);
-            if (msg) {
-              setFieldErrors(prev => ({ ...prev, plusOnesAllowed: msg }));
-            } else {
-              setFieldErrors(({ plusOnesAllowed, ...rest }) => rest);
-            }
-          }}
+          onBlur={(e) => check('plusOnesAllowed', checks.plusOnesAllowed(e.target.value))}
         />
         {fieldErrors.plusOnesAllowed && <p className="text-destructive text-xs">{fieldErrors.plusOnesAllowed}</p>}
         {(serverError && serverErrorField === 'plusOnesAllowed') && <p className="text-destructive text-xs">{serverError}</p>}

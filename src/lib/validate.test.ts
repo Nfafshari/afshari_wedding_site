@@ -45,6 +45,11 @@ describe("checkWholeNumber", () => {
   it("refuses anything over the max", () => {
     expect(checkWholeNumber(10000, "Quantity", 9999)).toBe("Quantity must be 9999 or less.");
   });
+
+  it("can allow zero, for counts that may be none", () => {
+    expect(checkWholeNumber(0, "Plus-ones", 10, 0)).toBeNull();
+    expect(checkWholeNumber(-1, "Plus-ones", 10, 0)).toBe("Plus-ones must be a whole number of 0 or more.");
+  });
 });
 
 describe("checkMoney", () => {

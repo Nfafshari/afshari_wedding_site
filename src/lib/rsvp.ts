@@ -35,6 +35,8 @@ export function formatRsvpDeadline (): string {
 export const MAX_SHORT_TEXT = 200;
 /** Cap for the note to the couple. */
 export const MAX_LONG_TEXT = 1000;
+/** Most plus-ones one party can be allowed. */
+export const MAX_PLUS_ONES = 10;
 
 /**
  * Folds a name down to what the lookup compares, so "José  O'Neil" and "jose oneil"
@@ -212,4 +214,33 @@ export function filterParties<T extends { respondedAt: Date | null; partyName: s
     matchesFilter(invitation, filter)
     && matchesSearch(query, invitation.partyName, ...invitation.guests.map((guest) => guest.name))
   );
+}
+
+/**
+ * The party dialog's guest list, checked the same way in the dialog and the server
+ * action: at least one guest, none blank or over-long, and no name twice.
+ * @returns the message to show, or null when the list is fine
+ */
+export function checkPartyMembers (names: string[]): string | null {
+  const trimmed = names.map((name) => name.trim());
+  if (trimmed.length === 0) return 'A party needs at least one guest.';
+  if (trimmed.some((name) => name === '')) return 'Guest names cannot be empty.';
+  if (trimmed.some((name) => name.length > MAX_SHORT_TEXT)) return `Guest names must be ${MAX_SHORT_TEXT} characters or less.`;
+
+  // The public lookup finds a party by name, so two identical names in one party
+  // are indistinguishable to the guest and almost certainly a typo here.
+  const keys = trimmed.map(normalizeName);
+  if (new Set(keys).size !== keys.length) return 'The same guest is listed twice.';
+  return null;
+}
+
+/**
+ * Guests have already named plus-ones against the old allowance, and the couple
+ * cannot quietly un-invite someone. Reject them first, then lower it.
+ * @returns the message to show, or null when the allowance covers them
+ */
+export function checkPlusOnesFloor (allowed: number, activePlusOnes: number): string | null {
+  if (allowed >= activePlusOnes) return null;
+  const named = activePlusOnes === 1 ? 'plus-one is' : 'plus-ones are';
+  return `${activePlusOnes} ${named} already named, so you cannot allow fewer than ${activePlusOnes}. Reject one first.`;
 }
