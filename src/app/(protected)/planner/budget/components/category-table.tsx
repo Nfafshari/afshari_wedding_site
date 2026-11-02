@@ -1,34 +1,21 @@
 "use client";
 
-import { ArrowUpDown, ChevronDown, CirclePlus, Receipt } from "lucide-react";
+import { ArrowUpDown } from "lucide-react";
 
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible"
 import { Button } from "@/components/ui/button";
-import StatusChip from "@/components/status-chip";
-import { BUDGET_STATUS } from "@/lib/status";
+import { GroupedList, ListAddRow, ListCell, ListEmpty, ListGroup, ListHeadCell, ListHeader, ListRow } from "@/components/grouped-list";
 import RowActionButton from "@/components/row-action-button";
-import EmptyState from "@/components/empty-state";
-import { BudgetStatus } from "@/generated/prisma/enums";
+import StatusChip from "@/components/status-chip";
 import { useQueryParams } from "@/hooks/use-query-params";
+import { getCategoryStatus, getCategoryTotals } from "@/lib/budget";
+import { BUDGET_STATUS } from "@/lib/status";
 import { toCurrency } from "@/lib/utils";
-import { getCategoryTotals } from "@/lib/budget";
 
-import SubcategoryRow from "./subcategory-row";
-import CategoryColumns from "./category-columns";
 import { BudgetCategory, BudgetSubcategory } from "../page";
 
 interface CategoryTableProps {
   data: BudgetCategory[];
-  /** Open the "add subcategory" dialog for the given category. */
+  /** Open the "add line item" dialog for the given category. */
   onAddSubcategory(budgetCategoryId: number): void;
   /** Open the delete-confirmation dialog for the given category. */
   onDeleteCategory(budgetCategoryId: number): void;
@@ -102,120 +89,73 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteCategor
   const sortedCategories = sortCategories(data, sortKey, sortDirection);
 
   return (
-    <>
-      {/** custom heading */}
-      <Table className="w-full table-fixed mb-1">
-        {/** custom column sizing */}
-        <CategoryColumns />
-        <TableHeader>
-          <TableRow variant="heading">
-            <TableHead variant="label"/>
-            <TableHead variant="label">Category</TableHead>
-            <TableHead variant="label" numeric className="hidden md:table-cell">
-              <SortButton label="Estimated" onClick={() => handleSortParams('estimated')} />
-            </TableHead>
-            <TableHead variant="label" numeric className="hidden md:table-cell">
-              <SortButton label="Paid" onClick={() => handleSortParams('paid')} />
-            </TableHead>
-            <TableHead variant="label" numeric>
-              <SortButton label="Balance" onClick={() => handleSortParams('balance')} />
-            </TableHead>
-            <TableHead variant="label" className="pr-3 text-right">Status</TableHead>
-            <TableHead variant="label" className="hidden md:table-cell"/>
-          </TableRow>
-        </TableHeader>
-      </Table>
+    // Category, then estimated and paid (folded under the name on phones), then balance and status.
+    <GroupedList label="Budget by category" columns="minmax(0,1fr) 8rem 8rem 8rem 7.5rem">
+      <ListHeader>
+        <ListHeadCell>Category</ListHeadCell>
+        <ListHeadCell numeric><SortButton label="Estimated" onClick={() => handleSortParams('estimated')} /></ListHeadCell>
+        <ListHeadCell numeric><SortButton label="Paid" onClick={() => handleSortParams('paid')} /></ListHeadCell>
+        <ListHeadCell numeric><SortButton label="Balance" onClick={() => handleSortParams('balance')} /></ListHeadCell>
+        <ListHeadCell>Status</ListHeadCell>
+      </ListHeader>
 
       {sortedCategories.map((budgetCategory) => {
-        const { estimated: totalEstimated, paid: totalPaid, balance: totalBalance } =
-          getCategoryTotals(budgetCategory);
-
-        let isCategoryPaid = false;
-        if (budgetCategory.budgetSubcategories.length > 0) {
-          isCategoryPaid = budgetCategory.budgetSubcategories.every((subcategory) => subcategory.status === BudgetStatus.PAID);
-        }
-
-        const actions = (
-          <>
-            <RowActionButton action="edit" aria-label={`Edit ${budgetCategory.name}`} onClick={() => onEditCategory(budgetCategory.id)} />
-            <RowActionButton action="delete" aria-label={`Delete ${budgetCategory.name}`} onClick={() => onDeleteCategory(budgetCategory.id)} />
-          </>
-        );
-
-        const addSubcategoryButton = (
-          <Button
-            variant={'ghost'}
-            className="text-xs"
-            onClick={() => {
-              onAddSubcategory(budgetCategory.id)
-            }}
-          >
-            Add subcategory
-            <CirclePlus/>
-          </Button>
-        );
+        const lineItems = budgetCategory.budgetSubcategories;
+        const totals = getCategoryTotals(budgetCategory);
 
         return (
-          <Collapsible key={budgetCategory.id} defaultOpen={budgetCategory.budgetSubcategories.length > 0}>
-            <Table className="table-fixed">
-              {/** custom column sizing */}
-              <CategoryColumns />
-              <TableHeader>
-                <TableRow variant="group">
-                  <TableHead className="pt-2">
-                    <CollapsibleTrigger className="group rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={`Show subcategories in ${budgetCategory.name}`}>
-                      <ChevronDown className="w-4 h-4 group-data-[state=open]:rotate-180 transition-transform"/>
-                    </CollapsibleTrigger>
-                  </TableHead>
-                  <TableHead className="font-bold text-lg pb-1 md:pb-0">
-                    {/* Mobile: est/paid and the actions fold into sublines, since their columns are hidden. */}
-                    <div className="flex flex-col py-2 text-xl md:hidden">
-                      <div className="flex flex-col overflow-x-auto">
-                        {budgetCategory.name}
-                        <p className="text-xs text-gold-ink tabular-nums">{toCurrency(totalEstimated)} est. <span className="text-sm leading-tight">•</span> {toCurrency(totalPaid)} paid</p>
-                      </div>
-                      <div className="-ml-2 mt-1 flex">{actions}</div>
-                    </div>
-                    <span className="hidden truncate md:block">{budgetCategory.name}</span>
-                  </TableHead>
-                  <TableHead numeric className="hidden font-bold text-lg md:table-cell">{toCurrency(totalEstimated)}</TableHead>
-                  <TableHead numeric className="hidden font-bold text-lg md:table-cell">{toCurrency(totalPaid)}</TableHead>
-                  <TableHead numeric className="font-bold md:text-lg">{toCurrency(totalBalance)}</TableHead>
-                  <TableHead className="text-right font-bold">
-                    <StatusChip status={BUDGET_STATUS[isCategoryPaid ? 'PAID' : 'DUE']} />
-                  </TableHead>
-                  <TableHead className="hidden md:table-cell">
-                    <div className="flex justify-end">{actions}</div>
-                  </TableHead>
-                </TableRow>
-              </TableHeader>
-              <CollapsibleContent asChild>
-                <TableBody variant="group">
-                  {budgetCategory.budgetSubcategories.map((budgetSubcategory) => (
-                    <SubcategoryRow
-                      key={budgetSubcategory.id}
-                      subcategory={budgetSubcategory}
-                      onDeleteSubcategory={onDeleteSubcategory}
-                      onEditSubcategory={onEditSubcategory}
-                    />
-                  ))}
-                  <TableRow variant="static">
-                    <TableCell colSpan={7}>
-                      {budgetCategory.budgetSubcategories.length === 0 ? (
-                        <EmptyState icon={Receipt} title={`Nothing in ${budgetCategory.name} yet.`}>
-                          {addSubcategoryButton}
-                        </EmptyState>
-                      ) : (
-                        <div className="ml-5">{addSubcategoryButton}</div>
-                      )}
-                    </TableCell>
-                  </TableRow>
-                </TableBody>
-              </CollapsibleContent>
-            </Table>
-          </Collapsible>
+          <ListGroup
+            key={budgetCategory.id}
+            title={budgetCategory.name}
+            defaultOpen={lineItems.length > 0}
+            meta={<MoneyMeta estimated={totals.estimated} paid={totals.paid} />}
+            end={<BalanceAndStatus balance={totals.balance} status={getCategoryStatus(lineItems)} />}
+            actions={
+              <>
+                <RowActionButton action="edit" aria-label={`Edit ${budgetCategory.name}`} onClick={() => onEditCategory(budgetCategory.id)} />
+                <RowActionButton action="delete" aria-label={`Delete ${budgetCategory.name}`} onClick={() => onDeleteCategory(budgetCategory.id)} />
+              </>
+            }
+          >
+            {lineItems.map((lineItem) => (
+              <ListRow
+                key={lineItem.id}
+                name={lineItem.name}
+                meta={<MoneyMeta estimated={lineItem.estimatedCost} paid={lineItem.paidAmount} />}
+                end={<BalanceAndStatus balance={lineItem.estimatedCost - lineItem.paidAmount} status={lineItem.status} />}
+                actions={
+                  <>
+                    <RowActionButton action="edit" aria-label={`Edit ${lineItem.name}`} onClick={() => onEditSubcategory(lineItem.id)} />
+                    <RowActionButton action="delete" aria-label={`Delete ${lineItem.name}`} onClick={() => onDeleteSubcategory(lineItem.id)} />
+                  </>
+                }
+              />
+            ))}
+            {lineItems.length === 0 && <ListEmpty>No line items yet.</ListEmpty>}
+            <ListAddRow onClick={() => onAddSubcategory(budgetCategory.id)}>Add line item</ListAddRow>
+          </ListGroup>
         );
       })}
+    </GroupedList>
+  );
+}
+
+/** Estimated and paid: their own columns from md, a line under the name on phones. */
+function MoneyMeta ({ estimated, paid }: { estimated: number; paid: number }) {
+  return (
+    <>
+      <ListCell numeric phoneLabel="est.">{toCurrency(estimated)}</ListCell>
+      <ListCell numeric phoneLabel="paid">{toCurrency(paid)}</ListCell>
+    </>
+  );
+}
+
+/** Balance and status stay on the right at every width. */
+function BalanceAndStatus ({ balance, status }: { balance: number; status: BudgetSubcategory['status'] }) {
+  return (
+    <>
+      <ListCell numeric>{toCurrency(balance)}</ListCell>
+      <ListCell><StatusChip status={BUDGET_STATUS[status]} /></ListCell>
     </>
   );
 }

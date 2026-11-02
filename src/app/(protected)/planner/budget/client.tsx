@@ -161,7 +161,7 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
 
         {/** Category breakdown */}
         <div className="mt-10 w-full">
-          <h2 className="text-muted-foreground text-lg mb-2">By category</h2>
+          <h2 className="section-title mb-3">By category</h2>
           {budgetCategories.length === 0 ? (
             <EmptyState
               size="page"
