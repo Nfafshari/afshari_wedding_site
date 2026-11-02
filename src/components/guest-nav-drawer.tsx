@@ -41,7 +41,7 @@ export default function GuestNavDrawer() {
                   href={item.href}
                   aria-current={pathname === item.href ? "page" : undefined}
                   onClick={() => setOpenMobile(false)}
-                  className="block border-l-2 border-transparent px-6 py-4 font-heading text-lg font-medium uppercase tracking-[0.2em] text-cream hover:bg-cream/10 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold aria-[current=page]:border-l-gold aria-[current=page]:text-gold"
+                  className="block border-l-2 border-transparent px-6 py-4 font-guest text-sm font-medium uppercase tracking-[0.2em] text-cream hover:bg-cream/10 hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold aria-[current=page]:border-l-gold aria-[current=page]:text-gold"
                 >
                   {item.label}
                 </Link>

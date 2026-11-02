@@ -82,6 +82,7 @@ Every rule below is shown live at [`/planner/ui-kit`](../src/app/(protected)/pla
 
 ### Guest site (`#guest`)
 
+- Guest pages set text in Montserrat (`font-guest`, from the public layout and the footer) and headings in Cormorant; the planner keeps Lora.
 - Guest pages are built from full-width `GuestSection` bands (cream, olivine, burgundy) with centred text, not planner cards. Headings use `guest-display`, the "and" between the names `guest-script`, small capitals `guest-label` (gold ink, or `text-gold` on burgundy). `Sprig` divides blocks; painted art goes in an `ArtSlot`, which is decorative.
 - The nav comes from `src/lib/public-nav.ts` and lists only pages that exist. Copy lives in `src/lib/guest-content.ts`, so words change without touching layouts.
 - The header's links show from `lg`; below that the menu opens `GuestNavDrawer`. One `Footer` serves the whole site.

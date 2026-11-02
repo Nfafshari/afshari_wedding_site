@@ -8,11 +8,12 @@ export default function PublicLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <>
+    // Guest pages set their text in Montserrat, like the reference; headings stay Cormorant.
+    <div className="font-guest">
       <GuestNavDrawer />
       <Header />
       {children}
       <Footer />
-    </>
+    </div>
   );
 }

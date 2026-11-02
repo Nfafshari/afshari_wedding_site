@@ -493,9 +493,9 @@ export default async function UiKitPage() {
       <KitSection
         id="guest"
         title="Guest site"
-        description="The public pages are airier than the planner: full-width bands of cream, olivine or burgundy, centred text, uppercase Cormorant headings with a script “and”, small gold capitals, and a gold sprig between blocks."
+        description="The public pages are airier than the planner: full-width bands of cream, olivine or burgundy, centred text, uppercase Cormorant headings with a script “and”, Montserrat for text and small gold capitals, and a gold sprig between blocks."
       >
-        <div className="overflow-hidden rounded-lg border border-dashed">
+        <div className="overflow-hidden rounded-lg border border-dashed font-guest">
           <GuestSection className="text-center md:py-16">
             <p className="guest-label">Welcome to our wedding</p>
             <p className="guest-display mt-4 text-5xl md:text-6xl">
@@ -519,7 +519,7 @@ export default async function UiKitPage() {
         </div>
         <ul className="mt-4 flex max-w-prose list-disc flex-col gap-1 pl-5 text-sm">
           <li>Guest pages are built from <code>GuestSection</code> bands, not cards. Text is centred.</li>
-          <li><code>guest-display</code> for headings and the names, <code>guest-script</code> for the &ldquo;and&rdquo;, <code>guest-label</code> for small capitals. Labels use gold ink on cream and olivine, and bright <code>text-gold</code> on burgundy.</li>
+          <li>Text on guest pages is Montserrat (<code>font-guest</code>, set by the public layout and the footer); the planner keeps Lora. <code>guest-display</code> for headings and the names, <code>guest-script</code> for the &ldquo;and&rdquo;, <code>guest-label</code> for small capitals. Labels use gold ink on cream and olivine, and bright <code>text-gold</code> on burgundy.</li>
           <li>Use <code>Sprig</code> between blocks, one at a time. Painted art goes in an <code>ArtSlot</code> and is always decorative.</li>
           <li>Pages come from <code>src/lib/public-nav.ts</code>, and copy from <code>src/lib/guest-content.ts</code>.</li>
         </ul>
