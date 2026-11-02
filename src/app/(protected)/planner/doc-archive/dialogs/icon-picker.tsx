@@ -3,12 +3,12 @@
 import * as Lucide from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-/** The icons a document can be tagged with. Shared by the add and edit dialogs. */
+/** The icons a document can be tagged with. Used by the document dialog. */
 export const ICON_LIBRARY: LucideIcon[] = [
   Lucide.Columns2, Lucide.FileChartColumn, Lucide.FilePenLine, Lucide.Receipt, Lucide.SquarePen
 ];
 
-/** The icon used when a name doesn't resolve — matches the add dialog's initial pick and the DB default. */
+/** The icon used when a name doesn't resolve — matches the dialog's initial pick for a new document and the DB default. */
 export const DEFAULT_DOC_ICON = Lucide.FileChartColumn;
 
 /**
@@ -37,7 +37,7 @@ function humanize(iconName: string): string {
 }
 
 /**
- * Single-select icon grid, shared by the add and edit document dialogs.
+ * Single-select icon grid, used by the document dialog.
  *
  * Each tile is a toggle button rather than a `role="radio"`: a radiogroup
  * promises arrow-key navigation, and there is none here, so aria-pressed is the
