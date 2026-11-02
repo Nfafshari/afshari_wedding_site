@@ -1,13 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { CirclePlus, ListChecks, LucideIcon } from "lucide-react";
-import * as Lucide from "lucide-react"
+import { CirclePlus, ListChecks } from "lucide-react";
 
-import { Field, FieldLabel } from "@/components/ui/field";
-import { Progress } from "@/components/ui/progress";
 import { Button } from "@/components/ui/button"
-import FilterButton from "@/components/filter-button";
 import EmptyState from "@/components/empty-state";
 import PageHeader from "@/components/page-header";
 import PlannerPage from "@/components/planner-page";
@@ -18,11 +14,13 @@ import EditCategoryDialog from "@/app/(protected)/planner/checklist/checklist-di
 import RemoveCategoryDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/remove-category-dialog";
 import RemoveTaskDialog from "@/app/(protected)/planner/checklist/checklist-dialogs/remove-task-dialog";
 
+import SegmentedFilter from "@/components/segmented-filter";
+import { Stat, StatRow } from "@/components/stat";
+import { useQueryParams } from "@/hooks/use-query-params";
+import { DUE_SOON_DAYS, getChecklistStats, isTaskFilter, matchesTaskFilter } from "@/lib/checklist";
 import { getDaysRemaining } from "@/lib/utils";
 import { CategoryWithTasks } from "./page";
-import RowActionButton from "@/components/row-action-button";
-import Task from "@/components/task";
-import { useQueryParams } from "@/hooks/use-query-params";
+import TaskList from "./components/task-list";
 
 interface ChecklistProps {
   categories: CategoryWithTasks[]
@@ -44,34 +42,17 @@ export default function Checklist({ categories }: ChecklistProps) {
   const [activeTaskId, setActiveTaskId] = useState<number | null>(null);
 
   
-  const { searchParams, setParams } = useQueryParams();
-  // A filter can outlive its category (renamed or deleted), which would leave the page blank; fall back to All.
-  const requestedTab = searchParams.get('category');
-  const activeTab = categories.some((category) => category.name === requestedTab) ? requestedTab! : 'All';
+  // The query string is untrusted, so an unknown filter falls back to all.
+  const { searchParams } = useQueryParams();
+  const rawFilter = searchParams.get('show');
+  const filter = isTaskFilter(rawFilter) ? rawFilter : 'all';
 
   const WEDDING_DATE = '2027-09-11';
   const daysToWedding = getDaysRemaining(WEDDING_DATE);
 
-  // filter array or set to all
-  const filteredCategories = activeTab === 'All' ? categories : categories.filter((category) => category.name === activeTab);
-
-  // get total number of tasks across all categories
-  let totalTasks = 0;
-  for (let i = 0; i < categories.length; i++) {
-    totalTasks += categories[i].tasks.length;
-  }
-
-  // get total number of tasks done across all categories
-  let totalTasksDone = 0;
-  for (let i = 0; i < categories.length; i++) {
-    for(let j = 0; j < categories[i].tasks.length; j++) {
-      if (categories[i].tasks[j].status) {
-        totalTasksDone += 1;
-      }
-    }
-  }
-
-  const progress = totalTasks === 0 ? 0 : ((totalTasksDone / totalTasks) * 100).toFixed(1);
+  const stats = getChecklistStats(categories);
+  const tasks = categories.flatMap((category) => category.tasks);
+  const countFor = (show: 'todo' | 'done') => tasks.filter((task) => matchesTaskFilter(task, show)).length;
 
   // Close any open dialog. Each dialog owns its own form state, so unmounting it resets that state.
   function closeDialog () {
@@ -99,7 +80,7 @@ export default function Checklist({ categories }: ChecklistProps) {
       <PlannerPage>
         <PageHeader
           title="Checklist"
-          subtitle={`${totalTasksDone} of ${totalTasks} done`}
+          subtitle={`${daysToWedding} days to go`}
           actions={
             <Button onClick={() => setActiveDialog(DialogType.Category)}>
               <CirclePlus />
@@ -122,114 +103,42 @@ export default function Checklist({ categories }: ChecklistProps) {
           </EmptyState>
         ) : (
           <>
-            <div className="w-full">
-              <Field className="w-full">
-                <FieldLabel htmlFor="task-progress" className="planner-label">
-                  <span className="ml-auto">{progress}% done · {daysToWedding} days to go</span>
-                </FieldLabel>
-                <Progress
-                  id="task-progress"
-                  value={Number(progress)}
-                />
-              </Field>
-            </div>
+            <StatRow className="grid-cols-3">
+              <Stat value={`${stats.done} of ${stats.total}`} caption="Tasks done" />
+              <Stat value={stats.overdue} caption="Overdue" tone={stats.overdue > 0 ? 'danger' : 'default'} />
+              <Stat value={stats.dueSoon} caption={`Due in ${DUE_SOON_DAYS} days`} tone={stats.dueSoon > 0 ? 'attention' : 'default'} />
+            </StatRow>
+            <hr className="my-5 bg-accent" />
 
-            {/** Filter buttons */}
-            <div className="flex flex-col w-full h-auto mt-2 py-2">
-              <div className="flex flex-wrap w-full justify-center px-5 py-2 gap-2 md:px-10">
-                {categories.map((category, idx) => (
-                  <FilterButton
-                    isActive={category.name === activeTab}
-                    key={`${category.name}-${idx}`}
-                    onClick={() => {
-                      setParams((params) => params.set('category', category.name))
-                    }}
-                  >
-                    {category.name}
-                  </FilterButton>
-                ))}
-                <FilterButton
-                  isActive={activeTab === 'All'}
-                  key={'all'}
-                  onClick={() => {
-                    setParams((params) => params.delete('category'))
-                  }}
-                >
-                  All
-                </FilterButton>
-              </div>
+            <SegmentedFilter
+              label="Show tasks"
+              param="show"
+              defaultValue="all"
+              className="mb-4"
+              options={[
+                { value: 'all', label: 'All', count: tasks.length },
+                { value: 'todo', label: 'To do', count: countFor('todo') },
+                { value: 'done', label: 'Done', count: countFor('done') },
+              ]}
+            />
 
-              {/** Category Cards */}
-              <div className="grid gap-3 w-full h-full pt-5 md:grid-cols-2 lg:grid-cols-3">
-                {filteredCategories.map((category, idx) => {
-                  const CategoryIcon = (Lucide[category.icon as keyof typeof Lucide] ?? Lucide.Astroid) as LucideIcon;
-              
-                  // calculate the number of tasks that are done in this category
-                  let numOfTasksDone = 0;
-                  for (let i = 0; i < category.tasks.length; i++) {
-                    if (category.tasks[i].status) {
-                      numOfTasksDone += 1;
-                    }
-                  }
-
-                  return (
-                    <div
-                      key={`${category.name}-${idx}`}
-                      className="flex flex-col mx-5 p-2 rounded-lg border"
-                    >
-                      <div className="p-2 flex items-center gap-2 border-b">
-                        <CategoryIcon className="shrink-0" />
-                        <h2 className="page-title min-w-0 truncate text-2xl">{category.name}</h2>
-                        <p className="ml-auto page-subtitle">{numOfTasksDone}/{category.tasks.length}</p>
-                        <div className="flex shrink-0">
-                          <RowActionButton
-                            action="edit"
-                            aria-label={`Edit ${category.name}`}
-                            onClick={() => {
-                              setActiveDialog(DialogType.Edit);
-                              setActiveCategoryId(category.id);
-                            }}
-                          />
-                          <RowActionButton
-                            action="delete"
-                            aria-label={`Delete ${category.name}`}
-                            onClick={() => {
-                              setActiveDialog(DialogType.DeleteCategory);
-                              setActiveCategoryId(category.id);
-                            }}
-                          />
-                        </div>
-                      </div>
-
-                      {/** Tasks */}
-                      <div className="p-2 flex-col">
-                        {category.tasks.map((task) => (
-                          <Task
-                            key={task.id}
-                            task={task}
-                            onDelete={() => {
-                              onTaskDelete(task.id)
-                            }}
-                          />
-                        ))}
-                      </div>
-                      <div className="ml-1 px-1 flex items-center">
-                        <Button
-                          variant={'ghost'}
-                          onClick={() => {
-                            setActiveDialog(DialogType.Task);
-                            setActiveCategoryId(category.id);
-                          }}
-                        >
-                          Add task
-                          <CirclePlus/>
-                        </Button>
-                      </div>
-                    </div>
-                  )
-                })}
-              </div>
-            </div>
+            <TaskList
+              categories={categories}
+              filter={filter}
+              onEditCategory={(categoryId) => {
+                setActiveCategoryId(categoryId);
+                setActiveDialog(DialogType.Edit);
+              }}
+              onDeleteCategory={(categoryId) => {
+                setActiveCategoryId(categoryId);
+                setActiveDialog(DialogType.DeleteCategory);
+              }}
+              onAddTask={(categoryId) => {
+                setActiveCategoryId(categoryId);
+                setActiveDialog(DialogType.Task);
+              }}
+              onDeleteTask={onTaskDelete}
+            />
           </>
         )}
       </PlannerPage>

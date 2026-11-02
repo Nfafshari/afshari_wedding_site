@@ -130,11 +130,12 @@ The most complete feature — exercise it hardest.
 
 | # | Action | Expected |
 |---|---|---|
-| 4.1 | Load `/planner/checklist` | Tasks render grouped by category |
+| 4.1 | Load `/planner/checklist` | Subtitle reads "N days to go"; the strip shows Tasks done, Overdue and Due in 30 days; every category is open with its tasks by due date |
 | 4.2 | Add category `ZZTEST Category` | Appears; success toast fires |
 | 4.3 | Add a task to it, with a due date from the picker | Appears under the category with correct date |
-| 4.4 | Check the task off | Marks complete; category count updates |
-| 4.5 | Click a category filter tab | List filters; URL gains `?category=` |
+| 4.3a | Add a second task due yesterday | It shows a red "Overdue" chip and the Overdue stat counts it; a task due today does not |
+| 4.4 | Tick the task's circle | Marks complete (faded, struck through); the category's "N of M done" and the strip update |
+| 4.5 | Click To do, then Done in the filter | Each shows only those tasks; a category with none says so; URL gains `?show=` |
 | 4.6 | **Reload the page while filtered** | Filter survives the reload |
 | 4.7 | Submit the add-category dialog with an empty name | Inline validation error. No crash, no toast-only failure |
 | 4.8 | Add a second category with the **same** name | Handled gracefully (`P2002` path) — clear error, not "Something went wrong" |
