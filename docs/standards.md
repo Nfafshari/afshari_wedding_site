@@ -71,6 +71,11 @@ Every rule below is shown live at [`/planner/ui-kit`](../src/app/(protected)/pla
 - Titles are noun phrases in title case ("Add Category", "Edit Flowers"); confirms ask ("Delete Flowers?") and say the consequence. Buttons say what happens ("Add", "Save changes", "Delete"), and the toast repeats the verb ("Category added").
 - Esc and a click outside close a form, never while it saves. After a delete, focus moves to the page header's main action (handled by `ConfirmDialog`).
 
+### Filter and search (`#filters`)
+
+- A choice between a few views uses `SegmentedFilter`; finding items uses `SearchField`. Both live in the URL through `useQueryParams`, never in component state alone.
+- Match search text with `matchesSearch` from `src/lib/search.ts`, so every page ignores case and accents the same way.
+
 ### Grouped list (`#grouped-list`)
 
 - Grouped data (categories and line items, parties and guests, gifts and claims) uses `GroupedList` from `src/components/grouped-list.tsx`. Pages pass only their own columns; the list adds the chevron and actions columns.
