@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { MAX_SHORT_TEXT, NAME_NOT_FOUND, formatRsvpDeadline, isRsvpOpen, toLookupKey } from "./rsvp";
+import { MAX_SHORT_TEXT, NAME_NOT_FOUND, formatRsvpDeadline, isRsvpOpen, partyHeadcountLabel, toLookupKey } from "./rsvp";
 
 describe("toLookupKey", () => {
   it("normalizes a full name into the key guests are stored under", () => {
@@ -24,5 +24,19 @@ describe("RSVP deadline", () => {
 
   it("reads as the day guests see on the site", () => {
     expect(formatRsvpDeadline()).toBe("August 1, 2027");
+  });
+});
+
+describe("partyHeadcountLabel", () => {
+  const member = (attendance: "PENDING" | "ATTENDING" | "DECLINED") => ({ attendance, isPlusOne: false, plusOneStatus: null });
+  const plusOne = (plusOneStatus: "PENDING" | "APPROVED" | "REJECTED") => ({ attendance: "PENDING" as const, isPlusOne: true, plusOneStatus });
+
+  it("counts invited members until the party answers", () => {
+    expect(partyHeadcountLabel({ respondedAt: null, guests: [member("PENDING"), member("PENDING")] })).toBe("2 invited");
+  });
+
+  it("counts approved plus-ones as coming, and leaves rejected ones out of the total", () => {
+    const guests = [member("ATTENDING"), member("DECLINED"), plusOne("APPROVED"), plusOne("PENDING"), plusOne("REJECTED")];
+    expect(partyHeadcountLabel({ respondedAt: new Date(), guests })).toBe("2 of 4 coming");
   });
 });

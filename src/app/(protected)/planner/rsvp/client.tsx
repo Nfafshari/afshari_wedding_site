@@ -10,11 +10,10 @@ import PageHeader from "@/components/page-header";
 import PlannerPage from "@/components/planner-page";
 import RsvpTable from "@/components/rsvp/rsvp-table";
 import RsvpStats from "@/components/rsvp/rsvp-stats";
-import PendingPlusOnes from "@/components/rsvp/pending-plus-ones";
 import type { RsvpGuestRow, RsvpPartyRow } from "@/components/rsvp/types";
 import type { Attendance } from "@/generated/prisma/enums";
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
-import { getPartyGroup, getRsvpStats } from "@/lib/rsvp";
+import { formatRsvpDeadline, getRsvpStats, isRsvpOpen } from "@/lib/rsvp";
 
 import { setAttendance, setPlusOneStatus, type ErrorField } from "./action";
 import PartyDialog from "./dialogs/party-dialog";
@@ -48,9 +47,6 @@ export default function Rsvp({ invitations }: RsvpProps) {
   const activeParty = invitations.find((invitation) => invitation.id === activePartyId);
 
   const stats = getRsvpStats(invitations);
-  const attending = invitations.filter((invitation) => getPartyGroup(invitation) === 'attending');
-  const declined = invitations.filter((invitation) => getPartyGroup(invitation) === 'declined');
-  const awaiting = invitations.filter((invitation) => getPartyGroup(invitation) === 'awaiting');
 
   // Close any open dialog. Each dialog owns its own form state, so unmounting it resets that state.
   function closeDialog() {
@@ -79,8 +75,6 @@ export default function Rsvp({ invitations }: RsvpProps) {
     );
   }
 
-  const handlers = { onEditParty, onRemoveParty, onSetAttendance, onSetPlusOneStatus };
-
   return (
     <Dialog
       // Form dialogs share this root. Delete confirmations bring their own (ConfirmDialog).
@@ -95,7 +89,7 @@ export default function Rsvp({ invitations }: RsvpProps) {
       <PlannerPage>
         <PageHeader
           title="RSVPs"
-          subtitle={`${stats.respondedParties} of ${invitations.length} parties responded · ${stats.invited} guests invited`}
+          subtitle={`${isRsvpOpen() ? 'RSVPs close' : 'RSVPs closed'} ${formatRsvpDeadline()}`}
           actions={
             <>
               <Button onClick={() => setActiveDialog(DialogType.AddParty)}>
@@ -126,18 +120,13 @@ export default function Rsvp({ invitations }: RsvpProps) {
             </Button>
           </EmptyState>
         ) : (
-          <>
-            <PendingPlusOnes parties={invitations} onSetPlusOneStatus={onSetPlusOneStatus} />
-
-            <h2 className="section-title">Attending</h2>
-            <RsvpTable parties={attending} emptyMessage="No one has said yes yet." {...handlers} />
-
-            <h2 className="section-title mt-10">Declined</h2>
-            <RsvpTable parties={declined} emptyMessage="No one has declined." {...handlers} />
-
-            <h2 className="section-title mt-10">Awaiting response</h2>
-            <RsvpTable parties={awaiting} emptyMessage="Everyone has responded!" {...handlers} />
-          </>
+          <RsvpTable
+            parties={invitations}
+            onEditParty={onEditParty}
+            onRemoveParty={onRemoveParty}
+            onSetAttendance={onSetAttendance}
+            onSetPlusOneStatus={onSetPlusOneStatus}
+          />
         )}
       </PlannerPage>
 

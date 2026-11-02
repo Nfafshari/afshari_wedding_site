@@ -194,8 +194,10 @@ The most complete feature — exercise it hardest.
 
 | # | Action | Expected |
 |---|---|---|
-| 8.1 | Load `/planner/rsvp` | Page renders; an empty list shows "No one on the guest list yet" |
-| 8.2 | Add a party with two guests and one plus-one allowed | Party appears under "AWAITING RESPONSE" with the right counts |
+| 8.1 | Load `/planner/rsvp` | Page renders; subtitle reads "RSVPs close August 1, 2027"; an empty list shows "No one on the guest list yet" |
+| 8.2 | Add a party with two guests and one plus-one allowed | Party appears in the one list, A to Z, with a "Waiting" chip and "2 invited" |
+| 8.2a | After step 1.8 (a plus-one pending), reload | The strip shows "Plus-ones to review"; that party starts open with "Needs approval" on the plus-one. Approve it with the check: the row turns to the Approved dropdown, the headcount and strip update and the review stat goes away. Change it to Not approved from the dropdown and back |
+| 8.2b | At 390px wide | Contact and dietary notes fold under the name; status stays on the right; no sideways scroll. The notes icon opens the note and song request |
 | 8.3 | Import a small CSV (`party,name,plus_ones`) with the Import button | Toast reports parties created and guests added |
 | 8.4 | Import the same CSV again | Parties updated, nothing duplicated |
 | 8.5 | Edit a party (rename a guest, change plus-ones allowed) | Changes saved and shown |
