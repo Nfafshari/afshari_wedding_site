@@ -41,6 +41,27 @@ export function getCategoryStatus (lineItems: { status: BudgetStatus; paidAmount
   return 'DUE';
 }
 
+export type BudgetLimits = { target: number; cap: number };
+
+/**
+ * Where the estimate sits against the couple's limits, and by how much: over the cap,
+ * over the target only, or under the target (amount = what's left). Landing exactly on
+ * a limit is not over it.
+ */
+export function budgetLimitState (estimated: number, { target, cap }: BudgetLimits) {
+  if (estimated > cap) return { state: 'over-cap', amount: estimated - cap } as const;
+  if (estimated > target) return { state: 'over-target', amount: estimated - target } as const;
+  return { state: 'under', amount: target - estimated } as const;
+}
+
+/**
+ * The bar's full width in dollars: a little past the larger of the estimate and the cap,
+ * so an estimate over the cap still shows its overflow and the cap tick never sits on the edge.
+ */
+export function limitBarScale (estimated: number, cap: number) {
+  return Math.max(estimated, cap) * 1.05;
+}
+
 export type BudgetSlice = {
   /** Category name, or "Other" for the folded tail. */
   name: string;

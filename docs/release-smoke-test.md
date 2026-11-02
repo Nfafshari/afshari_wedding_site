@@ -148,10 +148,10 @@ The most complete feature — exercise it hardest.
 
 | # | Action | Expected |
 |---|---|---|
-| 5.1 | Load `/planner/budget` | Categories and stacked progress bar render |
+| 5.1 | Load `/planner/budget` | Summary strip, the "Against your limits" bar and the categories render. Past the target the fourth stat is gold; past the limit it is red and the bar shows a red overflow |
 | 5.2 | Confirm totals | Estimated/paid totals match the row data |
 | 5.3 | Add category `ZZTEST Budget` | Appears; toast fires |
-| 5.4 | Add a line item (the category's "Add line item" row) with an estimated cost | Appears; totals and progress bar update |
+| 5.4 | Add a line item (the category's "Add line item" row) with an estimated cost | Appears; summary strip and limits bar update |
 | 5.5 | Edit a line item with its pencil | Edit dialog opens; saves; totals recalculate |
 | 5.5a | Edit the test line item and change its Category | It moves to the other category; both categories' totals update. Moving it next to a line item with the same name is refused under Name |
 | 5.6 | Sort by estimated cost, then paid, then balance | Each reorders correctly |

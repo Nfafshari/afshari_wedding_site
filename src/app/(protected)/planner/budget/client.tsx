@@ -7,11 +7,10 @@ import { Button } from "@/components/ui/button";
 import EmptyState from "@/components/empty-state";
 import PageHeader from "@/components/page-header";
 import PlannerPage from "@/components/planner-page";
-import { StackedProgressBar, type ProgressBarLegend } from "@/components/stacked-progress-bar";
 import { Dialog } from "@/components/ui/dialog";
 
 import { BudgetCategory } from './page'
-import { toCurrency } from "@/lib/utils";
+import BudgetOverview from "./components/budget-overview";
 import CategoryTable from "./components/category-table";
 import CategoryDialog from "./components/budget-dialogs/category-dialog";
 import LineItemDialog from "./components/budget-dialogs/line-item-dialog";
@@ -20,6 +19,12 @@ import RemoveSubcategoryDialog from "./components/budget-dialogs/remove-subcateg
 
 interface BudgetProps {
   budgetCategories: BudgetCategory[]
+}
+
+// The limits are whole dollars, so the subtitle leaves the cents off: "$15,000".
+const wholeDollars = Intl.NumberFormat('en-us', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
+function toWholeDollars (num: number) {
+  return wholeDollars.format(num);
 }
 
 export enum DialogType {
@@ -60,13 +65,6 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
     .flatMap((budgetCategory) => budgetCategory.budgetSubcategories)
     .reduce((sum, subcategory) => sum += subcategory.paidAmount, 0);
 
-  const totalBalance = totalEstimatedCost - totalPaidAmount;
-
-  // progress bar legend values
-  const progressLegend: ProgressBarLegend = {
-    primary: { label: 'Estimated', value: totalEstimatedCost, color: 'var(--gold)' },
-    secondary: { label: 'Spent', value: totalPaidAmount, color: 'var(--foreground)' }
-  }
 
   function closeDialog () {
     setActiveDialog(DialogType.None);
@@ -118,7 +116,7 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
       <PlannerPage>
         <PageHeader
           title="Budget"
-          subtitle={`${toCurrency(totalPaidAmount)} paid · ${toCurrency(totalBalance)} remaining`}
+          subtitle={`Target ${toWholeDollars(LIMITS.target)} · limit ${toWholeDollars(LIMITS.cap)}`}
           actions={
             <Button onClick={() => setActiveDialog(DialogType.Category)}>
               <CirclePlus />
@@ -127,38 +125,10 @@ export default function Budget ({ budgetCategories }: BudgetProps ) {
           }
         />
 
-        <div className="flex flex-col justify-center items-center md:hidden">
-          <p className="page-title text-6xl text-olivine-ink">{toCurrency(totalPaidAmount)}</p>
-          <p className="planner-label">Paid of {toCurrency(totalEstimatedCost)} estimated</p>
-        </div>
-
-        {/** overview */}
-        <div className="grid pt-3 lg:grid-cols-2 lg:gap-10">
-          <div className="flex flex-col w-full px-2">
-            <h2 className="hidden section-title ml-1 mb-3 md:flex">Estimated and paid against the caps</h2>
-            <StackedProgressBar
-              limits={LIMITS}
-              legend={progressLegend}
-            />
-          </div>
-          <div className="hidden flex-col w-full mt-5 md:mt-0 md:flex">
-            <div className="flex py-4 items-center border-b">
-              <p className="planner-label mt-1">Estimated total</p>
-              <p className="ml-auto text-3xl md:text-4xl">{toCurrency(totalEstimatedCost)}</p>
-            </div>
-            <div className="flex py-4 items-center border-b">
-              <p className="planner-label mt-1">Paid to date</p>
-              <p className="ml-auto text-3xl text-olivine-ink md:text-4xl">{toCurrency(totalPaidAmount)}</p>
-            </div>
-            <div className="flex py-4 items-center border-b">
-              <p className="planner-label mt-1">Balance due</p>
-              <p className="ml-auto text-destructive text-3xl md:text-4xl">{toCurrency(totalBalance)}</p>
-            </div>
-          </div>
-        </div>
+        <BudgetOverview estimated={totalEstimatedCost} paid={totalPaidAmount} limits={LIMITS} />
 
         {/** Category breakdown */}
-        <div className="mt-10 w-full">
+        <div className="mt-12 w-full">
           <h2 className="section-title mb-3">By category</h2>
           {budgetCategories.length === 0 ? (
             <EmptyState
