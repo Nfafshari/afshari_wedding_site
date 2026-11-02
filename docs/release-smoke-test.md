@@ -254,7 +254,7 @@ Keyboard only: no mouse from 10.1 to 10.7. Run the reflow steps in devtools at *
 | 10.5 | Tab to a row's trash icon (`ZZTEST` row), press Enter, then Enter on Delete | Confirm names the row; after the delete, focus lands on the header's main button, not the top of the page |
 | 10.6 | On Checklist, Tab to a task's circle and press Space | Task toggles; a screen reader hears "Mark … done, toggle button" |
 | 10.7 | On Documents, Tab to a document card | Card shows a focus ring; Enter opens the PDF in a new tab |
-| 10.8 | Load each planner page at 320, 768 and 1280px | No sideways scroll; header buttons stack under the title on phones; tables fold extra columns into the name's subline |
+| 10.8 | Load each planner page at 320, 768 and 1280px | No sideways scroll; header buttons stack under the title on phones; tables fold extra columns into the name's subline, joined by "·"; from 768px the columns show no "·" (Budget's Paid column reads "$3,000.00", not "· $3,000.00") |
 | 10.9 | Load `/planner/ui-kit` and scroll to **Contrast** | Every row says Pass or a written Exception; no Fail |
 | 10.10 | On the kit page, check Modals, Tables and Page chrome | Each demo renders and its dialogs open and close |
 | 10.11 | In devtools set the network to Slow 4G, then open each planner page from the nav | The real title shows at once over a skeleton in the page's shape; the content replaces it without the header, strip or list moving |
