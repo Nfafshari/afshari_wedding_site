@@ -299,6 +299,7 @@ export async function createRegistryClaim (itemId: number | undefined, claimedBy
         itemId,
         claimedBy: trimmedClaimedBy,
         quantity,
+        source: 'BY_HAND',
       },
     });
   } catch (error) {

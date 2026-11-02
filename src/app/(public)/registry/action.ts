@@ -66,7 +66,7 @@ export async function claimRegistryItem (name: string, itemId: number, quantity:
         return { ok: false, error: problem, field: 'quantity' };
       }
 
-      await tx.registryClaim.create({ data: { itemId, claimedBy: guest.name, quantity } });
+      await tx.registryClaim.create({ data: { itemId, claimedBy: guest.name, quantity, source: 'WEBSITE' } });
       return { ok: true, claimedBy: guest.name, quantity };
     }, { isolationLevel: Prisma.TransactionIsolationLevel.Serializable });
 
