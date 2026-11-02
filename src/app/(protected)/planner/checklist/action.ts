@@ -1,8 +1,8 @@
 "use server";
 import { prisma } from '@/lib/prisma';
-import { Prisma } from '@/generated/prisma/client';
 import { revalidatePath } from 'next/cache';
 import { requireUserAction } from '@/lib/require-user';
+import { handleActionError, type ActionResult as SharedActionResult } from '@/lib/action';
 
 /**
  * Which input a failure relates to, so the client can highlight the right field.
@@ -10,14 +10,13 @@ import { requireUserAction } from '@/lib/require-user';
  */
 export type ErrorField = 'name' | 'date' | 'category';
 
-/**
- * The shape every action returns: either it worked, or it failed with a reason.
- * The client checks `ok` to decide whether to close the dialog or show an error,
- * and `field` to decide which input to flag.
- */
-export type ActionResult =
-  | { ok: true }
-  | { ok: false; error: string; field?: ErrorField; authRequired?: true };
+/** See {@link SharedActionResult}; narrowed to this page's fields. */
+export type ActionResult = SharedActionResult<ErrorField>;
+
+/** The route these writes invalidate. `(protected)` is a route group, so it is not in the URL. */
+const CHECKLIST_PATH = '/planner/checklist';
+
+const CATEGORY_GONE = 'That category no longer exists, refresh your page and try again.';
 
 /**
  * Creates a new category in the DB.
@@ -47,17 +46,12 @@ export async function createCategory (name: string, icon: string): Promise<Actio
       },
     });
   } catch (error) {
-    // P2002 = unique constraint failed (a category with this name already exists).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-      return { ok: false, error: 'Category already exists.', field: 'name' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error creating new category, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'creating new category', {
+      P2002: { error: 'Category already exists.', field: 'name' },
+    });
   }
 
-  // refresh the page data after a successful write
-  revalidatePath('/planner/checklist');
+  revalidatePath(CHECKLIST_PATH);
   return { ok: true };
 }
 
@@ -84,7 +78,7 @@ export async function updateCategory (categoryId: number | undefined, newName: s
   // check if category id is undefined
   if (categoryId === undefined) {
     return { ok: false, error: 'Category could not be found.', field: 'category' };
-  }  
+  }
 
   // Try the write. The DB's @unique constraint guards against duplicates.
   try {
@@ -96,21 +90,14 @@ export async function updateCategory (categoryId: number | undefined, newName: s
       }
     });
   } catch (error) {
-    // P2002 = unique constraint failed (a category with this name already exists).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-      return { ok: false, error: 'Category already exists.', field: 'name' };
-    }
-    // P2025 = id could not be found (a category with this ID does not exist)
-    else if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-      return { ok: false, error: 'That category no longer exists, refresh your page and try again.', field: 'name' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error updating category, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'updating category', {
+      P2002: { error: 'Category already exists.', field: 'name' },
+      // The category was deleted while the dialog was open.
+      P2025: { error: CATEGORY_GONE, field: 'name' },
+    });
   }
 
-  // refresh the page data after a successful write
-  revalidatePath('/planner/checklist');
+  revalidatePath(CHECKLIST_PATH);
   return { ok: true };
 }
 
@@ -129,7 +116,7 @@ export async function deleteCategory (categoryId: number | undefined): Promise<A
   // check if category id is undefined
   if (categoryId === undefined) {
     return { ok: false, error: 'Category could not be found.', field: 'category' };
-  }  
+  }
 
   // Try to delete category
   try {
@@ -137,17 +124,13 @@ export async function deleteCategory (categoryId: number | undefined): Promise<A
       where: { id: categoryId },
     });
   } catch (error) {
-    // P2025 = id could not be found (a category with this ID does not exist)
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-      return { ok: false, error: 'That category no longer exists, refresh your page and try again.', field: 'name' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error deleting category, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'deleting category', {
+      // Already removed.
+      P2025: { error: CATEGORY_GONE, field: 'name' },
+    });
   }
 
-  // refresh the page data after a successful write
-  revalidatePath('/planner/checklist');
+  revalidatePath(CHECKLIST_PATH);
   return { ok: true };
 }
 
@@ -174,17 +157,13 @@ export async function deleteTask (taskId: number | undefined): Promise<ActionRes
       where: { id: taskId },
     });
   } catch (error) {
-    // P2025 = record to delete does not exist (task already removed)
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-      return { ok: false, error: 'That task no longer exists, refresh your page and try again.' };
-    }
-    // Anything else is unexpected, log it and show a generic message to the user.
-    console.error(`*ERROR - error deleting task, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'deleting task', {
+      // Already removed.
+      P2025: { error: 'That task no longer exists, refresh your page and try again.' },
+    });
   }
 
-  // refresh the page data after a successful write
-  revalidatePath('/planner/checklist');
+  revalidatePath(CHECKLIST_PATH);
   return { ok: true };
 }
 
@@ -216,7 +195,7 @@ export async function createTask (taskName: string, date: Date | undefined, cate
     return { ok: false, error: 'Please select a date.', field: 'date' };
   }
 
-  // Try the write. The DB's @unique constraint guards against duplicates.
+  // Try the write. Task names don't have to be unique, so no known codes to map.
   try {
     await prisma.task.create({
       data: {
@@ -226,13 +205,10 @@ export async function createTask (taskName: string, date: Date | undefined, cate
       },
     });
   } catch (error) {
-    // Any unexpected results, log it and show a generic message to the user.
-    console.error(`*ERROR - error creating new task, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'creating new task', {});
   }
 
-  // refresh the page data after a successful write
-  revalidatePath('/planner/checklist');
+  revalidatePath(CHECKLIST_PATH);
   return { ok: true };
 }
 
@@ -262,12 +238,9 @@ export async function toggleTaskStatus (taskId: number | undefined, status: bool
       }
     });
   } catch (error) {
-    // Any unexpected results, log it and show a generic message to the user.
-    console.error(`*ERROR - error marking task as done, see below:\n${error}`);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'marking task as done', {});
   }
 
-  // refresh the page data after a successful write
-  revalidatePath('/planner/checklist');
+  revalidatePath(CHECKLIST_PATH);
   return { ok: true };
 }
