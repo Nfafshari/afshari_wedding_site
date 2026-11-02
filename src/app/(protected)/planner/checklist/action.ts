@@ -47,7 +47,7 @@ export async function createCategory (name: string, icon: string): Promise<Actio
     });
   } catch (error) {
     return handleActionError(error, 'creating new category', {
-      P2002: { error: 'Category already exists.', field: 'name' },
+      P2002: { error: 'A category with that name already exists.', field: 'name' },
     });
   }
 
@@ -91,7 +91,7 @@ export async function updateCategory (categoryId: number | undefined, newName: s
     });
   } catch (error) {
     return handleActionError(error, 'updating category', {
-      P2002: { error: 'Category already exists.', field: 'name' },
+      P2002: { error: 'A category with that name already exists.', field: 'name' },
       // The category was deleted while the dialog was open.
       P2025: { error: CATEGORY_GONE, field: 'name' },
     });
