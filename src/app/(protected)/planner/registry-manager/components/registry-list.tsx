@@ -14,6 +14,9 @@ import { cn, formatDate } from "@/lib/utils";
 import type { RegistryClaim, RegistryItem } from "../page";
 import ItemThumbnail from "./item-thumbnail";
 
+/** The list's columns, shared with the page's loading skeleton so the two line up. */
+export const REGISTRY_LIST_COLUMNS = "minmax(0,1.4fr) minmax(0,1fr) 9rem 8rem";
+
 interface RegistryListProps {
   items: RegistryItem[];
   onEditItem: (item: RegistryItem) => void;
@@ -28,7 +31,7 @@ interface RegistryListProps {
  */
 export default function RegistryList ({ items, onEditItem, onDeleteItem, onAddClaim, onRemoveClaim }: RegistryListProps) {
   return (
-    <GroupedList label="Registry items" columns="minmax(0,1.4fr) minmax(0,1fr) 9rem 8rem">
+    <GroupedList label="Registry items" columns={REGISTRY_LIST_COLUMNS}>
       <ListHeader>
         <ListHeadCell>Item</ListHeadCell>
         <ListHeadCell>Claimed by</ListHeadCell>

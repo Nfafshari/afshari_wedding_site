@@ -15,6 +15,9 @@ import { formatDate } from "@/lib/utils";
 
 import type { RsvpGuestRow, RsvpHandlers, RsvpPartyRow } from "./types";
 
+/** The list's columns, shared with the page's loading skeleton so the two line up. */
+export const RSVP_LIST_COLUMNS = "minmax(0,1fr) minmax(0,1fr) 10rem";
+
 interface RsvpTableProps extends RsvpHandlers {
   parties: RsvpPartyRow[];
   /** Open every party, e.g. while searching, so the matching guest is in view. */
@@ -45,7 +48,7 @@ export default function RsvpTable ({ parties, openAll = false, onEditParty, onRe
   const sorted = parties.toSorted((a, b) => a.partyName.localeCompare(b.partyName));
 
   return (
-    <GroupedList label="Guest list by party" columns="minmax(0,1fr) minmax(0,1fr) 10rem">
+    <GroupedList label="Guest list by party" columns={RSVP_LIST_COLUMNS}>
       <ListHeader>
         <ListHeadCell>Party</ListHeadCell>
         <ListHeadCell>Details</ListHeadCell>

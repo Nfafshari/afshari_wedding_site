@@ -13,6 +13,9 @@ import { toCurrency } from "@/lib/utils";
 
 import { BudgetCategory, BudgetSubcategory } from "../page";
 
+/** The list's columns, shared with the page's loading skeleton so the two line up. */
+export const BUDGET_LIST_COLUMNS = "minmax(0,1fr) 8rem 8rem 8rem 7.5rem";
+
 interface CategoryTableProps {
   data: BudgetCategory[];
   /** Open the "add line item" dialog for the given category. */
@@ -90,7 +93,7 @@ export default function CategoryTable ({ data, onAddSubcategory, onDeleteCategor
 
   return (
     // Category, then estimated and paid (folded under the name on phones), then balance and status.
-    <GroupedList label="Budget by category" columns="minmax(0,1fr) 8rem 8rem 8rem 7.5rem">
+    <GroupedList label="Budget by category" columns={BUDGET_LIST_COLUMNS}>
       <ListHeader>
         <ListHeadCell>Category</ListHeadCell>
         <ListHeadCell numeric><SortButton label="Estimated" onClick={() => handleSortParams('estimated')} /></ListHeadCell>
