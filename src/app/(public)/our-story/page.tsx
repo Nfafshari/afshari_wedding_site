@@ -3,7 +3,7 @@ import Image from "next/image";
 
 import GuestSection from "@/components/guest-section";
 import ImageLightbox from "@/components/image-lightbox";
-import LogoSvg from "@/components/logo-svg";
+import PhotoPlaceholder from "@/components/photo-placeholder";
 import RsvpBand from "@/components/rsvp-band";
 import Sprig from "@/components/sprig";
 import { OUR_STORY } from "@/lib/guest-content";
@@ -24,12 +24,7 @@ function GalleryTile({ photo }: { photo: Photo }) {
   const frame = `relative w-full overflow-hidden rounded-sm border border-gold/50 ${SHAPES[photo.shape]}`;
 
   if (!photo.src) {
-    return (
-      <div className={`${frame} flex flex-col items-center justify-center gap-3 bg-olivine-100`}>
-        <LogoSvg aria-hidden className="h-auto w-12 opacity-40" />
-        <p className="guest-label">{OUR_STORY.photoPlaceholder}</p>
-      </div>
-    );
+    return <PhotoPlaceholder label={OUR_STORY.photoPlaceholder} className={`w-full ${SHAPES[photo.shape]}`} />;
   }
 
   return (
