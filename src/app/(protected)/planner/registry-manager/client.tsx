@@ -5,8 +5,7 @@ import { CirclePlus, Gift } from "lucide-react";
 
 import { Dialog } from "@/components/ui/dialog";
 import RegistryList from "./components/registry-list";
-import AddItemDialog from "./dialogs/add-item-dialog";
-import EditItemDialog from "./dialogs/edit-item-dialog";
+import ItemDialog from "./dialogs/item-dialog";
 import AddClaimDialog from "./dialogs/add-claim-dialog";
 import RemoveClaimDialog from "./dialogs/remove-claim-dialog";
 import DeleteItemDialog from "./dialogs/delete-item-dialog";
@@ -25,8 +24,7 @@ interface RegistryManagerProps {
 
 enum DialogType {
   None =        'none',
-  AddItem =     'addItem',
-  EditItem =    'editItem',
+  Item =        'item',
   DeleteItem =  'deleteItem',
   AddClaim =    'addClaim',
   RemoveClaim = 'removeClaim'
@@ -53,7 +51,7 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
 
   function onEditItem (item: RegistryItem) {
     setActiveItem(item);
-    setActiveDialog(DialogType.EditItem);
+    setActiveDialog(DialogType.Item);
   }
 
   function onDeleteItem (item: RegistryItem) {
@@ -86,7 +84,7 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
         <PageHeader
           title="Registry"
           actions={
-            <Button onClick={() => setActiveDialog(DialogType.AddItem)}>
+            <Button onClick={() => setActiveDialog(DialogType.Item)}>
               <CirclePlus />
               Add item
             </Button>
@@ -109,7 +107,7 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
               title="Nothing on the registry yet"
               message="Add your first item to start tracking who is buying what."
             >
-              <Button onClick={() => setActiveDialog(DialogType.AddItem)}>
+              <Button onClick={() => setActiveDialog(DialogType.Item)}>
                 <CirclePlus />
                 Add item
               </Button>
@@ -126,17 +124,11 @@ export default function RegistryManager({ registryItems }: RegistryManagerProps)
         </div>
       </PlannerPage>
 
-      {activeDialog === DialogType.AddItem &&
-        <AddItemDialog
+      {/* With no active item it adds; with one it edits. */}
+      {activeDialog === DialogType.Item &&
+        <ItemDialog
           items={registryItems}
-          onSuccess={closeDialog}
-        />
-      }
-
-      {activeDialog === DialogType.EditItem &&
-        <EditItemDialog
-          items={registryItems}
-          itemToUpdate={activeItem}
+          item={activeItem}
           onSuccess={closeDialog}
         />
       }

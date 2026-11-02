@@ -182,7 +182,8 @@ The most complete feature — exercise it hardest.
 | 7.1 | Load `/planner/registry-manager` | Items render A to Z with thumbnails; an item with no image (or a broken one) shows a gold gift icon. Each row shows who claimed it, a "1 of 2" meter and a status chip |
 | 7.2 | Click an item's ↗ icon | The product page opens in a new tab; the row does not open or close |
 | 7.3 | At 390px wide | Claimed-by names fold under the name; meter and chip stay on the right; no sideways scroll |
-| 7.4 | Add item `ZZTEST Item` | Appears |
+| 7.4 | Add item `ZZTEST Item`, pasting an image link | The preview shows the picture (a gift icon while the link is blank or broken); the item appears |
+| 7.4a | Edit an item saved without an image | The image field starts blank, not "/window.svg"; Save changes works without touching it. Changing the name to another item's name shows "An item with that name already exists." |
 | 7.5 | Open it and use "Add a claim by hand" | Claim records as a row with its date and ×N; the meter and chip update. Once fully claimed the add row reads "Fully claimed" and is disabled |
 | 7.5a | Click the item's trash icon while it has a claim | The confirm names who claimed it and Delete is disabled |
 | 7.6 | Remove the claim, then delete the item from its trash icon | Both removed |
