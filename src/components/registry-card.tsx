@@ -33,7 +33,7 @@ export default function RegistryCard({ registryItems }: RegistryCardProps) {
           </Button>
         </EmptyState>
       ) : (
-        <div className="flex flex-col flex-1 gap-4 justify-center">
+        <div className="@container flex flex-col flex-1 gap-4 justify-center">
           <div className="flex flex-col items-center">
             <p className="stat-number">{claimedItems}</p>
             <p className="muted-caption text-base">Claimed of {totalItems}</p>

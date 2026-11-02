@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatDate, parseHttpUrl } from "@/lib/utils";
+import { formatDate, parseHttpUrl, toWholeDollars } from "@/lib/utils";
 
 describe("parseHttpUrl", () => {
   it("accepts http and https URLs and returns the normalized href", () => {
@@ -31,5 +31,12 @@ describe("formatDate", () => {
   it("uses Central time, so an evening timestamp keeps its Central date", () => {
     // 9:30pm Central on Oct 3 is already Oct 4 in UTC, where the server renders.
     expect(formatDate(new Date("2026-10-04T02:30:00Z"))).toBe("Oct 3, 2026");
+  });
+});
+
+describe("toWholeDollars", () => {
+  it("rounds to the dollar and keeps the separators", () => {
+    expect(toWholeDollars(12345.67)).toBe("$12,346");
+    expect(toWholeDollars(15000)).toBe("$15,000");
   });
 });

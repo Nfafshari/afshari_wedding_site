@@ -43,6 +43,17 @@ export function toCurrency (num: number) {
   return currencyFormatter.format(num);
 }
 
+const wholeDollarsFormatter = Intl.NumberFormat('en-us', {
+  style: 'currency',
+  currency: 'USD',
+  maximumFractionDigits: 0,
+});
+
+/** Money without cents, for summaries where the cents are noise: "$12,346". */
+export function toWholeDollars (num: number) {
+  return wholeDollarsFormatter.format(num);
+}
+
 /**
  * Converts number to a bare money string with no currency symbol. Use inside inputs
  * that already render their own "$" addon, so the user never types the symbol.

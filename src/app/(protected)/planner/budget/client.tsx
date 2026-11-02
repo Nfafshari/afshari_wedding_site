@@ -8,6 +8,7 @@ import EmptyState from "@/components/empty-state";
 import PageHeader from "@/components/page-header";
 import PlannerPage from "@/components/planner-page";
 import { Dialog } from "@/components/ui/dialog";
+import { toWholeDollars } from "@/lib/utils";
 
 import { BudgetCategory } from './page'
 import BudgetOverview from "./components/budget-overview";
@@ -19,12 +20,6 @@ import RemoveSubcategoryDialog from "./components/budget-dialogs/remove-subcateg
 
 interface BudgetProps {
   budgetCategories: BudgetCategory[]
-}
-
-// The limits are whole dollars, so the subtitle leaves the cents off: "$15,000".
-const wholeDollars = Intl.NumberFormat('en-us', { style: 'currency', currency: 'USD', maximumFractionDigits: 0 });
-function toWholeDollars (num: number) {
-  return wholeDollars.format(num);
 }
 
 export enum DialogType {

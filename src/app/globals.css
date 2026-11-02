@@ -238,8 +238,12 @@
 
 /* Large emphasized number (e.g. RSVP counts). Override color per use. Even-height
    digits (Cormorant defaults to old-style). One size smaller on mobile. */
+/* Sized by its container (Stat is one), not the window: about a fifth of the cell's width,
+   from 24 to 36px, so a long amount shrinks to fit a narrow cell instead of spilling over. */
 @utility stat-number {
-  @apply font-heading font-semibold lining-nums tabular-nums text-burg text-3xl md:text-4xl;
+  @apply font-heading font-semibold lining-nums tabular-nums text-burg;
+  font-size: clamp(var(--text-2xl), 22cqi, var(--text-4xl));
+  line-height: 1.15;
 }
 
 /* Muted caption under a stat or field (e.g. "Invited", "Fully claimed"). Lora, sentence case. */
