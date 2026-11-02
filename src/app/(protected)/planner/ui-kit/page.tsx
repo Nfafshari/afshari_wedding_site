@@ -17,6 +17,9 @@ import PageHeader from "@/components/page-header";
 import { Stat, StatRow } from "@/components/stat";
 import SummaryCard from "@/components/summary-card";
 import TableSkeleton from "@/components/table-skeleton";
+import ArtSlot from "@/components/art-slot";
+import GuestSection from "@/components/guest-section";
+import Sprig from "@/components/sprig";
 
 import ColorSwatch from "@/components/ui-kit/color-swatch";
 import DialogDemo from "@/components/ui-kit/dialog-demo";
@@ -35,6 +38,7 @@ const RAMPS = [
     name: "Neutrals",
     steps: [
       { name: "cream-50", note: "Page canvas: off-white", textVar: "--burgundy-800" },
+      { name: "cream-100", note: "Footer: a shade under the canvas", textVar: "--burgundy-800" },
       { name: "stone-300", note: "Muted surfaces", textVar: "--burgundy-800" },
     ],
   },
@@ -101,13 +105,16 @@ const PAIRS: ContrastPair[] = [
   { label: "Olivine ink on card", foreground: "--olivine-ink", background: "--card", kind: "text" },
   { label: "Gold ink on page", foreground: "--gold-ink", background: "--background", kind: "text" },
   { label: "Gold ink on card", foreground: "--gold-ink", background: "--card", kind: "text" },
-  { label: "Gold text on burgundy (footer, current nav link)", foreground: "--gold", background: "--foreground", kind: "text" },
+  { label: "Gold text on burgundy (current nav link, guest labels on a burgundy band)", foreground: "--gold", background: "--foreground", kind: "text" },
   { label: "Secondary text on page (text-burg/70)", foreground: "--foreground", foregroundAlpha: 0.7, background: "--background", kind: "text" },
   { label: "Secondary text on card (text-burg/70)", foreground: "--foreground", foregroundAlpha: 0.7, background: "--card", kind: "text" },
   { label: "Secondary text on dialog (text-burg/70)", foreground: "--foreground", foregroundAlpha: 0.7, background: "--popover", kind: "text" },
   { label: "Text on dashboard card (bg-olivine/15)", foreground: "--foreground", background: "--olivine", backgroundAlpha: 0.15, kind: "text" },
   { label: "Secondary text on dashboard card", foreground: "--foreground", foregroundAlpha: 0.7, background: "--olivine", backgroundAlpha: 0.15, kind: "text" },
   { label: "Sign out link on burgundy (text-cream/80)", foreground: "--cream-50", foregroundAlpha: 0.8, background: "--foreground", kind: "text" },
+  { label: "Footer line (gold ink on cream-100)", foreground: "--gold-ink", background: "--cream-100", kind: "text" },
+  { label: "Footer links (text-burg/70 on cream-100)", foreground: "--foreground", foregroundAlpha: 0.7, background: "--cream-100", kind: "text" },
+  { label: "Guest nav link on burgundy (text-cream/90)", foreground: "--cream-50", foregroundAlpha: 0.9, background: "--foreground", kind: "text" },
   { label: "Input border on page", foreground: "--input", background: "--background", kind: "ui" },
   { label: "Input border on dialog", foreground: "--input", background: "--popover", kind: "ui" },
   { label: "Input border on card", foreground: "--input", background: "--card", kind: "ui" },
@@ -480,6 +487,41 @@ export default async function UiKitPage() {
           <li>The subtitle is one line that sums up the page. Bigger numbers go in a StatRow below the header. A page with no actions can put it on the title&apos;s line, right-aligned, with <code>subtitlePlacement=&quot;end&quot;</code> (the Dashboard does).</li>
           <li>An empty page shows <code>EmptyState size=&quot;page&quot;</code> with the same Add button, never a blank area.</li>
           <li>The nav marks the current page in gold and with <code>aria-current=&quot;page&quot;</code>, in the header and the phone menu.</li>
+        </ul>
+      </KitSection>
+
+      <KitSection
+        id="guest"
+        title="Guest site"
+        description="The public pages are airier than the planner: full-width bands of cream, olivine or burgundy, centred text, uppercase Cormorant headings with a script “and”, small gold capitals, and a gold sprig between blocks."
+      >
+        <div className="overflow-hidden rounded-lg border border-dashed">
+          <GuestSection className="text-center md:py-16">
+            <p className="guest-label">Welcome to our wedding</p>
+            <p className="guest-display mt-4 text-5xl md:text-6xl">
+              Piper <span className="guest-script block py-1 text-4xl md:text-5xl">and</span> Nathen
+            </p>
+            <Sprig className="mx-auto mt-6" />
+            <p className="guest-display mt-6 text-xl">September 11, 2027</p>
+          </GuestSection>
+          <GuestSection tone="olivine" className="text-center md:py-16">
+            <p className="guest-display text-3xl">Our Story</p>
+            <p className="mx-auto mt-4 max-w-prose">Body text stays Lora, centred, with lines kept short.</p>
+          </GuestSection>
+          <GuestSection tone="burg" className="text-center md:py-16">
+            <p className="guest-label text-gold">Kindly RSVP</p>
+            <Sprig className="mx-auto mt-4" />
+          </GuestSection>
+        </div>
+        <div className="mt-6 flex items-center gap-4">
+          <ArtSlot className="size-24 rounded-md border border-dashed border-gold/60" />
+          <p className="max-w-prose text-sm text-burg/70">An empty ArtSlot. It keeps its space until the art exists (the dashed border is only on this page).</p>
+        </div>
+        <ul className="mt-4 flex max-w-prose list-disc flex-col gap-1 pl-5 text-sm">
+          <li>Guest pages are built from <code>GuestSection</code> bands, not cards. Text is centred.</li>
+          <li><code>guest-display</code> for headings and the names, <code>guest-script</code> for the &ldquo;and&rdquo;, <code>guest-label</code> for small capitals. Labels use gold ink on cream and olivine, and bright <code>text-gold</code> on burgundy.</li>
+          <li>Use <code>Sprig</code> between blocks, one at a time. Painted art goes in an <code>ArtSlot</code> and is always decorative.</li>
+          <li>Pages come from <code>src/lib/public-nav.ts</code>, and copy from <code>src/lib/guest-content.ts</code>.</li>
         </ul>
       </KitSection>
 

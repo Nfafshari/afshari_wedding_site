@@ -14,6 +14,7 @@
      below. See /planner/ui-kit for contrast.
      --------------------------------------------------------------- */
   --cream-50: oklch(0.992 0.004 95);        /* canvas: off-white, faint warm tint */
+  --cream-100: oklch(0.972 0.007 95);       /* footer: a shade under the canvas */
   --stone-100: oklch(0.93 0.005 95);        /* neutral badge */
   --stone-300: oklch(0.84 0.007 95);        /* muted surfaces: neutral warm grey */
 
@@ -104,6 +105,7 @@
   --color-burg: var(--foreground);
   --color-cream: var(--background);
   --color-cream-50: var(--cream-50);
+  --color-cream-100: var(--cream-100);
   --color-stone-300: var(--stone-300);
   --color-olivine-50: var(--olivine-50);
   --color-olivine-100: var(--olivine-100);
@@ -235,5 +237,22 @@
 /* Muted caption under a stat or field (e.g. "Invited", "Responded"). Lora. */
 @utility muted-caption {
   @apply text-burg/70 text-lg uppercase tracking-widest;
+}
+
+/* Guest site. Big headings and the couple's names: uppercase, widely spaced Cormorant.
+   Set the size per use (e.g. "OUR STORY"). */
+@utility guest-display {
+  @apply font-heading font-medium uppercase tracking-[0.14em] text-burg;
+}
+
+/* Guest site small capitals (e.g. "WELCOME TO OUR WEDDING"). Gold ink, which passes on cream
+   and olivine; on burgundy add text-gold. */
+@utility guest-label {
+  @apply font-heading font-semibold uppercase tracking-[0.22em] text-sm text-gold-ink;
+}
+
+/* The script "and" between the names inside a guest-display heading. */
+@utility guest-script {
+  @apply font-pinyon normal-case tracking-normal text-gold-ink;
 }
 

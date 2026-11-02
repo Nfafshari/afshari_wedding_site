@@ -1,15 +1,6 @@
 import Header from "@/components/header";
 import Footer from "@/components/footer";
-import { NavSidebar } from "@/components/nav-sidebar";
-
-const NAV_ITEMS = [
-  { label: "Home", href: "/" },
-  { label: "Our Story", href: "/our-story" },
-  { label: "Details", href: "/details" },
-  { label: "RSVP", href: "/rsvp" },
-  { label: "Registry", href: "/registry" },
-  { label: "Wedding Party", href: "/wedding-party" },
-];
+import GuestNavDrawer from "@/components/guest-nav-drawer";
 
 export default function PublicLayout({
   children,
@@ -18,9 +9,7 @@ export default function PublicLayout({
 }>) {
   return (
     <>
-      <NavSidebar 
-        navItems={NAV_ITEMS}
-      />
+      <GuestNavDrawer />
       <Header />
       {children}
       <Footer />

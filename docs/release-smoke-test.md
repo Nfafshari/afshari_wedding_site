@@ -43,7 +43,9 @@ Use a **private/incognito window** for this entire section. This is the path a s
 | 1.1 | Load `/` | Under-development page renders, hammer + wrench icons visible, no layout shift |
 | 1.2 | Check the page title in the browser tab | **Not** "Create Next App" |
 | 1.3 | Open devtools console | No red errors |
-| 1.4 | Click **RSVP** in the header | Lands on `/rsvp` with the name lookup form |
+| 1.4 | Click **RSVP** in the header | Lands on `/rsvp` with the name lookup form; RSVP is gold with a short underline |
+| 1.4a | Check the header and footer at 1280px | Burgundy band, links either side of the hanging monogram, every link opens a real page (no link back to `/` that should go elsewhere). Footer: the gold "We can't wait…" line, then Report a bug, Home, Planner |
+| 1.4b | At 320px and 768px, press the menu button | Burgundy menu slides in from the left with the same pages; the current page has a gold bar; the X and Esc close it; no sideways scroll |
 | 1.5 | Look up a name that is not on the list | Not-found message, no party shown |
 | 1.6 | Look up a first name only | Asks for first and last name |
 | 1.7 | **Production: use a throwaway party.** In the planner add a party named e.g. "Zz Smoke Test" with two guests and one plus-one allowed. Then look up one guest's full name | Their party shows with both members |
