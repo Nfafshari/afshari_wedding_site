@@ -92,7 +92,7 @@ Every rule below is shown live at [`/planner/ui-kit`](../src/app/(protected)/pla
 
 ### Page chrome (`#page-chrome`)
 
-- Planner pages wrap their content in `PlannerPage` and open with `PageHeader`; the main "Add …" goes in its `actions`. Data that isn't there yet shows `EmptyState` with that same action, never a blank area. Loading routes show `TableSkeleton` (or a skeleton of the page's shape).
+- Planner pages wrap their content in `PlannerPage` and open with `PageHeader`; the main "Add …" goes in its `actions`. Data that isn't there yet shows `EmptyState` with that same action, never a blank area. Every planner route has a `loading.tsx` in its page's shape: the real `PageHeader`, then the parts in `page-skeletons.tsx` inside a `LoadingRegion`.
 - Nav labels, page titles and card titles use one word per page, from `src/lib/planner-nav.ts`: Dashboard, Checklist, RSVPs, Budget, Registry, Documents.
 
 ### Guest site (`#guest`)

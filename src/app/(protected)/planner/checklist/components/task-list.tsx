@@ -14,6 +14,9 @@ import { cn, formatDate } from "@/lib/utils";
 import { toggleTaskStatus } from "../action";
 import type { CategoryWithTasks } from "../page";
 
+/** The list's columns, shared with the page's loading skeleton so the two line up. */
+export const TASK_LIST_COLUMNS = "minmax(0,1fr) 9rem 7rem";
+
 type TaskItem = CategoryWithTasks["tasks"][number];
 
 /** Shown when a category has no tasks under the current filter. */
@@ -36,7 +39,7 @@ interface TaskListProps {
 /** Categories in their saved order, each open with its tasks by due date. */
 export default function TaskList ({ categories, filter, onEditCategory, onDeleteCategory, onAddTask, onEditTask, onDeleteTask }: TaskListProps) {
   return (
-    <GroupedList label="Checklist by category" columns="minmax(0,1fr) 9rem 7rem">
+    <GroupedList label="Checklist by category" columns={TASK_LIST_COLUMNS}>
       <ListHeader>
         <ListHeadCell>Task</ListHeadCell>
         <ListHeadCell>Due</ListHeadCell>

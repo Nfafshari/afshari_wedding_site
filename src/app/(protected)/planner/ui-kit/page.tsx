@@ -19,9 +19,9 @@ import SegmentedFilter from "@/components/segmented-filter";
 import StatusChip from "@/components/status-chip";
 import { GroupedList, ListAddRow, ListCell, ListEmpty, ListGroup, ListHeadCell, ListHeader, ListRow } from "@/components/grouped-list";
 import PageHeader from "@/components/page-header";
+import { ListSkeleton } from "@/components/page-skeletons";
 import { Stat, StatRow } from "@/components/stat";
 import SummaryCard from "@/components/summary-card";
-import TableSkeleton from "@/components/table-skeleton";
 import ArtSlot from "@/components/art-slot";
 import GuestSection from "@/components/guest-section";
 import Sprig from "@/components/sprig";
@@ -554,7 +554,7 @@ export default async function UiKitPage() {
             </div>
             <div>
               <h3 className="mb-3 font-bold">Loading</h3>
-              <TableSkeleton columns={3} rows={3} />
+              <ListSkeleton columns="minmax(0,1fr) 8rem 8rem" groups={1} rows={2} />
             </div>
           </div>
         </div>
@@ -563,7 +563,7 @@ export default async function UiKitPage() {
           <li>Column labels use <code>variant=&quot;label&quot;</code> and are written in sentence case; the variant sets the caps.</li>
           <li>Money and counts take <code>numeric</code>: right-aligned, even-width digits, header included.</li>
           <li>Edit and delete are <code>RowActionButton</code>s at the end of the row, always visible, each labelled with the row&apos;s name.</li>
-          <li>An empty table or group shows <code>EmptyState</code>, with the next step when there is one. A loading page shows <code>TableSkeleton</code>.</li>
+          <li>An empty table or group shows <code>EmptyState</code>, with the next step when there is one. A page loading shows its <code>loading.tsx</code>: the real <code>PageHeader</code>, then the parts in <code>page-skeletons.tsx</code> (<code>StatRowSkeleton</code>, <code>FilterRowSkeleton</code>, <code>ListSkeleton</code> with the list&apos;s own columns, <code>TileGridSkeleton</code>) inside a <code>LoadingRegion</code>. Skeletons hold still under reduced motion.</li>
           <li>On phones nothing scrolls sideways: columns that don&apos;t fit fold into a subline under the name. Hide their cells with <code>hidden md:table-cell</code> and give their <code>&lt;col&gt;</code> a zero width on mobile.</li>
         </ul>
       </KitSection>

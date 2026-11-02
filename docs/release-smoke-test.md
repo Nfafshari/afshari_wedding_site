@@ -257,6 +257,8 @@ Keyboard only: no mouse from 10.1 to 10.7. Run the reflow steps in devtools at *
 | 10.8 | Load each planner page at 320, 768 and 1280px | No sideways scroll; header buttons stack under the title on phones; tables fold extra columns into the name's subline |
 | 10.9 | Load `/planner/ui-kit` and scroll to **Contrast** | Every row says Pass or a written Exception; no Fail |
 | 10.10 | On the kit page, check Modals, Tables and Page chrome | Each demo renders and its dialogs open and close |
+| 10.11 | In devtools set the network to Slow 4G, then open each planner page from the nav | The real title shows at once over a skeleton in the page's shape; the content replaces it without the header, strip or list moving |
+| 10.12 | Turn on reduced motion (OS setting, or devtools Rendering) and repeat 10.11 on one page | The skeleton holds still instead of pulsing |
 
 - [ ] Section 10 complete
 
