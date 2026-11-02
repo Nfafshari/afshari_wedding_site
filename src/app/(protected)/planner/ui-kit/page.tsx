@@ -13,6 +13,7 @@ import { Textarea } from "@/components/ui/textarea";
 
 import RowActionButton from "@/components/row-action-button";
 import EmptyState from "@/components/empty-state";
+import { GroupedList, ListAddRow, ListCell, ListEmpty, ListGroup, ListHeadCell, ListHeader, ListRow } from "@/components/grouped-list";
 import PageHeader from "@/components/page-header";
 import { Stat, StatRow } from "@/components/stat";
 import SummaryCard from "@/components/summary-card";
@@ -109,8 +110,10 @@ const PAIRS: ContrastPair[] = [
   { label: "Secondary text on page (text-burg/70)", foreground: "--foreground", foregroundAlpha: 0.7, background: "--background", kind: "text" },
   { label: "Secondary text on card (text-burg/70)", foreground: "--foreground", foregroundAlpha: 0.7, background: "--card", kind: "text" },
   { label: "Secondary text on dialog (text-burg/70)", foreground: "--foreground", foregroundAlpha: 0.7, background: "--popover", kind: "text" },
-  { label: "Text on dashboard card (bg-olivine/15)", foreground: "--foreground", background: "--olivine", backgroundAlpha: 0.15, kind: "text" },
-  { label: "Secondary text on dashboard card", foreground: "--foreground", foregroundAlpha: 0.7, background: "--olivine", backgroundAlpha: 0.15, kind: "text" },
+  { label: "Text on cards and group rows (bg-olivine-50)", foreground: "--foreground", background: "--olivine-50", kind: "text" },
+  { label: "Secondary text on cards and group rows", foreground: "--foreground", foregroundAlpha: 0.7, background: "--olivine-50", kind: "text" },
+  { label: "Muted caption, meta line, empty line (burgundy-600 on page)", foreground: "--burgundy-600", background: "--background", kind: "text" },
+  { label: "Meta line on a group row (burgundy-600 on olivine-50)", foreground: "--burgundy-600", background: "--olivine-50", kind: "text" },
   { label: "Sign out link on burgundy (text-cream/80)", foreground: "--cream-50", foregroundAlpha: 0.8, background: "--foreground", kind: "text" },
   { label: "Footer line (gold ink on cream-100)", foreground: "--gold-ink", background: "--cream-100", kind: "text" },
   { label: "Footer links (text-burg/70 on cream-100)", foreground: "--foreground", foregroundAlpha: 0.7, background: "--cream-100", kind: "text" },
@@ -379,6 +382,54 @@ export default async function UiKitPage() {
           <li>Titles are noun phrases in title case: &ldquo;Add Category&rdquo;, &ldquo;Edit Flowers&rdquo;. Confirms ask: &ldquo;Delete Flowers?&rdquo;</li>
           <li>Buttons say what happens: Add, Save changes, Delete, Remove, Import. The toast repeats the verb: &ldquo;Category added&rdquo;.</li>
           <li>Mark a field with an error using aria-invalid and put the message right under it.</li>
+        </ul>
+      </KitSection>
+
+      <KitSection
+        id="grouped-list"
+        title="Grouped list"
+        description="One list for grouped data: categories and line items, parties and guests, gifts and claims. Columns line up from md; on phones the meta cells fold into a line under the name and the end cells stay on the right. The group title opens its items."
+      >
+        <GroupedList label="Sample budget" columns="minmax(0,1fr) 8rem 8rem 8rem 7rem">
+          <ListHeader>
+            <ListHeadCell>Category</ListHeadCell>
+            <ListHeadCell numeric>Estimated</ListHeadCell>
+            <ListHeadCell numeric>Paid</ListHeadCell>
+            <ListHeadCell numeric>Balance</ListHeadCell>
+            <ListHeadCell>Status</ListHeadCell>
+          </ListHeader>
+          <ListGroup
+            title="Flowers"
+            defaultOpen
+            meta={<><ListCell numeric phoneLabel="est.">$2,150.00</ListCell><ListCell numeric phoneLabel="paid">$400.00</ListCell></>}
+            end={<><ListCell numeric>$1,750.00</ListCell><ListCell><Badge variant="warning">Deposit paid</Badge></ListCell></>}
+            actions={<><RowActionButton action="edit" aria-label="Edit Flowers" /><RowActionButton action="delete" aria-label="Delete Flowers" /></>}
+          >
+            {TABLE_ROWS.map((row) => (
+              <ListRow
+                key={row.name}
+                name={row.name}
+                meta={<><ListCell numeric phoneLabel="est.">{row.estimated}</ListCell><ListCell numeric phoneLabel="paid">{row.paid}</ListCell></>}
+                end={<><ListCell numeric>{row.balance}</ListCell><ListCell>{row.paid === "$0.00" ? <Badge variant="neutral">Due</Badge> : <Badge variant="warning">Deposit paid</Badge>}</ListCell></>}
+                actions={<><RowActionButton action="edit" aria-label={`Edit ${row.name}`} /><RowActionButton action="delete" aria-label={`Delete ${row.name}`} /></>}
+              />
+            ))}
+            <ListAddRow>Add line item</ListAddRow>
+          </ListGroup>
+          <ListGroup
+            title="Photography"
+            meta={<><ListCell numeric phoneLabel="est.">$1,550.00</ListCell><ListCell numeric phoneLabel="paid">$0.00</ListCell></>}
+            end={<><ListCell numeric>$1,550.00</ListCell><ListCell><Badge variant="neutral">Due</Badge></ListCell></>}
+            actions={<><RowActionButton action="edit" aria-label="Edit Photography" /><RowActionButton action="delete" aria-label="Delete Photography" /></>}
+          >
+            <ListEmpty>No line items yet.</ListEmpty>
+            <ListAddRow>Add line item</ListAddRow>
+          </ListGroup>
+        </GroupedList>
+        <ul className="mt-4 list-disc space-y-1 pl-5 text-sm">
+          <li>The page passes only its own columns; the list adds the chevron column and the actions column.</li>
+          <li><code>meta</code> cells fold under the name on phones (give them a <code>phoneLabel</code>); <code>end</code> cells stay on the right.</li>
+          <li>Inside a group, an empty group says so with <code>ListEmpty</code>, and <code>ListAddRow</code> adds the next item.</li>
         </ul>
       </KitSection>
 
