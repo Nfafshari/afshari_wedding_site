@@ -110,8 +110,8 @@ const tableHeadVariants = cva(
     variants: {
       variant: {
         default: "",
-        // Column labels: write them in sentence case, the class sets the caps.
-        label: "h-8 text-xs tracking-wide text-gold-ink uppercase",
+        // Column labels, in sentence case.
+        label: "h-8 planner-label",
       },
       numeric: { true: numericCell },
     },

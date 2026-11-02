@@ -71,6 +71,12 @@ Every rule below is shown live at [`/planner/ui-kit`](../src/app/(protected)/pla
 - Titles are noun phrases in title case ("Add Category", "Edit Flowers"); confirms ask ("Delete Flowers?") and say the consequence. Buttons say what happens ("Add", "Save changes", "Delete"), and the toast repeats the verb ("Category added").
 - Esc and a click outside close a form, never while it saves. After a delete, focus moves to the page header's main action (handled by `ConfirmDialog`).
 
+### Grouped list (`#grouped-list`)
+
+- Grouped data (categories and line items, parties and guests, gifts and claims) uses `GroupedList` from `src/components/grouped-list.tsx`. Pages pass only their own columns; the list adds the chevron and actions columns.
+- Cells that fold under the name on phones go in `meta` with a `phoneLabel`; the number or status that matters most goes in `end`. Nothing is rendered twice for phones.
+- An empty group shows `ListEmpty`; adding goes through `ListAddRow` at the foot of the group.
+
 ### Tables (`#tables`)
 
 - Each table keeps its own markup and `<colgroup>`; styling comes from the variants on `ui/table.tsx`: rows `heading` / `group` / `default` / `static`, `<TableBody variant="group">` to close a group, `<TableHead variant="label">` for column labels (written in sentence case), and `numeric` on money and count cells.
