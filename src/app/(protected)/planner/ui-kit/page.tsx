@@ -483,6 +483,8 @@ export default async function UiKitPage() {
           <li>The page passes only its own columns; the list adds the chevron column and the actions column.</li>
           <li><code>meta</code> cells fold under the name on phones (give them a <code>phoneLabel</code>); <code>end</code> cells stay on the right.</li>
           <li>Inside a group, an empty group says so with <code>ListEmpty</code>, and <code>ListAddRow</code> adds the next item.</li>
+          <li>Always render each <code>meta</code> and <code>end</code> cell, even when empty, so later cells stay in their columns.</li>
+          <li>A group&apos;s <code>title</code> sits inside its open/close button, so it can hold a thumbnail but nothing clickable. Put a link in <code>aside</code>.</li>
         </ul>
       </KitSection>
 

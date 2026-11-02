@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { checkClaimQuantity, checkWantedNotBelowClaimed } from "./registry";
+import { checkClaimQuantity, checkWantedNotBelowClaimed, claimantsLabel } from "./registry";
 
 describe("checkClaimQuantity", () => {
   it("allows any whole number from 1 up to what's left", () => {
@@ -32,5 +32,15 @@ describe("checkWantedNotBelowClaimed", () => {
 
   it("refuses asking for fewer than are claimed", () => {
     expect(checkWantedNotBelowClaimed(2, 3)).toBe("3 of these are already claimed, so you cannot ask for fewer than 3.");
+  });
+});
+
+describe("claimantsLabel", () => {
+  it("lists who claimed, with a count only past one", () => {
+    expect(claimantsLabel([{ claimedBy: "Ana Lee", quantity: 1 }, { claimedBy: "Ben Ortiz", quantity: 2 }])).toBe("Ana Lee, Ben Ortiz ×2");
+  });
+
+  it("is empty when nobody has claimed it", () => {
+    expect(claimantsLabel([])).toBe("");
   });
 });
