@@ -62,7 +62,7 @@ export default function AddDocDialog({ docs, onSuccess }: AddDocDialogProps) {
       (doc) => doc.name.toLowerCase().trim() === value.toLowerCase().trim()
     );
     if (isDuplicate) {
-      return 'Document already exists!';
+      return 'A document with that name already exists.';
     }
 
     return null;

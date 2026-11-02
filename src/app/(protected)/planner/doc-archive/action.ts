@@ -5,7 +5,7 @@ import { revalidatePath } from "next/cache";
 import { requireUserAction } from "@/lib/require-user";
 import { prisma } from "@/lib/prisma";
 import { supabase, DOCUMENTS_BUCKET } from "@/lib/supabase";
-import { Prisma } from "@/generated/prisma/client";
+import { handleActionError, type ActionResult as SharedActionResult } from "@/lib/action";
 import { ACCEPTED_DOC_TYPES, MAX_DOC_SIZE_BYTES } from "./data";
 
 /**
@@ -14,12 +14,11 @@ import { ACCEPTED_DOC_TYPES, MAX_DOC_SIZE_BYTES } from "./data";
  */
 export type ErrorField = 'name' | 'companyName' | 'file';
 
-/**
- * The shape every action returns: either it worked, or it failed with a reason.
- */
-export type ActionResult =
-  | { ok: true }
-  | { ok: false; error: string; field?: ErrorField; authRequired?: true };
+/** See {@link SharedActionResult}; narrowed to this page's fields. */
+export type ActionResult = SharedActionResult<ErrorField>;
+
+const DUPLICATE_NAME = 'A document with that name already exists.';
+const DOCUMENT_GONE = 'That document no longer exists, refresh your page and try again.';
 
 /** The route these writes invalidate. `(protected)` is a route group, so it is not in the URL. */
 const DOC_ARCHIVE_PATH = '/planner/doc-archive';
@@ -86,12 +85,9 @@ export async function createDocument(formData: FormData): Promise<ActionResult> 
     // bucket that nothing points at. Remove it before reporting the failure.
     await supabase.storage.from(DOCUMENTS_BUCKET).remove([filePath]);
 
-    // P2002 = unique constraint failed (a document with this name already exists).
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2002') {
-      return { ok: false, error: 'Document already exists!', field: 'name' };
-    }
-    console.error("*ERROR - createDocument failed, see below:", error);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'creating document', {
+      P2002: { error: DUPLICATE_NAME, field: 'name' },
+    });
   }
 
   revalidatePath(DOC_ARCHIVE_PATH);
@@ -125,17 +121,11 @@ export async function updateDocument(id: number | undefined, name: string, icon:
   try {
     await prisma.document.update({ where: { id }, data: { name: trimmedName, icon } });
   } catch (error) {
-    if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      // P2002 = unique constraint failed, P2025 = record not found.
-      if (error.code === 'P2002') {
-        return { ok: false, error: 'Document already exists!', field: 'name' };
-      }
-      if (error.code === 'P2025') {
-        return { ok: false, error: 'That document no longer exists, refresh your page and try again.', field: 'name' };
-      }
-    }
-    console.error("*ERROR - updateDocument failed, see below:", error);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'updating document', {
+      P2002: { error: DUPLICATE_NAME, field: 'name' },
+      // Deleted while the dialog was open.
+      P2025: { error: DOCUMENT_GONE, field: 'name' },
+    });
   }
 
   revalidatePath(DOC_ARCHIVE_PATH);
@@ -163,12 +153,10 @@ export async function deleteDocument(id: number | undefined): Promise<ActionResu
     // delete returns the removed row, which is how we learn which file to remove.
     ({ filePath } = await prisma.document.delete({ where: { id }, select: { filePath: true } }));
   } catch (error) {
-    // P2025 = record not found.
-    if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === 'P2025') {
-      return { ok: false, error: 'That document no longer exists, refresh your page and try again.' };
-    }
-    console.error("*ERROR - deleteDocument failed, see below:", error);
-    return { ok: false, error: 'Something went wrong. Please try again.' };
+    return handleActionError(error, 'deleting document', {
+      // Already removed.
+      P2025: { error: DOCUMENT_GONE },
+    });
   }
 
   // Row first, file second: if this removal fails the worst case is an unreachable
