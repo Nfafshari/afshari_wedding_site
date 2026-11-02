@@ -101,7 +101,7 @@ src/
     | { ok: false; error: string; field?: ErrorField };
   ```
   Validate and trim on the server, catch Prisma codes (`P2002` unique, `P2025` not found) and turn them into a specific message, log anything unexpected, then `revalidatePath(...)` on success. [checklist/action.ts](src/app/(protected)/planner/checklist/action.ts) is the canonical example.
-- **Styling** — theme colors are CSS custom properties in [globals.css](src/app/globals.css) (`--burg`, `--gold`, `--olivine`, `--cream`), used as `bg-(--burg)`. Shared layout classes (`page-title`, `section-title`, `stat-number`) live there too. Mobile-first with `md:`/`lg:` breakpoints; the offcanvas sidebar is mobile-only.
+- **Styling** — colors are tokens in [globals.css](src/app/globals.css), used as Tailwind classes by role (`bg-card`, `text-muted-foreground`, `text-gold-ink`) or brand name (`bg-burg`, `bg-olivine`). Shared type utilities (`page-title`, `stat-number`, and `guest-display`/`guest-label` for the guest site) live there too. The planner's text is Lora, the guest site's Montserrat, headings Cormorant. Mobile-first with `md:`/`lg:` breakpoints. The full rules and live examples are in [docs/standards.md](docs/standards.md#ui) and at `/planner/ui-kit`.
 - **Filter state** lives in URL search params (`?category=`) rather than component state, so filters survive a refresh and are linkable.
 
 ### Auth

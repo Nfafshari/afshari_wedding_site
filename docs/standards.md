@@ -100,7 +100,6 @@ Every rule below is shown live at [`/planner/ui-kit`](../src/app/(protected)/pla
 - Never rely on color alone: pair a status color with a word or an icon.
 - Mobile-first with `md:`/`lg:`; every planner page must work at 320px with no sideways scroll.
 
-(The README still describes the older `bg-(--burg)` form; treat the code as correct.)
 
 ## Tests
 

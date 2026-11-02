@@ -9,9 +9,10 @@
 
 /**
  * Last day guests can submit or change their response, inclusive. Stored as the
- * instant the day ends on the US west coast, so nobody loses their last evening.
+ * instant the day ends in Central time, the zone every date on the site is shown in
+ * (see `formatDate`), so the date guests read is the day the form closes.
  */
-export const RSVP_DEADLINE = new Date('2027-08-01T23:59:59-07:00');
+export const RSVP_DEADLINE = new Date('2027-08-01T23:59:59-05:00');
 
 /** Whether the public form still accepts responses. */
 export function isRsvpOpen (now: Date = new Date()): boolean {
@@ -24,7 +25,7 @@ export function formatRsvpDeadline (): string {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
-    timeZone: 'America/Los_Angeles',
+    timeZone: 'America/Chicago',
   });
 }
 
