@@ -29,6 +29,9 @@ export const PLUS_ONE_STATUS: Record<PlusOneStatus, Status> = {
   REJECTED: { label: "Not approved", tone: "danger" },
 };
 
+/** A checklist task that is not done and was due before today. */
+export const OVERDUE_STATUS: Status = { label: "Overdue", tone: "danger" };
+
 /** A party as a whole, from `getPartyGroup`. */
 export const PARTY_STATUS: Record<PartyGroup, Status> = {
   awaiting: { label: "Waiting", tone: "neutral" },
