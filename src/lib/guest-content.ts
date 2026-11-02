@@ -131,3 +131,23 @@ export const WEDDING_PARTY = {
     { name: "Person name", role: "Groomsman", line: "The one who introduced us (probably).", photo: { src: undefined as string | undefined, alt: "Person name" } },
   ],
 } as const;
+
+/**
+ * FAQ page. Placeholder answers. `{deadline}` in an answer becomes the RSVP deadline from
+ * src/lib/rsvp.ts, and `link` adds a link after the answer (shown only once its page exists).
+ */
+export const FAQ = {
+  title: "Questions & Answers",
+  intro: "Can't find what you're looking for? Reach out to us anytime.",
+  items: [
+    { question: "What should I wear?", answer: "Placeholder: the dress code, e.g. cocktail attire. The ceremony is on grass, so consider shoes to match." },
+    { question: "When do I need to RSVP by?", answer: "Please RSVP by {deadline}. You can change your answers until then.", link: { href: "/rsvp", label: "RSVP now" } },
+    { question: "Can I bring a guest?", answer: "Placeholder: your invitation lists everyone included. If it allows an additional guest, you can add them when you RSVP." },
+    { question: "Are kids welcome?", answer: "Placeholder: whether children are invited." },
+    { question: "Is the venue indoors or outdoors?", answer: "Placeholder: where the ceremony and reception take place, and the plan if it rains." },
+    { question: "Is there parking?", answer: "Placeholder: parking at the venue, and any shuttle." },
+    { question: "What's the weather like in Sheridan in September?", answer: "Placeholder: warm days and cool evenings; bring a layer for after sunset." },
+    { question: "Where are you registered?", answer: "Placeholder: our registry will be on this site soon.", link: { href: "/registry", label: "View our registry" } },
+    { question: "Can we take photos during the ceremony?", answer: "Placeholder: whether the ceremony is unplugged, and where to share photos after." },
+  ] as { question: string; answer: string; link?: { href: string; label: string } }[],
+} as const;

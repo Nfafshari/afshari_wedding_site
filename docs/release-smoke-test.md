@@ -44,6 +44,7 @@ Use a **private/incognito window** for this entire section. This is the path a s
 | 1.1a | Click **Our Story** in the header (and **Read our story** on Home) | `/our-story` shows the heading, the short excerpt and the photo gallery (2 columns on phones, 3 on desktop, no gaps between mixed shapes); a real photo opens larger on click and closes with Esc; the slim RSVP band at the bottom opens `/rsvp`; tab title "Our Story · Piper & Nathen" |
 | 1.1b | Click **Details** in the header, then go back to Home and click each Weekend Details link | `/details` shows The Venue, The Schedule (timeline for Saturday) and Travel (hotels); each Home link lands on its section with the heading visible; Get directions and Book a room open in a new tab |
 | 1.1c | Click **Wedding Party** in the header | `/wedding-party` shows the heading, a short line and 8 people (photo, name, role, one line): 1 column on small phones, 2 on wider phones and tablets, 4 on desktop |
+| 1.1d | Click **FAQ** in the header; open a few questions with the mouse, then Tab to one and press Enter | Each answer opens and closes; several can be open at once; the RSVP question shows the right deadline and an RSVP now link |
 | 1.2 | Check the page title in the browser tab | **Not** "Create Next App" |
 | 1.3 | Open devtools console | No red errors |
 | 1.4 | Click **RSVP** in the header | Lands on `/rsvp`: RSVP heading, sprig, date and "Kindly respond by …", then the name lookup in a white card with a double gold line; RSVP is gold with a short underline in the header |
