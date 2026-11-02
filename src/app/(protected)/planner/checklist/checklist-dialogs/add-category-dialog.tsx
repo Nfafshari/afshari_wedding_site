@@ -82,7 +82,7 @@ export default function AddCategoryDialog({ categories, onSuccess }: AddCategory
           }}
         />
         {isEmptyInput && <p className="text-destructive text-xs">Category name cannot be empty</p>}
-        {!isUniqueCategory && <p className="text-destructive text-xs">Category already exists!</p>}
+        {!isUniqueCategory && <p className="text-destructive text-xs">A category with that name already exists.</p>}
         {serverError && <p className="text-destructive text-xs">{serverError}</p>}
       </Field>
       <div className="flex flex-col w-full items-start mt-2 text-burg">

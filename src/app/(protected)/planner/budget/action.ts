@@ -75,7 +75,7 @@ export async function createBudgetCategory (name: string): Promise<ActionResult>
     });
   } catch (error) {
     return handleActionError(error, 'creating new budget category', {
-      P2002: { error: 'Category already exists.', field: 'name' },
+      P2002: { error: 'A category with that name already exists.', field: 'name' },
     });
   }
 
@@ -114,7 +114,7 @@ export async function updateBudgetCategory (budgetCategoryId: number | undefined
     });
   } catch (error) {
     return handleActionError(error, 'updating budget category', {
-      P2002: { error: 'Category already exists.', field: 'name' },
+      P2002: { error: 'A category with that name already exists.', field: 'name' },
       // The category was deleted while the dialog was open.
       P2025: { error: CATEGORY_GONE, field: 'name' },
     });
@@ -298,7 +298,7 @@ export async function updateBudgetSubcategory (budgetSubcategoryId: number | und
   } catch (error) {
     return handleActionError(error, 'updating budget subcategory', {
       // This category already has a subcategory with that name.
-      P2002: { error: 'Subcategory already exists.', field: 'name' },
+      P2002: { error: 'A subcategory with that name already exists in this category.', field: 'name' },
       // The subcategory was deleted while the dialog was open.
       P2025: { error: SUBCATEGORY_GONE, field: 'name' },
     });

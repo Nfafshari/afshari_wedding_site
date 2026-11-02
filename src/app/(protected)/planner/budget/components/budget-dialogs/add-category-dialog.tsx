@@ -37,7 +37,7 @@ export default function AddCategoryDialog({ budgetCategories, onSuccess }: AddCa
       (cat) => cat.name.toLowerCase().trim() === value.toLowerCase().trim()
     );
     if (isDuplicate) {
-      return 'Category already exists!';
+      return 'A category with that name already exists.';
     }
 
     // return null if validation succeeded
