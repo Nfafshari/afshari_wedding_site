@@ -7,6 +7,7 @@ export const PUBLIC_NAV_ITEMS = [
   { label: "Home", href: "/" },
   { label: "Our Story", href: "/our-story" },
   { label: "Details", href: "/details" },
+  { label: "Wedding Party", href: "/wedding-party" },
   { label: "RSVP", href: "/rsvp" },
 ] as const;
 
