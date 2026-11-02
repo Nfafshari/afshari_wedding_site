@@ -74,7 +74,7 @@ export default function RegistryList ({ items, onEditItem, onDeleteItem, onAddCl
               <ListRow
                 key={claim.id}
                 name={claim.claimedBy}
-                meta={<ListCell>Claimed {formatDate(claim.createdAt)}</ListCell>}
+                meta={<ListCell>{claim.source === 'BY_HAND' ? 'Added by hand' : 'On the website'} · {formatDate(claim.createdAt)}</ListCell>}
                 end={
                   <>
                     <ListCell className="lining-nums tabular-nums">×{claim.quantity}</ListCell>

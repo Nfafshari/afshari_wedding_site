@@ -37,6 +37,7 @@ export async function getRegistryItems () {
       claimedBy: registryClaim.claimedBy,
       quantity: registryClaim.quantity,
       createdAt: registryClaim.createdAt,
+      source: registryClaim.source,
       itemId: registryClaim.itemId
     })),
   }));

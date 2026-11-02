@@ -46,7 +46,7 @@ Use a **private/incognito window** for this entire section. This is the path a s
 | 1.1d | Click **FAQ** in the header; open a few questions with the mouse, then Tab to one and press Enter | Each answer opens and closes; several can be open at once; the RSVP question shows the right deadline and an RSVP now link |
 | 1.1e | **Production: use a throwaway item.** In the planner add a registry item "Zz Smoke Gift" wanting 2. Open `/registry` signed out | The item shows "0 of 2 claimed"; no claimer names anywhere on the page |
 | 1.1f | Claim it with a name not on the guest list, then with a first name only | "We couldn't find that name…", then "Please enter your first and last name." Nothing is saved |
-| 1.1g | Claim 1 with the throwaway party's guest name (from 1.7) | "Thank you! You claimed Zz Smoke Gift"; the page shows "1 of 2 claimed"; the planner Registry lists the claim under that guest's name |
+| 1.1g | Claim 1 with the throwaway party's guest name (from 1.7) | "Thank you! You claimed Zz Smoke Gift"; the page shows "1 of 2 claimed"; the planner Registry lists the claim under that guest's name, marked "On the website" |
 | 1.1h | Claim it again asking for 2 | "Someone just claimed some, so only 1 is left." Claim 1 and the item shows "Fully claimed" with no Claim button. **Delete the claims and the item in the planner** |
 | 1.2 | Check the page title in the browser tab | **Not** "Create Next App" |
 | 1.3 | Open devtools console | No red errors |
@@ -184,7 +184,7 @@ The most complete feature — exercise it hardest.
 | 7.3 | At 390px wide | Claimed-by names fold under the name; meter and chip stay on the right; no sideways scroll |
 | 7.4 | Add item `ZZTEST Item`, pasting an image link | The preview shows the picture (a gift icon while the link is blank or broken); the item appears |
 | 7.4a | Edit an item saved without an image | The image field starts blank, not "/window.svg"; Save changes works without touching it. Changing the name to another item's name shows "An item with that name already exists." |
-| 7.5 | Open it and use "Add a claim by hand" | Claim records as a row with its date and ×N; the meter and chip update. Once fully claimed the add row reads "Fully claimed" and is disabled |
+| 7.5 | Open it and use "Add a claim by hand" | Claim records as a row marked "Added by hand" with its date and ×N; the meter and chip update. Once fully claimed the add row reads "Fully claimed" and is disabled |
 | 7.5a | Click the item's trash icon while it has a claim | The confirm names who claimed it and Delete is disabled |
 | 7.6 | Remove the claim, then delete the item from its trash icon | Both removed |
 

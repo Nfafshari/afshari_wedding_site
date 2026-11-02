@@ -25,6 +25,13 @@ enum PlusOneStatus {
   REJECTED
 }
 
+// Where a registry claim came from: a guest on the public registry page, or the
+// couple adding one by hand in the planner.
+enum ClaimSource {
+  WEBSITE
+  BY_HAND
+}
+
 // One household on the guest list. Exists before anyone responds — the couple
 // loads the list ahead of time, and the response fields stay null until a member
 // of the party looks it up and submits the form.
@@ -86,6 +93,9 @@ model RegistryClaim {
   quantity       Int
   createdAt      DateTime  @default(now())
   itemId         Int
+  // Both actions set this. The default only filled in claims made before it existed,
+  // which were all treated as the website's.
+  source         ClaimSource @default(WEBSITE)
 
   // Restrict, not Cascade: Task and BudgetSubcategory cascade because a child is
   // meaningless without its parent, but a claim is a record of a real person who
