@@ -96,13 +96,16 @@ export async function createDocument(formData: FormData): Promise<ActionResult> 
 }
 
 /**
- * Renames a document and updates the icon it is displayed with.
+ * Updates a document's name, company and the icon it is displayed with. The file itself
+ * can't be swapped: delete the document and add it again.
  *
  * @param id - the document being edited
- * @param name - the new display name
- * @param icon - displayName of a lucide icon, e.g. "Receipt"
+ * @param fields - the new name, company and icon (displayName of a lucide icon, e.g. "Receipt")
  */
-export async function updateDocument(id: number | undefined, name: string, icon: string): Promise<ActionResult> {
+export async function updateDocument(
+  id: number | undefined,
+  { name, companyName, icon }: { name: string; companyName: string; icon: string },
+): Promise<ActionResult> {
   /* Validate user session */
   const guard = await requireUserAction();
   if (!guard.ok) {
@@ -118,8 +121,13 @@ export async function updateDocument(id: number | undefined, name: string, icon:
     return { ok: false, error: 'Document name cannot be empty.', field: 'name' };
   }
 
+  const trimmedCompanyName = companyName.trim();
+  if (trimmedCompanyName === '') {
+    return { ok: false, error: 'Company name cannot be empty.', field: 'companyName' };
+  }
+
   try {
-    await prisma.document.update({ where: { id }, data: { name: trimmedName, icon } });
+    await prisma.document.update({ where: { id }, data: { name: trimmedName, companyName: trimmedCompanyName, icon } });
   } catch (error) {
     return handleActionError(error, 'updating document', {
       P2002: { error: DUPLICATE_NAME, field: 'name' },

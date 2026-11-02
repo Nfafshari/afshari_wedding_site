@@ -12,8 +12,7 @@ import SegmentedFilter from "@/components/segmented-filter";
 import { Dialog } from "@/components/ui/dialog";
 import { useQueryParams } from "@/hooks/use-query-params";
 import { filterAndSortDocs, isDocSort } from "@/lib/documents";
-import AddDocDialog from "./dialogs/add-doc-dialog";
-import EditDocDialog from "./dialogs/edit-doc-dialog";
+import DocDialog from "./dialogs/doc-dialog";
 import DeleteDocDialog from "./dialogs/delete-doc-dialog";
 import DocTile from "./components/doc-tile";
 import { type ArchivedDoc } from "./data";
@@ -131,16 +130,16 @@ export default function DocArchive({ docs }: DocArchiveProps) {
       </PlannerPage>
 
       {activeDialog === DialogType.Add &&
-        <AddDocDialog
+        <DocDialog
           docs={docs}
           onSuccess={closeDialog}
         />
       }
 
       {activeDialog === DialogType.Edit &&
-        <EditDocDialog
+        <DocDialog
           docs={docs}
-          docToUpdate={activeDoc}
+          doc={activeDoc}
           onSuccess={closeDialog}
         />
       }
