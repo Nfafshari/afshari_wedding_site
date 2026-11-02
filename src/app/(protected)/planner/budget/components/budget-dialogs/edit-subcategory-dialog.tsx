@@ -14,7 +14,8 @@ import type { BudgetSubcategory } from "../../page";
 import { BudgetStatus } from "@/generated/prisma/enums";
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import BudgetStatusBadge from "@/components/budget-status-badge";
+import StatusChip from "@/components/status-chip";
+import { BUDGET_STATUS } from "@/lib/status";
 import { parseMoneyString, toAmount } from "@/lib/utils";
 
 interface EditSubcategoryDialogProps {
@@ -286,7 +287,7 @@ export default function EditSubcategoryDialog({ subcategoryToUpdate, onSuccess }
                       key={`badge-${badge}-${idx}`} value={badge} 
                       className="focus:bg-muted/20"
                     >
-                      <BudgetStatusBadge status={badge} />
+                      <StatusChip status={BUDGET_STATUS[badge]} />
                     </SelectItem>
                   ))}
                 </SelectGroup>
