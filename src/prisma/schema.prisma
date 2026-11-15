@@ -80,6 +80,9 @@ model RegistryItem {
   name            String    @unique
   link            String
   quantityWanted  Int
+  // Required by the planner's form, but nullable so items added before prices existed
+  // stay valid. Guests see a price only when one is set.
+  price           Decimal?  @db.Decimal(10, 2)
   // `@default` only applies when the field is omitted on create, never when it is
   // explicitly null — so readers must handle null regardless.
   image           String?   @default("/window.svg")

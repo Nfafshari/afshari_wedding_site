@@ -1,14 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { CircleCheck, ExternalLink, Gift } from "lucide-react";
+import { CircleCheck, ExternalLink, Gift, Star } from "lucide-react";
 
 import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
 import { Spinner } from "@/components/ui/spinner";
 import { REGISTRY } from "@/lib/guest-content";
-import { cn } from "@/lib/utils";
+import { cn, toCurrency } from "@/lib/utils";
 
 import { claimRegistryItem } from "./action";
 
@@ -19,6 +19,7 @@ export type PublicRegistryItem = {
   link: string;
   image: string | null;
   quantityWanted: number;
+  price: number | null;
   claimedCount: number;
 };
 
@@ -76,7 +77,13 @@ export default function RegistryList({ items }: { items: PublicRegistryItem[] })
           const isFull = left <= 0;
           return (
             <li key={item.id} className={cn("flex flex-col items-center text-center", isFull && "opacity-60")}>
-              <div className="flex aspect-square w-full items-center justify-center rounded-sm border border-gold/50 bg-popover p-6">
+              <div className="relative flex aspect-square w-full items-center justify-center rounded-sm border border-gold/50 bg-popover p-6">
+                {isFull && (
+                  <span className="guest-label absolute top-3 left-3 inline-flex items-center gap-1.5 rounded-sm bg-black/60 px-2.5 py-1 text-xs text-white backdrop-blur-sm">
+                    <Star className="size-3.5" aria-hidden />
+                    {REGISTRY.claimed}
+                  </span>
+                )}
                 {item.image && !brokenImages.has(item.id) ? (
                   // Plain <img>, like the planner: images are links to any store's site.
                   // eslint-disable-next-line @next/next/no-img-element
@@ -92,8 +99,9 @@ export default function RegistryList({ items }: { items: PublicRegistryItem[] })
                 )}
               </div>
               <h2 className="guest-display mt-5 text-xl">{item.name}</h2>
+              {item.price !== null && <p className="mt-1 lining-nums tabular-nums">{toCurrency(item.price)}</p>}
               <p className="mt-1 text-sm text-burg/70">
-                {isFull ? REGISTRY.fullyClaimed : item.quantityWanted > 1 ? `${item.claimedCount} of ${item.quantityWanted} claimed` : "Not yet claimed"}
+                {isFull ? REGISTRY.claimed : item.quantityWanted > 1 ? `${item.claimedCount} of ${item.quantityWanted} claimed` : "Not yet claimed"}
               </p>
               <div className="mt-4 flex flex-wrap items-center justify-center gap-x-6 gap-y-3">
                 <a href={item.link} target="_blank" rel="noopener noreferrer" className={TEXT_LINK}>

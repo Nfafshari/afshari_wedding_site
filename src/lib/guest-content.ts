@@ -55,21 +55,18 @@ export const RSVP_BAND = {
 export const OUR_STORY = {
   title: "Our Story",
   excerpt: [
-    "A few sentences about how we met and how we got here: where it started, the moment we knew, and how the question was asked.",
+    "We met in 2023 while working at the same retail store during college. Piper worked in shoe sales, while Nathen worked in the backroom stocking shoes, so our paths crossed in the back of the shoe department. What started as the occasional awkward “Hi, how are you?” whenever Piper came back for a pair of shoes gradually turned into conversations about school and everyday life. Those quick conversations eventually turned into library “study” dates, although we usually spent more time talking than studying.Before long, we started going on actual dates, from pumpkin patches and hockey games to trying new restaurants and daily errands. Even through a year of long distance, we are best friends that do everything together.",
     "We're so glad you're part of our story, and we can't wait to celebrate the next chapter with you on September 11.",
   ],
   galleryTitle: "Photos",
   photoPlaceholder: "Photo needed",
   photos: [
     { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "portrait" },
-    { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "landscape" },
     { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "square" },
-    { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "landscape" },
-    { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "portrait" },
     { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "square" },
     { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "portrait" },
-    { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "landscape" },
     { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "portrait" },
+    { src: undefined as string | undefined, alt: "Piper and Nathen", shape: "square" },
   ],
 } as const;
 
@@ -129,7 +126,7 @@ export const FAQ = {
     { question: "What's the weather like in Sheridan in September?", answer: "Placeholder: warm days and cool evenings; bring a layer for after sunset." },
     { question: "Where are you registered?", answer: "Placeholder: our registry will be on this site soon.", link: { href: "/registry", label: "View our registry" } },
     { question: "Can we take photos during the ceremony?", answer: "Placeholder: whether the ceremony is unplugged, and where to share photos after." },
-  ] as { question: string; answer: string; link?: { href: string; label: string } }[],
+  ] as { question: string; answer: string; link?: { href: string; label: string; }; }[],
 } as const;
 
 /** Registry page. The items themselves come from the planner's Registry. */
@@ -139,7 +136,7 @@ export const REGISTRY = {
   empty: "Our registry is coming soon.",
   viewItem: "View item",
   claim: "Claim",
-  fullyClaimed: "Fully claimed",
+  claimed: "Claimed",
   dialogTitle: "Claim this gift",
   nameLabel: "Your first and last name, as on your invitation",
   quantityLabel: "How many",

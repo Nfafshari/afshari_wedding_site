@@ -5,12 +5,13 @@ import { useState } from "react";
 import { Field, FieldLabel } from "@/components/ui/field";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
 import FormDialog from "@/components/form-dialog";
 import { useDialogSubmit } from "@/hooks/use-dialog-submit";
 import { useFieldErrors } from "@/hooks/use-field-errors";
 import { checkWantedNotBelowClaimed, getClaimedQuantity, MAX_REGISTRY_QUANTITY } from "@/lib/registry";
-import { parseHttpUrl } from "@/lib/utils";
-import { checkHttpUrl, checkRequired, checkUniqueName, checkWholeNumber, parseWholeNumber } from "@/lib/validate";
+import { parseHttpUrl, parseMoneyString, toAmount } from "@/lib/utils";
+import { checkHttpUrl, checkMoney, checkRequired, checkUniqueName, checkWholeNumber, parseWholeNumber } from "@/lib/validate";
 
 import { createRegistryItem, updateRegistryItem, type ErrorField } from "../action";
 import ItemThumbnail, { PLACEHOLDER_IMAGE } from "../components/item-thumbnail";
@@ -31,6 +32,8 @@ export default function ItemDialog({ items, item, onSuccess }: ItemDialogProps) 
   const [name, setName] = useState(item?.name ?? '');
   const [link, setLink] = useState(item?.link ?? '');
   const [quantityWanted, setQuantityWanted] = useState(String(item?.quantityWanted ?? 1));
+  // Items added before prices existed have none, so they start blank and must be filled in.
+  const [price, setPrice] = useState(item?.price == null ? '' : toAmount(item.price));
   // The placeholder is the DB's stand-in for "no image", not a link to edit, so it starts blank.
   const [image, setImage] = useState(item?.image && item.image !== PLACEHOLDER_IMAGE ? item.image : '');
   // Opens the delete confirmation on top of the edit form.
@@ -48,17 +51,19 @@ export default function ItemDialog({ items, item, onSuccess }: ItemDialogProps) 
     // Can't drop below what guests have already claimed. The server re-checks; it is the real guard.
     quantityWanted: () => checkWholeNumber(parseWholeNumber(quantityWanted), 'Quantity wanted', MAX_REGISTRY_QUANTITY)
       ?? checkWantedNotBelowClaimed(parseWholeNumber(quantityWanted), claimedTotal),
+    price: (value = price) => checkMoney(parseMoneyString(value) ?? Number.NaN, 'Price'),
     // Blank is allowed: the DB fills in the placeholder.
     image: () => (image.trim() === '' ? null : checkHttpUrl(image, 'Image link')),
   };
 
   // FormDialog has already called preventDefault, so this just runs our logic.
   async function save () {
-    const ok = checkAll({ name: checks.name(), link: checks.link(), quantityWanted: checks.quantityWanted(), image: checks.image() });
-    if (!ok) return;
+    const ok = checkAll({ name: checks.name(), link: checks.link(), quantityWanted: checks.quantityWanted(), price: checks.price(), image: checks.image() });
+    const parsedPrice = parseMoneyString(price);
+    if (!ok || parsedPrice === null) return;
 
     if (item === undefined) {
-      await runAction("Item added", () => createRegistryItem(name, link, parseWholeNumber(quantityWanted), image));
+      await runAction("Item added", () => createRegistryItem(name, link, parseWholeNumber(quantityWanted), parsedPrice, image));
       return;
     }
 
@@ -66,6 +71,7 @@ export default function ItemDialog({ items, item, onSuccess }: ItemDialogProps) 
       name,
       link,
       quantityWanted: parseWholeNumber(quantityWanted),
+      price: parsedPrice,
       image,
     }));
   }
@@ -140,6 +146,35 @@ export default function ItemDialog({ items, item, onSuccess }: ItemDialogProps) 
           )}
           {fieldErrors.quantityWanted && <p className="text-destructive text-xs">{fieldErrors.quantityWanted}</p>}
           {(serverError && serverErrorField === 'quantityWanted') && <p className="text-destructive text-xs">{serverError}</p>}
+        </Field>
+
+        <Field className="flex w-full text-burg mt-2">
+          <FieldLabel htmlFor="item-price">Price</FieldLabel>
+          <InputGroup>
+            <InputGroupAddon>$</InputGroupAddon>
+            <InputGroupInput
+              id="item-price"
+              type="text"
+              inputMode="decimal"
+              placeholder="0.00"
+              value={price}
+              aria-invalid={Boolean(fieldErrors.price || serverErrorField === 'price')}
+              onChange={(e) => {
+                setPrice(e.target.value);
+                clear('price');
+                clearServerError();
+              }}
+              // Show any error, otherwise snap the amount to "1,000.00", as the budget does.
+              onBlur={(e) => {
+                if (check('price', checks.price(e.target.value))) {
+                  const parsed = parseMoneyString(e.target.value);
+                  if (parsed !== null) setPrice(toAmount(parsed));
+                }
+              }}
+            />
+          </InputGroup>
+          {fieldErrors.price && <p className="text-destructive text-xs">{fieldErrors.price}</p>}
+          {(serverError && serverErrorField === 'price') && <p className="text-destructive text-xs">{serverError}</p>}
         </Field>
 
         <Field className="flex w-full text-burg mt-2">
