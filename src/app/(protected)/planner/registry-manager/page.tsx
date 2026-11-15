@@ -21,9 +21,9 @@ export async function getRegistryItems () {
     orderBy: [{ name: "asc" }, { id: "asc" }]
   });
 
-  // Map the raw Prisma rows into a plain shape for the client. Unlike the budget
-  // page there is no Decimal to unwrap here — quantities are Int — but the explicit
-  // mapping still keeps the client's props from silently tracking schema columns.
+  // Map the raw Prisma rows into a plain shape for the client: price is a Decimal,
+  // which can't cross to a client component, so it is unwrapped as on the budget page.
+  // The explicit mapping also keeps the client's props from silently tracking schema columns.
   // createdAt stays a Date: Next serializes those across the boundary fine, and
   // components format it with formatDate.
   return registryItems.map((registryItem) => ({
@@ -31,6 +31,8 @@ export async function getRegistryItems () {
     name: registryItem.name,
     link: registryItem.link,
     quantityWanted: registryItem.quantityWanted,
+    // Null for items added before prices existed.
+    price: registryItem.price?.toNumber() ?? null,
     image: registryItem.image,
     claimed: registryItem.claimed.map((registryClaim) => ({
       id: registryClaim.id,

@@ -27,6 +27,7 @@ async function getPublicRegistry (): Promise<PublicRegistryItem[]> {
       link: true,
       image: true,
       quantityWanted: true,
+      price: true,
       claimed: { select: { quantity: true } },
     },
     orderBy: [{ name: "asc" }, { id: "asc" }],
@@ -39,6 +40,8 @@ async function getPublicRegistry (): Promise<PublicRegistryItem[]> {
     // The schema's placeholder default is a blank icon; show the gift icon instead.
     image: item.image === "/window.svg" ? null : item.image,
     quantityWanted: item.quantityWanted,
+    // A Decimal can't cross to the client component. Null for items added before prices existed.
+    price: item.price?.toNumber() ?? null,
     claimedCount: getClaimedQuantity(item),
   }));
 }

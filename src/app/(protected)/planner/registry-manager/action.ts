@@ -2,7 +2,7 @@
 import { prisma } from '@/lib/prisma';
 import { revalidatePath } from 'next/cache';
 import { requireUserAction } from '@/lib/require-user';
-import { handleActionError, validateHttpUrl, validateWholeNumber, type ActionResult as SharedActionResult } from '@/lib/action';
+import { handleActionError, validateHttpUrl, validateMoney, validateWholeNumber, type ActionResult as SharedActionResult } from '@/lib/action';
 import { checkWantedNotBelowClaimed, MAX_REGISTRY_QUANTITY } from '@/lib/registry';
 import { checkRequired } from '@/lib/validate';
 
@@ -10,7 +10,7 @@ import { checkRequired } from '@/lib/validate';
  * Which input a failure relates to, so the client can highlight the right field.
  * Omitted for general/unexpected errors.
  */
-export type ErrorField = 'name' | 'link' | 'quantityWanted' | 'image' | 'claimedBy' | 'quantity' | 'item';
+export type ErrorField = 'name' | 'link' | 'quantityWanted' | 'price' | 'image' | 'claimedBy' | 'quantity' | 'item';
 
 /** See {@link SharedActionResult}; narrowed to this page's fields. */
 export type ActionResult = SharedActionResult<ErrorField>;
@@ -19,6 +19,7 @@ export interface RegistryItemInput {
   name?: string | undefined;
   link?: string | undefined;
   quantityWanted?: number | undefined;
+  price?: number | undefined;
   image?: string | null | undefined;
 }
 
@@ -61,10 +62,11 @@ async function getClaimedTotal (itemId: number): Promise<{ claimedTotal: number,
  * @param name - name of the item (cannot be empty)
  * @param link - where to buy it (http(s) only)
  * @param quantityWanted - how many the couple wants (1 or more)
+ * @param price - what one costs, in dollars (0 or more)
  * @param image - picture of the item (http(s) only), or empty to use the default
  * @returns an ActionResult the client can react to
  */
-export async function createRegistryItem (name: string, link: string, quantityWanted: number, image: string): Promise<ActionResult> {
+export async function createRegistryItem (name: string, link: string, quantityWanted: number, price: number, image: string): Promise<ActionResult> {
   /* Validate user session */
   const guard = await requireUserAction();
   if (!guard.ok) {
@@ -82,6 +84,7 @@ export async function createRegistryItem (name: string, link: string, quantityWa
   const trimmedImage = image.trim();
   const invalid = validateHttpUrl(link, 'link', 'Product link')
     ?? validateWholeNumber(quantityWanted, 'quantityWanted', 'Quantity wanted', MAX_REGISTRY_QUANTITY)
+    ?? validateMoney(price, 'price', 'Price')
     ?? (trimmedImage === '' ? null : validateHttpUrl(trimmedImage, 'image', 'Image link'));
   if (invalid) {
     return invalid;
@@ -94,6 +97,7 @@ export async function createRegistryItem (name: string, link: string, quantityWa
         name: trimmedName,
         link: link.trim(),
         quantityWanted,
+        price,
         // Passing undefined lets the column default apply; null would override it.
         image: trimmedImage === '' ? undefined : trimmedImage,
       },
@@ -116,6 +120,7 @@ export async function createRegistryItem (name: string, link: string, quantityWa
  * - name
  * - link
  * - quantityWanted
+ * - price
  * - image
  *
  * see {@link RegistryItemInput}
@@ -133,7 +138,7 @@ export async function updateRegistryItem (registryItemId: number | undefined, da
   }
 
   // Nothing was passed, so there is nothing to do.
-  if (data.name === undefined && data.link === undefined && data.quantityWanted === undefined && data.image === undefined) {
+  if (data.name === undefined && data.link === undefined && data.quantityWanted === undefined && data.price === undefined && data.image === undefined) {
     return { ok: true };
   }
 
@@ -147,7 +152,8 @@ export async function updateRegistryItem (registryItemId: number | undefined, da
   const trimmedImage = data.image?.trim();
   const invalid = (data.link === undefined ? null : validateHttpUrl(data.link, 'link', 'Product link'))
     ?? (trimmedImage === undefined || trimmedImage === '' ? null : validateHttpUrl(trimmedImage, 'image', 'Image link'))
-    ?? (data.quantityWanted === undefined ? null : validateWholeNumber(data.quantityWanted, 'quantityWanted', 'Quantity wanted', MAX_REGISTRY_QUANTITY));
+    ?? (data.quantityWanted === undefined ? null : validateWholeNumber(data.quantityWanted, 'quantityWanted', 'Quantity wanted', MAX_REGISTRY_QUANTITY))
+    ?? (data.price === undefined ? null : validateMoney(data.price, 'price', 'Price'));
   if (invalid) {
     return invalid;
   }
